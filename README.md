@@ -1,0 +1,1 @@
+functial basic auth with CSRF with BREACH protection
