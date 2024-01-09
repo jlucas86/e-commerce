@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +25,8 @@ import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.example.auth.ApplicationUserService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -47,10 +51,13 @@ import java.util.function.Supplier;
 public class ApplicationSecurityConfig {
 
         private final PasswordEncoder passwordEncoder;
+        private final ApplicationUserService applicationUserService;
 
         @Autowired
-        public ApplicationSecurityConfig(PasswordEncoder passwordEncoder) {
+        public ApplicationSecurityConfig(PasswordEncoder passwordEncoder,
+                        ApplicationUserService applicationUserService) {
                 this.passwordEncoder = passwordEncoder;
+                this.applicationUserService = applicationUserService;
         }
 
         @Bean
@@ -87,7 +94,18 @@ public class ApplicationSecurityConfig {
                                                 // .hasAuthority(PRODUCT_READ.getPermission())
                                                 // .requestMatchers("/admin/**").permitAll()
                                                 .anyRequest().authenticated())
-                                .httpBasic(withDefaults());
+                                // .httpBasic(withDefaults())
+                                .formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/home",
+                                                true))
+                                .rememberMe((remember) -> remember.rememberMeServices(/* rememberMeServices */null)/*
+                                                                                                                    * .tokenValiditySeconds
+                                                                                                                    * (
+                                                                                                                    * 0)
+                                                                                                                    */)
+                                .logout((logout) -> logout.logoutUrl("/logout").clearAuthentication(true)
+                                                .invalidateHttpSession(true).deleteCookies("remember-me", "JSESSIONID")
+                                                .logoutSuccessUrl("/login"));
+
                 // .authorizeHttpRequests((authz)->{
                 // authz
                 // .anyRequest()
@@ -99,27 +117,34 @@ public class ApplicationSecurityConfig {
         }
 
         @Bean
-        public UserDetailsService users() {
-                UserDetails seller = User.builder()
-                                .username("seller")
-                                .password(passwordEncoder.encode("password"))
-                                // .roles(SELLER.name())
-                                .authorities(SELLER.getGrantedAuthorities())
-                                .build();
-                UserDetails customer = User.builder()
-                                .username("customer")
-                                .password(passwordEncoder.encode("password"))
-                                // .roles(CUSTOMER.name())
-                                .authorities(CUSTOMER.getGrantedAuthorities())
-                                .build();
-                UserDetails admin = User.builder()
-                                .username("admin")
-                                .password(passwordEncoder.encode("password"))
-                                // .roles(ADMIN.name())
-                                .authorities(ADMIN.getGrantedAuthorities())
-                                .build();
-                return new InMemoryUserDetailsManager(seller, customer, admin);
+        public DaoAuthenticationProvider daoAuthenticationProvider() {
+                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+                provider.setPasswordEncoder(passwordEncoder);
+                provider.setUserDetailsService(null);
         }
+
+        // @Bean
+        // public UserDetailsService users() {
+        // UserDetails seller = User.builder()
+        // .username("seller")
+        // .password(passwordEncoder.encode("password"))
+        // // .roles(SELLER.name())
+        // .authorities(SELLER.getGrantedAuthorities())
+        // .build();
+        // UserDetails customer = User.builder()
+        // .username("customer")
+        // .password(passwordEncoder.encode("password"))
+        // // .roles(CUSTOMER.name())
+        // .authorities(CUSTOMER.getGrantedAuthorities())
+        // .build();
+        // UserDetails admin = User.builder()
+        // .username("admin")
+        // .password(passwordEncoder.encode("password"))
+        // // .roles(ADMIN.name())
+        // .authorities(ADMIN.getGrantedAuthorities())
+        // .build();
+        // return new InMemoryUserDetailsManager(seller, customer, admin);
+        // }
 
         // @Bean
         // public UserDetailsService users() {
