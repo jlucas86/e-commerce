@@ -1,4 +1,5 @@
-packagecom. 
+package com.example.user;
+
 import java.util.Optional;
 
 import org.checkerframework.checker.units.qual.radians;
@@ -16,25 +17,7 @@ public class UserService {
     }
 
     public Optional<User> getUser(Integer id) {
-        return userRepository.findById(id);
+            return userRepository.findById(id);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-    
-
-    
-    
-        
-    
-
     
