@@ -1,4 +1,4 @@
-package com.example.user;
+package com.example.role;
 
 import java.util.Optional;
 
@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user/")
-public class UserController {
+@RequestMapping("/role/")
+public class RoleController {
 
-    private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
-    @GetMapping("getUser/{userId}")
-    public Optional<User> getUser(@PathVariable("userId") Integer id) {
-        return userService.getUser(id);
+    @GetMapping("/getRole/{id}")
+    public Optional<Role> getRole(@PathVariable("id") Integer id) {
+        return roleService.getRole(id);
     }
 
 }
