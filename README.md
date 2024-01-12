@@ -1,1 +1,0 @@
-functial form base auth with CSRF with BREACH protection
