@@ -1,13 +1,20 @@
 package com.example.user;
 
+import com.example.role.Role;
 import com.example.security.ApplicationUserRole;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
+
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 
@@ -21,17 +28,20 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private ApplicationUserRole Role;
+
+    @ManyToMany()
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(Integer id, String email, String username, String password, ApplicationUserRole Role) {
+    public User(Integer id, String email, String username, String password, Set<Role> roles) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.Role = Role;
+        this.roles = roles;
     }
 
     public Integer getId() {
@@ -66,12 +76,37 @@ public class User {
         this.password = password;
     }
 
-    public ApplicationUserRole getRole() {
-        return this.Role;
+    public Set<Role> getRoles() {
+        return this.roles;
     }
 
-    public void setRole(ApplicationUserRole Role) {
-        this.Role = Role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public User id(Integer id) {
+        setId(id);
+        return this;
+    }
+
+    public User email(String email) {
+        setEmail(email);
+        return this;
+    }
+
+    public User username(String username) {
+        setUsername(username);
+        return this;
+    }
+
+    public User password(String password) {
+        setPassword(password);
+        return this;
+    }
+
+    public User roles(Set<Role> roles) {
+        setRoles(roles);
+        return this;
     }
 
     @Override
@@ -84,12 +119,12 @@ public class User {
         User user = (User) o;
         return Objects.equals(id, user.id) && Objects.equals(email, user.email)
                 && Objects.equals(username, user.username) && Objects.equals(password, user.password)
-                && Objects.equals(Role, user.Role);
+                && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, username, password, Role);
+        return Objects.hash(id, email, username, password, roles);
     }
 
     @Override
@@ -99,7 +134,7 @@ public class User {
                 ", email='" + getEmail() + "'" +
                 ", username='" + getUsername() + "'" +
                 ", password='" + getPassword() + "'" +
-                ", Role='" + getRole() + "'" +
+                ", roles='" + getRoles() + "'" +
                 "}";
     }
 

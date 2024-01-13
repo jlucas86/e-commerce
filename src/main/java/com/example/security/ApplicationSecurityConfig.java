@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.auth.ApplicationUserService;
+import com.example.seller.Seller;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -130,6 +131,8 @@ public class ApplicationSecurityConfig {
                 DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
                 provider.setPasswordEncoder(passwordEncoder);
                 provider.setUserDetailsService(applicationUserService);
+                CUSTOMER.getGrantedAuthorities();
+
                 return provider;
         }
 

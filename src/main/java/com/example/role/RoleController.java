@@ -23,5 +23,4 @@ public class RoleController {
     public Optional<Role> getRole(@PathVariable("id") Integer id) {
         return roleService.getRole(id);
     }
-
 }
