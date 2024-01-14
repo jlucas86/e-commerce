@@ -8,7 +8,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +20,7 @@ import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.User;
+// import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -33,8 +35,13 @@ import org.springframework.security.web.server.csrf.CookieServerCsrfTokenReposit
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.auth.ApplicationUser;
+// import com.example.auth.ApplicationUser;
 import com.example.auth.ApplicationUserService;
+import com.example.permission.Permission;
+import com.example.role.Role;
 import com.example.seller.Seller;
+import com.example.user.User;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -49,6 +56,7 @@ import static com.example.security.ApplicationUserPermission.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.sql.DataSource;
@@ -61,7 +69,10 @@ import javax.sql.DataSource;
 public class ApplicationSecurityConfig {
 
         private final PasswordEncoder passwordEncoder;
-        private final ApplicationUserService applicationUserService;
+        // private final ApplicationUserService applicationUserService;
+
+        @Autowired
+        ApplicationUserService applicationUserService;
 
         @Autowired
         public ApplicationSecurityConfig(PasswordEncoder passwordEncoder,
@@ -128,13 +139,63 @@ public class ApplicationSecurityConfig {
 
         @Bean
         public DaoAuthenticationProvider daoAuthenticationProvider() {
-                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-                provider.setPasswordEncoder(passwordEncoder);
-                provider.setUserDetailsService(applicationUserService);
-                CUSTOMER.getGrantedAuthorities();
+                DaoAuthenticationProvider authProvieder = new DaoAuthenticationProvider();
 
-                return provider;
+                authProvieder.setUserDetailsService(applicationUserService);
+                authProvieder.setPasswordEncoder(passwordEncoder);
+
+                return authProvieder;
         }
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+                return authConfig.getAuthenticationManager();
+        }
+
+        @Bean
+        public UserDetailsService users() {
+
+                Permission customer_read = new Permission(0, CUSTOMER_READ);
+
+                Role admin = new Role(0, ADMIN, Set.of(customer_read));
+
+                User jim = new User(0, "email", "jim", passwordEncoder.encode("password"), Set.of(admin));
+
+                ApplicationUser test = new ApplicationUser(ADMIN.getGrantedAuthorities(), jim.getId(), jim.getEmail(),
+                                jim.getUsername(), jim.getPassword(), true, true, true, true);
+
+                ApplicationUser testq = new ApplicationUser(ADMIN.getGrantedAuthorities(), jim.getId(), jim.getEmail(),
+                                jim.getUsername(), jim.getPassword(), true, true, true, true);
+                // UserDetails seller = User.builder()
+                // .username("seller")
+                // .password(passwordEncoder.encode("password"))
+                // // .roles(SELLER.name())
+                // .authorities(SELLER.getGrantedAuthorities())
+                // .build();
+                // UserDetails customer = User.builder()
+                // .username("customer")
+                // .password(passwordEncoder.encode("password"))
+                // // .roles(CUSTOMER.name())
+                // .authorities(CUSTOMER.getGrantedAuthorities())
+                // .build();
+                // UserDetails admin = User.builder()
+                // .username("admin")
+                // .password(passwordEncoder.encode("password"))
+                // // .roles(ADMIN.name())
+                // .authorities(ADMIN.getGrantedAuthorities())
+                // .build();
+                return new InMemoryUserDetailsManager(admin);
+        }
+
+        // @Bean
+        // public DaoAuthenticationProvider daoAuthenticationProvider() {
+        // DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        // provider.setPasswordEncoder(passwordEncoder);
+        // provider.setUserDetailsService(applicationUserService);
+        // CUSTOMER.getGrantedAuthorities();
+
+        // return provider;
+        // }
 
         // @Bean
         // public UserDetailsService users() {
