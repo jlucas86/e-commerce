@@ -1,4 +1,4 @@
-package com.example.user;
+package com.example.userInfo;
 
 import com.example.role.Role;
 import com.example.security.ApplicationUserRole;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Entity
 
-public class User {
+public class UserInfo {
 
     @Id
     @SequenceGenerator(name = "user_id_sequence", sequenceName = "user_id_sequence")
@@ -33,10 +33,10 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
+    public UserInfo() {
     }
 
-    public User(Integer id, String email, String username, String password, Set<Role> roles) {
+    public UserInfo(Integer id, String email, String username, String password, Set<Role> roles) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -84,27 +84,27 @@ public class User {
         this.roles = roles;
     }
 
-    public User id(Integer id) {
+    public UserInfo id(Integer id) {
         setId(id);
         return this;
     }
 
-    public User email(String email) {
+    public UserInfo email(String email) {
         setEmail(email);
         return this;
     }
 
-    public User username(String username) {
+    public UserInfo username(String username) {
         setUsername(username);
         return this;
     }
 
-    public User password(String password) {
+    public UserInfo password(String password) {
         setPassword(password);
         return this;
     }
 
-    public User roles(Set<Role> roles) {
+    public UserInfo roles(Set<Role> roles) {
         setRoles(roles);
         return this;
     }
@@ -113,10 +113,10 @@ public class User {
     public boolean equals(Object o) {
         if (o == this)
             return true;
-        if (!(o instanceof User)) {
+        if (!(o instanceof UserInfo)) {
             return false;
         }
-        User user = (User) o;
+        UserInfo user = (UserInfo) o;
         return Objects.equals(id, user.id) && Objects.equals(email, user.email)
                 && Objects.equals(username, user.username) && Objects.equals(password, user.password)
                 && Objects.equals(roles, user.roles);

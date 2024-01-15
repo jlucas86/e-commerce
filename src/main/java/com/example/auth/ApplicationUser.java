@@ -8,7 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.user.User;
+import com.example.userInfo.UserInfo;
+
 import java.util.Objects;
 
 public class ApplicationUser implements UserDetails {
@@ -38,7 +39,7 @@ public class ApplicationUser implements UserDetails {
         this.isEnabled = isEnabled;
     }
 
-    public static ApplicationUser build(User user) {
+    public static ApplicationUser build(UserInfo user) {
         Set<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toSet());

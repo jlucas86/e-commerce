@@ -41,7 +41,7 @@ import com.example.auth.ApplicationUserService;
 import com.example.permission.Permission;
 import com.example.role.Role;
 import com.example.seller.Seller;
-import com.example.user.User;
+import com.example.userInfo.UserInfo;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -103,18 +103,21 @@ public class ApplicationSecurityConfig {
                                                 .requestMatchers("/css/*").permitAll()
                                                 .requestMatchers("/js/*").permitAll()
                                                 .requestMatchers("/greeting").permitAll()
-                                                // .requestMatchers("/csrf").permitAll()
-                                                // .requestMatchers("/admin/**").hasRole(ADMIN.name())
-                                                // .requestMatchers(HttpMethod.DELETE, "/admin/**")
-                                                // .hasAuthority(PRODUCT_WRITE.getPermission())
-                                                // .requestMatchers(HttpMethod.POST, "/admin/**")
-                                                // .hasAuthority(PRODUCT_WRITE.getPermission())
-                                                // .requestMatchers(HttpMethod.PUT, "/admin/**")
-                                                // .hasAuthority(PRODUCT_WRITE.getPermission())
-                                                // .requestMatchers(HttpMethod.GET, "/admin/**")
-                                                // .hasAuthority(PRODUCT_READ.getPermission())
-                                                // .requestMatchers("/admin/**").permitAll()
-                                                .anyRequest().authenticated())
+                                                .requestMatchers("/home").permitAll()
+                                                .requestMatchers("/api/v1/user/addUser").permitAll()
+                                // .requestMatchers("/csrf").permitAll()
+                                // .requestMatchers("/admin/**").hasRole(ADMIN.name())
+                                // .requestMatchers(HttpMethod.DELETE, "/admin/**")
+                                // .hasAuthority(PRODUCT_WRITE.getPermission())
+                                // .requestMatchers(HttpMethod.POST, "/admin/**")
+                                // .hasAuthority(PRODUCT_WRITE.getPermission())
+                                // .requestMatchers(HttpMethod.PUT, "/admin/**")
+                                // .hasAuthority(PRODUCT_WRITE.getPermission())
+                                // .requestMatchers(HttpMethod.GET, "/admin/**")
+                                // .hasAuthority(PRODUCT_READ.getPermission())
+                                // .requestMatchers("/admin/**").permitAll()
+                                // .anyRequest().authenticated()
+                                )
                                 // .httpBasic(withDefaults())
                                 .formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/home",
                                                 true))
@@ -152,40 +155,40 @@ public class ApplicationSecurityConfig {
                 return authConfig.getAuthenticationManager();
         }
 
-        @Bean
-        public UserDetailsService users() {
+        // @Bean
+        // public UserDetailsService users() {
 
-                Permission customer_read = new Permission(0, CUSTOMER_READ);
+        // Permission customer_read = new Permission(0, CUSTOMER_READ);
 
-                Role admin = new Role(0, ADMIN, Set.of(customer_read));
+        // Role admin = new Role(0, ADMIN, Set.of(customer_read));
 
-                User jim = new User(0, "email", "jim", passwordEncoder.encode("password"), Set.of(admin));
+        // User jim = new User(0, "email", "jim", passwordEncoder.encode("password"),
+        // Set.of(admin));
 
-                ApplicationUser test = new ApplicationUser(ADMIN.getGrantedAuthorities(), jim.getId(), jim.getEmail(),
-                                jim.getUsername(), jim.getPassword(), true, true, true, true);
+        // ApplicationUser test = new ApplicationUser(ADMIN.getGrantedAuthorities(),
+        // jim.getId(), jim.getEmail(),
+        // jim.getUsername(), jim.getPassword(), true, true, true, true);
 
-                ApplicationUser testq = new ApplicationUser(ADMIN.getGrantedAuthorities(), jim.getId(), jim.getEmail(),
-                                jim.getUsername(), jim.getPassword(), true, true, true, true);
-                // UserDetails seller = User.builder()
-                // .username("seller")
-                // .password(passwordEncoder.encode("password"))
-                // // .roles(SELLER.name())
-                // .authorities(SELLER.getGrantedAuthorities())
-                // .build();
-                // UserDetails customer = User.builder()
-                // .username("customer")
-                // .password(passwordEncoder.encode("password"))
-                // // .roles(CUSTOMER.name())
-                // .authorities(CUSTOMER.getGrantedAuthorities())
-                // .build();
-                // UserDetails admin = User.builder()
-                // .username("admin")
-                // .password(passwordEncoder.encode("password"))
-                // // .roles(ADMIN.name())
-                // .authorities(ADMIN.getGrantedAuthorities())
-                // .build();
-                return new InMemoryUserDetailsManager(admin);
-        }
+        // UserDetails seller = User.builder()
+        // .username("seller")
+        // .password(passwordEncoder.encode("password"))
+        // // .roles(SELLER.name())
+        // .authorities(SELLER.getGrantedAuthorities())
+        // .build();
+        // UserDetails customer = User.builder()
+        // .username("customer")
+        // .password(passwordEncoder.encode("password"))
+        // // .roles(CUSTOMER.name())
+        // .authorities(CUSTOMER.getGrantedAuthorities())
+        // .build();
+        // UserDetails admin = User.builder()
+        // .username("admin")
+        // .password(passwordEncoder.encode("password"))
+        // // .roles(ADMIN.name())
+        // .authorities(ADMIN.getGrantedAuthorities())
+        // .build();
+        // return new InMemoryUserDetailsManager(seller, customer, admin);
+        // }
 
         // @Bean
         // public DaoAuthenticationProvider daoAuthenticationProvider() {
