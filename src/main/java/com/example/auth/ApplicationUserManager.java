@@ -8,25 +8,26 @@ import com.example.user.UserRepository;
 
 public class ApplicationUserManager {
 
-    private final UserRepository userRepository;
+    // private final UserRepository userRepository;
 
-    public void createUser(ApplicationUser user) {
-        User hold = new User(0, user.getEmail(), user.getUsername(), user.getPassword(), user.getAuthorities().)
-        userRepository.save(user);
-    }
+    // public void createUser(ApplicationUser user) {
+    // User hold = new User(0, user.getEmail(), user.getUsername(),
+    // user.getPassword(), user.getAuthorities().)
+    // userRepository.save(user);
+    // }
 
-    public void updateUser(ApplicationUser user) {
-    }
+    // public void updateUser(ApplicationUser user) {
+    // }
 
-    @Override
-    public void deleteUser(String username) {
-    }
+    // @Override
+    // public void deleteUser(String username) {
+    // }
 
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
-    }
+    // @Override
+    // public void changePassword(String oldPassword, String newPassword) {
+    // }
 
-    @Override
-    public boolean userExists(String username) {
-    }
+    // @Override
+    // public boolean userExists(String username) {
+    // }
 }

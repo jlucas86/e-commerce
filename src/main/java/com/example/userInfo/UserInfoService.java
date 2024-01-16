@@ -16,18 +16,24 @@ import com.example.security.ApplicationUserRole;
 public class UserInfoService {
 
     private final UserInfoRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserInfoService(UserInfoRepository userRepository) {
+    public UserInfoService(UserInfoRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
+    // public UserInfoService(UserInfoRepository userRepository) {
+    // this.userRepository = userRepository;
+    // }
 
     public Optional<UserInfo> getUser(Integer id) {
         return userRepository.findById(id);
     }
 
     public void addUser(UserInfo user) {
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + user.getEmail());
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + user.getPassword());
 
         // Permission permission = new Permission(0,
         // ApplicationUserPermission.CUSTOMER_READ);
@@ -39,8 +45,7 @@ public class UserInfoService {
         UserInfo hold = new UserInfo();
         hold.setEmail(user.getEmail());
         hold.setUsername(user.getUsername());
-        hold.setPassword(null);
-        hold.setRoles(null);
+        hold.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + hold);
         userRepository.save(hold);
     }
