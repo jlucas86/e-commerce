@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,11 +43,27 @@ public class UserInfoService {
         // Role role = new Role(0, ApplicationUserRole.CUSTOMER, permissions);
         // Set<Role> roles;
         // roles.add(role);
+
         UserInfo hold = new UserInfo();
         hold.setEmail(user.getEmail());
         hold.setUsername(user.getUsername());
         hold.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + hold);
+        validateUserInfo(user);
         userRepository.save(hold);
+    }
+
+    public Boolean validateUserInfo(UserInfo user) throws UsernameNotFoundException {
+
+        if (userRepository.existsByUsername(user.getUsername())) {
+            return false;
+        }
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return false;
+        }
+        if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
+            return false;
+        }
+        return true;
     }
 }

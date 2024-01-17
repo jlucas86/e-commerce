@@ -3,8 +3,8 @@ package com.example.auth;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 
-import com.example.user.User;
-import com.example.user.UserRepository;
+// import com.example.user.User;
+// import com.example.user.UserRepository;
 
 public class ApplicationUserManager {
 
