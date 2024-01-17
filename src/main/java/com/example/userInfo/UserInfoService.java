@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.exceptions.EmailAlreadyExists;
+import com.example.exceptions.InvalidPassword;
+import com.example.exceptions.UsernameAlreadyExists;
 import com.example.permission.Permission;
 import com.example.role.Role;
 import com.example.security.ApplicationUserPermission;
@@ -49,20 +52,34 @@ public class UserInfoService {
         hold.setUsername(user.getUsername());
         hold.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + hold);
-        validateUserInfo(user);
-        userRepository.save(hold);
+
+        try {
+            validateUserInfo(user);
+            System.out.println("i made it");
+            userRepository.save(hold);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
+        }
+
     }
 
-    public Boolean validateUserInfo(UserInfo user) throws UsernameNotFoundException {
+    public Boolean validateUserInfo(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
 
         if (userRepository.existsByUsername(user.getUsername())) {
-            return false;
+
+            throw new UsernameAlreadyExists(String.format("Username %s already exists", user.getUsername()));
+
         }
         if (userRepository.existsByEmail(user.getEmail())) {
-            return false;
+            throw new EmailAlreadyExists(String.format("Email %s already exists", user.getEmail()));
         }
-        if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
-            return false;
+        if (user.getPassword().length() < 6) {
+            throw new InvalidPassword("Password is too short");
+        }
+        if (user.getPassword().length() > 20) {
+            throw new InvalidPassword("Password is too long");
         }
         return true;
     }
