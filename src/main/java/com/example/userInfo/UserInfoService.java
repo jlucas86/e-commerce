@@ -81,6 +81,17 @@ public class UserInfoService {
         if (user.getPassword().length() > 20) {
             throw new InvalidPassword("Password is too long");
         }
+        /*
+         * This is where passwords will be screed to ensure they are strong and do not
+         * violate rules
+         * 1. No chains of numbers >=3 that are inorder
+         * 2. No chains of letters >=4 that are inorder
+         * 3. Must contain at least one capital letter
+         * 4. Must contain at least one lowercase letter
+         * 5. Must contain at least one symbol "!@#$%&"
+         * 6. Must be longet than 6 caracters but shorter than 20
+         * 7. screen for common passwords such as "password"
+         */
         return true;
     }
 }
