@@ -40,7 +40,6 @@ import com.example.auth.ApplicationUser;
 import com.example.auth.ApplicationUserService;
 import com.example.permission.Permission;
 import com.example.role.Role;
-import com.example.seller.Seller;
 import com.example.userInfo.UserInfo;
 
 import jakarta.servlet.FilterChain;

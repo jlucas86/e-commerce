@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.product.Product;
 import com.example.product.ProductSevice;
-import com.example.seller.Seller;
 
 @RestController
 @RequestMapping("/admin/api/v1/product")
