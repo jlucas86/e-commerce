@@ -12,8 +12,8 @@ import java.util.Objects;
 public class Product {
 
     @Id
-    @SequenceGenerator(name = "seller_id_sequence", sequenceName = "seller_id_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_id_sequence")
+    @SequenceGenerator(name = "product_id_sequence", sequenceName = "product_id_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_sequence")
     private Integer id;
     private String name;
     private String type;
