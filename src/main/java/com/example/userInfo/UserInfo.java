@@ -1,9 +1,9 @@
 package com.example.userInfo;
 
-import com.example.cart.Cart;
-import com.example.order.Order;
+// import com.example.cart.Cart;
+// import com.example.order.Order;
 import com.example.role.Role;
-import com.example.store.Store;
+// import com.example.store.Store;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-
 public class UserInfo {
 
     @Id
@@ -33,172 +32,135 @@ public class UserInfo {
     private String username;
     private String password;
 
-    @ManyToMany()
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    // @ManyToMany()
+    // @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+    // inverseJoinColumns = @JoinColumn(name = "role_id"))
+    // private Set<Role> roles = new HashSet<>();
 
-    @OneToOne
-    @JoinTable(name = "user_cart", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "cart_id"))
-    private Set<Cart> cart = new HashSet<>();
+    // // @OneToOne
+    // // @JoinTable(name = "user_cart", joinColumns = @JoinColumn(name =
+    // "user_id"),
+    // // inverseJoinColumns = @JoinColumn(name = "cart_id"))
+    // // private Cart cart;
 
-    @OneToMany
-    @JoinTable(name = "user_store", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "store_id"))
-    private Set<Store> stores = new HashSet<>();
+    // // @OneToMany
+    // // @JoinTable(name = "user_store", joinColumns = @JoinColumn(name =
+    // "user_id"),
+    // // inverseJoinColumns = @JoinColumn(name = "store_id"))
+    // // private Set<Store> stores = new HashSet<>();
 
-    @OneToMany
-    @JoinTable(name = "user_order", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "order_id"))
-    private Set<Order> orders = new HashSet<>();
+    // // @OneToMany
+    // // @JoinTable(name = "user_order", joinColumns = @JoinColumn(name =
+    // "user_id"),
+    // // inverseJoinColumns = @JoinColumn(name = "order_id"))
+    // // private Set<Order> orders = new HashSet<>();
 
-    public UserInfo() {
-    }
+    // public UserInfo() {
+    // }
 
-    public UserInfo(Integer id, String email, String username, String password, Set<Role> roles, Set<Cart> cart,
-            Set<Store> stores, Set<Order> orders) {
-        this.id = id;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-        this.cart = cart;
-        this.stores = stores;
-        this.orders = orders;
-    }
+    // public UserInfo(Integer id, String email, String username, String password,
+    // Set<Role> roles) {
+    // this.id = id;
+    // this.email = email;
+    // this.username = username;
+    // this.password = password;
+    // this.roles = roles;
+    // }
 
-    public Integer getId() {
-        return this.id;
-    }
+    // public Integer getId() {
+    // return this.id;
+    // }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    // public void setId(Integer id) {
+    // this.id = id;
+    // }
 
-    public String getEmail() {
-        return this.email;
-    }
+    // public String getEmail() {
+    // return this.email;
+    // }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    // public void setEmail(String email) {
+    // this.email = email;
+    // }
 
-    public String getUsername() {
-        return this.username;
-    }
+    // public String getUsername() {
+    // return this.username;
+    // }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    // public void setUsername(String username) {
+    // this.username = username;
+    // }
 
-    public String getPassword() {
-        return this.password;
-    }
+    // public String getPassword() {
+    // return this.password;
+    // }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    // public void setPassword(String password) {
+    // this.password = password;
+    // }
 
-    public Set<Role> getRoles() {
-        return this.roles;
-    }
+    // public Set<Role> getRoles() {
+    // return this.roles;
+    // }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+    // public void setRoles(Set<Role> roles) {
+    // this.roles = roles;
+    // }
 
-    public Set<Cart> getCart() {
-        return this.cart;
-    }
+    // public UserInfo id(Integer id) {
+    // setId(id);
+    // return this;
+    // }
 
-    public void setCart(Set<Cart> cart) {
-        this.cart = cart;
-    }
+    // public UserInfo email(String email) {
+    // setEmail(email);
+    // return this;
+    // }
 
-    public Set<Store> getStores() {
-        return this.stores;
-    }
+    // public UserInfo username(String username) {
+    // setUsername(username);
+    // return this;
+    // }
 
-    public void setStores(Set<Store> stores) {
-        this.stores = stores;
-    }
+    // public UserInfo password(String password) {
+    // setPassword(password);
+    // return this;
+    // }
 
-    public Set<Order> getOrders() {
-        return this.orders;
-    }
+    // public UserInfo roles(Set<Role> roles) {
+    // setRoles(roles);
+    // return this;
+    // }
 
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }
+    // @Override
+    // public boolean equals(Object o) {
+    // if (o == this)
+    // return true;
+    // if (!(o instanceof UserInfo)) {
+    // return false;
+    // }
+    // UserInfo userInfo = (UserInfo) o;
+    // return Objects.equals(id, userInfo.id) && Objects.equals(email,
+    // userInfo.email)
+    // && Objects.equals(username, userInfo.username) && Objects.equals(password,
+    // userInfo.password)
+    // && Objects.equals(roles, userInfo.roles);
+    // }
 
-    public UserInfo id(Integer id) {
-        setId(id);
-        return this;
-    }
+    // @Override
+    // public int hashCode() {
+    // return Objects.hash(id, email, username, password, roles);
+    // }
 
-    public UserInfo email(String email) {
-        setEmail(email);
-        return this;
-    }
-
-    public UserInfo username(String username) {
-        setUsername(username);
-        return this;
-    }
-
-    public UserInfo password(String password) {
-        setPassword(password);
-        return this;
-    }
-
-    public UserInfo roles(Set<Role> roles) {
-        setRoles(roles);
-        return this;
-    }
-
-    public UserInfo cart(Set<Cart> cart) {
-        setCart(cart);
-        return this;
-    }
-
-    public UserInfo stores(Set<Store> stores) {
-        setStores(stores);
-        return this;
-    }
-
-    public UserInfo orders(Set<Order> orders) {
-        setOrders(orders);
-        return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof UserInfo)) {
-            return false;
-        }
-        UserInfo userInfo = (UserInfo) o;
-        return Objects.equals(id, userInfo.id) && Objects.equals(email, userInfo.email)
-                && Objects.equals(username, userInfo.username) && Objects.equals(password, userInfo.password)
-                && Objects.equals(roles, userInfo.roles) && Objects.equals(cart, userInfo.cart)
-                && Objects.equals(stores, userInfo.stores) && Objects.equals(orders, userInfo.orders);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email, username, password, roles, cart, stores, orders);
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                " id='" + getId() + "'" +
-                ", email='" + getEmail() + "'" +
-                ", username='" + getUsername() + "'" +
-                ", password='" + getPassword() + "'" +
-                ", roles='" + getRoles() + "'" +
-                ", cart='" + getCart() + "'" +
-                ", stores='" + getStores() + "'" +
-                ", orders='" + getOrders() + "'" +
-                "}";
-    }
+    // @Override
+    // public String toString() {
+    // return "{" +
+    // " id='" + getId() + "'" +
+    // ", email='" + getEmail() + "'" +
+    // ", username='" + getUsername() + "'" +
+    // ", password='" + getPassword() + "'" +
+    // ", roles='" + getRoles() + "'" +
+    // "}";
+    // }
 
 }

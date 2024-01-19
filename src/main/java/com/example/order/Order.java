@@ -25,97 +25,100 @@ public class Order {
     private Integer date;
     private String status;
 
-    @ManyToMany()
-    @JoinTable(name = "order_product", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> products = new HashSet<>();
+    // @ManyToMany()
+    // @JoinTable(name = "order_product", joinColumns = @JoinColumn(name =
+    // "order_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    // private Set<Product> products = new HashSet<>();
 
-    public Order() {
-    }
+    // public Order() {
+    // }
 
-    public Order(Integer id, Integer date, String status, Set<Product> products) {
-        this.id = id;
-        this.date = date;
-        this.status = status;
-        this.products = products;
-    }
+    // public Order(Integer id, Integer date, String status, Set<Product> products)
+    // {
+    // this.id = id;
+    // this.date = date;
+    // this.status = status;
+    // this.products = products;
+    // }
 
-    public Integer getId() {
-        return this.id;
-    }
+    // public Integer getId() {
+    // return this.id;
+    // }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    // public void setId(Integer id) {
+    // this.id = id;
+    // }
 
-    public Integer getDate() {
-        return this.date;
-    }
+    // public Integer getDate() {
+    // return this.date;
+    // }
 
-    public void setDate(Integer date) {
-        this.date = date;
-    }
+    // public void setDate(Integer date) {
+    // this.date = date;
+    // }
 
-    public String getStatus() {
-        return this.status;
-    }
+    // public String getStatus() {
+    // return this.status;
+    // }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    // public void setStatus(String status) {
+    // this.status = status;
+    // }
 
-    public Set<Product> getProducts() {
-        return this.products;
-    }
+    // public Set<Product> getProducts() {
+    // return this.products;
+    // }
 
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
+    // public void setProducts(Set<Product> products) {
+    // this.products = products;
+    // }
 
-    public Order id(Integer id) {
-        setId(id);
-        return this;
-    }
+    // public Order id(Integer id) {
+    // setId(id);
+    // return this;
+    // }
 
-    public Order date(Integer date) {
-        setDate(date);
-        return this;
-    }
+    // public Order date(Integer date) {
+    // setDate(date);
+    // return this;
+    // }
 
-    public Order status(String status) {
-        setStatus(status);
-        return this;
-    }
+    // public Order status(String status) {
+    // setStatus(status);
+    // return this;
+    // }
 
-    public Order products(Set<Product> products) {
-        setProducts(products);
-        return this;
-    }
+    // public Order products(Set<Product> products) {
+    // setProducts(products);
+    // return this;
+    // }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Order)) {
-            return false;
-        }
-        Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(date, order.date) && Objects.equals(status, order.status)
-                && Objects.equals(products, order.products);
-    }
+    // @Override
+    // public boolean equals(Object o) {
+    // if (o == this)
+    // return true;
+    // if (!(o instanceof Order)) {
+    // return false;
+    // }
+    // Order order = (Order) o;
+    // return Objects.equals(id, order.id) && Objects.equals(date, order.date) &&
+    // Objects.equals(status, order.status)
+    // && Objects.equals(products, order.products);
+    // }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, date, status, products);
-    }
+    // @Override
+    // public int hashCode() {
+    // return Objects.hash(id, date, status, products);
+    // }
 
-    @Override
-    public String toString() {
-        return "{" +
-                " id='" + getId() + "'" +
-                ", date='" + getDate() + "'" +
-                ", status='" + getStatus() + "'" +
-                ", products='" + getProducts() + "'" +
-                "}";
-    }
+    // @Override
+    // public String toString() {
+    // return "{" +
+    // " id='" + getId() + "'" +
+    // ", date='" + getDate() + "'" +
+    // ", status='" + getStatus() + "'" +
+    // ", products='" + getProducts() + "'" +
+    // "}";
+    // }
 
 }

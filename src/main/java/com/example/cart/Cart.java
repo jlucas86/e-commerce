@@ -26,82 +26,84 @@ public class Cart {
 
     private Date createdDate;
 
-    @ManyToMany
-    @JoinTable(name = "cart_product", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> items = new HashSet<>();
+    // @ManyToMany
+    // @JoinTable(name = "cart_product", joinColumns = @JoinColumn(name =
+    // "cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    // private Set<Product> items = new HashSet<>();
 
-    public Cart() {
-    }
+    // public Cart() {
+    // }
 
-    public Cart(Integer id, Date createdDate, Set<Product> items) {
-        this.id = id;
-        this.createdDate = createdDate;
-        this.items = items;
-    }
+    // public Cart(Integer id, Date createdDate, Set<Product> items) {
+    // this.id = id;
+    // this.createdDate = createdDate;
+    // this.items = items;
+    // }
 
-    public Integer getId() {
-        return this.id;
-    }
+    // public Integer getId() {
+    // return this.id;
+    // }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    // public void setId(Integer id) {
+    // this.id = id;
+    // }
 
-    public Date getCreatedDate() {
-        return this.createdDate;
-    }
+    // public Date getCreatedDate() {
+    // return this.createdDate;
+    // }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
+    // public void setCreatedDate(Date createdDate) {
+    // this.createdDate = createdDate;
+    // }
 
-    public Set<Product> getItems() {
-        return this.items;
-    }
+    // public Set<Product> getItems() {
+    // return this.items;
+    // }
 
-    public void setItems(Set<Product> items) {
-        this.items = items;
-    }
+    // public void setItems(Set<Product> items) {
+    // this.items = items;
+    // }
 
-    public Cart id(Integer id) {
-        setId(id);
-        return this;
-    }
+    // public Cart id(Integer id) {
+    // setId(id);
+    // return this;
+    // }
 
-    public Cart createdDate(Date createdDate) {
-        setCreatedDate(createdDate);
-        return this;
-    }
+    // public Cart createdDate(Date createdDate) {
+    // setCreatedDate(createdDate);
+    // return this;
+    // }
 
-    public Cart items(Set<Product> items) {
-        setItems(items);
-        return this;
-    }
+    // public Cart items(Set<Product> items) {
+    // setItems(items);
+    // return this;
+    // }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Cart)) {
-            return false;
-        }
-        Cart cart = (Cart) o;
-        return Objects.equals(id, cart.id) && Objects.equals(createdDate, cart.createdDate)
-                && Objects.equals(items, cart.items);
-    }
+    // @Override
+    // public boolean equals(Object o) {
+    // if (o == this)
+    // return true;
+    // if (!(o instanceof Cart)) {
+    // return false;
+    // }
+    // Cart cart = (Cart) o;
+    // return Objects.equals(id, cart.id) && Objects.equals(createdDate,
+    // cart.createdDate)
+    // && Objects.equals(items, cart.items);
+    // }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, createdDate, items);
-    }
+    // @Override
+    // public int hashCode() {
+    // return Objects.hash(id, createdDate, items);
+    // }
 
-    @Override
-    public String toString() {
-        return "{" +
-                " id='" + getId() + "'" +
-                ", createdDate='" + getCreatedDate() + "'" +
-                ", items='" + getItems() + "'" +
-                "}";
-    }
+    // @Override
+    // public String toString() {
+    // return "{" +
+    // " id='" + getId() + "'" +
+    // ", createdDate='" + getCreatedDate() + "'" +
+    // ", items='" + getItems() + "'" +
+    // "}";
+    // }
 
 }

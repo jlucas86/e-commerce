@@ -13,8 +13,8 @@ import java.util.Objects;
 public class Permission {
 
     @Id
-    @SequenceGenerator(name = "seller_id_sequence", sequenceName = "seller_id_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_id_sequence")
+    @SequenceGenerator(name = "permission_id_sequence", sequenceName = "permission_id_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "permission_id_sequence")
     private Integer id;
     private ApplicationUserPermission permission;
 
