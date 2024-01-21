@@ -1,5 +1,6 @@
 package com.example.userInfo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/user")
 public class UserInfoController {
 
     private final UserInfoService userService;
@@ -26,8 +27,19 @@ public class UserInfoController {
         return userService.getUser(id);
     }
 
+    @GetMapping("/getUsername/{username}")
+    public Optional<UserInfo> getUser(@PathVariable("username") String username) {
+        return userService.getUser(username);
+    }
+
+    @GetMapping("/getAllUser")
+    public List<UserInfo> getAllUser() {
+        return userService.getAllUser();
+    }
+
     @PostMapping("/addUser")
     public void addUser(@RequestBody UserInfo user) {
+        System.out.println("controller entered!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         userService.addUser(user);
     }
 

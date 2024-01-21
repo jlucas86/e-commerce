@@ -1,5 +1,6 @@
 package com.example.userInfo;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,6 +35,14 @@ public class UserInfoService {
 
     public Optional<UserInfo> getUser(Integer id) {
         return userRepository.findById(id);
+    }
+
+    public Optional<UserInfo> getUser(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public List<UserInfo> getAllUser() {
+        return userRepository.findAll();
     }
 
     public void addUser(UserInfo user) {

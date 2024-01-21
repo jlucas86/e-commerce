@@ -30,6 +30,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 import org.springframework.util.StringUtils;
@@ -87,15 +88,18 @@ public class ApplicationSecurityConfig {
                 // // set the name of the attribute the CsrfToken will be populated on
                 // requestHandler.setCsrfRequestAttributeName("_csrf");
                 http
-                                .csrf(csrf -> csrf.disable())
+                                // .csrf(csrf -> csrf.disable())
                                 // .csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler))
                                 .cors(cors -> cors.disable())
-                                // .csrf((csrf) ->
-                                // csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                // //BREACH
-                                // // .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())) // no
-                                // BREACH
+                                .csrf((csrf) -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                                                // BREACH
+                                                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
+                                // no BREACH
                                 // .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+                                // .csrf((csrf) -> csrf.csrfTokenRepository(new
+                                // HttpSessionCsrfTokenRepository()))
+                                // .csrf((csrf) -> csrf.csrfTokenRequestHandler(new
+                                // XorCsrfTokenRequestAttributeHandler()))
                                 .authorizeHttpRequests((authorize) -> authorize
                                                 .requestMatchers("/").permitAll()
                                                 .requestMatchers("index").permitAll()
@@ -103,7 +107,9 @@ public class ApplicationSecurityConfig {
                                                 .requestMatchers("/js/*").permitAll()
                                                 .requestMatchers("/greeting").permitAll()
                                                 .requestMatchers("/home").permitAll()
-                                                .requestMatchers("/api/v1/user/addUser").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
+                                                .requestMatchers("/csrf").permitAll()
                                 // .requestMatchers("/csrf").permitAll()
                                 // .requestMatchers("/admin/**").hasRole(ADMIN.name())
                                 // .requestMatchers(HttpMethod.DELETE, "/admin/**")
