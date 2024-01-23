@@ -88,12 +88,13 @@ public class ApplicationSecurityConfig {
                 // // set the name of the attribute the CsrfToken will be populated on
                 // requestHandler.setCsrfRequestAttributeName("_csrf");
                 http
-                                // .csrf(csrf -> csrf.disable())
+                                .csrf(csrf -> csrf.disable())
                                 // .csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler))
                                 .cors(cors -> cors.disable())
-                                .csrf((csrf) -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                                // BREACH
-                                                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
+                                // .csrf((csrf) ->
+                                // csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                                // // BREACH
+                                // .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                                 // no BREACH
                                 // .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
                                 // .csrf((csrf) -> csrf.csrfTokenRepository(new
