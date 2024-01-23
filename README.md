@@ -4,8 +4,8 @@ functional formbase auth with out csrf protecition enabled
 
 ### permissions
 
-- PODUCT_READ
-- PRODUC_TWRITE
+- PRODUCT_READ
+- PRODUCT_WRITE
 - CART_READ
 - CART_WRITE
 - STORE_READ
