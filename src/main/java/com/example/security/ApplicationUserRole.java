@@ -13,7 +13,7 @@ import static com.example.security.ApplicationUserPermission.*;
 public enum ApplicationUserRole {
     SELLER(Sets.newHashSet()),
     CUSTOMER(Sets.newHashSet()),
-    ADMIN(Sets.newHashSet(PRODUCT_READ, PRODUCT_WRITE, SELLER_READ, SELLER_WRITE, CUSTOMER_READ, CUSTOMER_WRITE));
+    ADMIN(Sets.newHashSet());
 
     private final Set<ApplicationUserPermission> permissions;
 
