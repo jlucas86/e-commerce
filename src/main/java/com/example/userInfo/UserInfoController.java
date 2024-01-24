@@ -23,25 +23,14 @@ public class UserInfoController {
         this.userService = userService;
     }
 
-    @GetMapping("/getUser/{userId}")
-    public Optional<UserInfo> getUser(@PathVariable("userId") Integer id) {
-        return userService.getUser(id);
-    }
-
     @GetMapping("/getUsername/{username}")
     @PreAuthorize("#username == authentication.principal.username, hasRole('ROLE_USER')")
     public Optional<UserInfo> getUser(@PathVariable("username") String username) {
         return userService.getUser(username);
     }
 
-    @GetMapping("/getAllUser")
-    public List<UserInfo> getAllUser() {
-        return userService.getAllUser();
-    }
-
     @PostMapping("/addUser")
     public void addUser(@RequestBody UserInfo user) {
-        System.out.println("controller entered!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         userService.addUser(user);
     }
 

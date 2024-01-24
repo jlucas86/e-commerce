@@ -1,11 +1,10 @@
 -backend
-    - add join for payment table and order tabel in order entity
     - determin and add the api calls that will be needed for each entity
-    - add an admin api to each entity
+    - add way to add role to new user, along with roles and permissions in general
+    - add an admin api layer to each entity
     - add anotations to modles
         - username must be unique
     - dermin how to ensure user is the one accessing its infromation
         - @PreAuthorize("#username == authentication.principal.username") this should do above functions.
             - This means all api calls that are user specigic must be done using username and not user id
-    - determin permissions for each roles
-    - determin the permissions needed for each api call
+    - determin the roles needed for each api call
