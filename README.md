@@ -67,7 +67,7 @@ orders are complete and can not be updated by anyone other than the admin
 - delete(username: String, store:Store): void
 
 ### Product
-- get(username: String, storeId: Integer, productId: Integer): Optional<Product>
+- get(username: String, storeId: Integer, productId: Integer): Optional&lt;Product>
 - update(username: String, storeId: Integer, id: Integer): void
 - create(username: String, storeId: Integer, id: Integer): void
 - delete(username: String, storeId: Integer, id: Integer): void
