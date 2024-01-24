@@ -38,7 +38,7 @@ functional formbase auth with out csrf protecition enabled
 ## API functions
 
 ### UserInfo
-- getUserInfo(Username: String): Optional<UserInfo>
+- getUserInfo(Username: String): Optional&lt;UserInfo>
     - will not retrun password or user id
 - addUser(user: UserInfo): void
 - updateUser(user: UserInfo): void
@@ -47,21 +47,21 @@ functional formbase auth with out csrf protecition enabled
 ### Role
 ### Permission
 ### Cart
-- get(username: String): Optional<Cart>
+- get(username: String): Optional&lt;Cart>
 - update(username: String, cart: Cart): void
 - create(username: String, cart: Cart): void
 - delete(username: String, cart: Cart): void
 
 ### Store
-- get(id: Integer): Optional<Store>
-- getAll(id: Integer): Optional<Store>
+- get(id: Integer): Optional&lt;Store>
+- getAll(id: Integer): Optional&lt;Store>
 - update(username: String, store:Store): void
 - create(username: String, store:Store): void
 - delete(username: String, store:Store): void
 
 ### Order
 orders are complete and can not be updated by anyone other than the admin
-- get(username: String, id: Integer): Optional<Store>
+- get(username: String, id: Integer): Optional&lt;Store>
 - update(username: String, store:Store): void
 - create(username: String, store:Store): void
 - delete(username: String, store:Store): void
@@ -74,7 +74,7 @@ orders are complete and can not be updated by anyone other than the admin
 
 ### PaymentMethod
 - get(username: String, id: Integer): Optional &lt;PaymentMethod>
-- getAll(username: String): List<Optional<PaymentMethod>>
+- getAll(username: String): List&lt;Optional&lt;PaymentMethod>>
 - update(username: String, paymentMethod:PaymentMethod): void
 - create(username: String, paymentMethod:PaymentMethod): void
 - delete(username: String, id: Integer): void
