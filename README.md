@@ -73,7 +73,7 @@ orders are complete and can not be updated by anyone other than the admin
 - delete(username: String, storeId: Integer, id: Integer): void
 
 ### PaymentMethod
-- get(username: String, id: Integer): Optional<PaymentMethod>
+- get(username: String, id: Integer): Optional &lt;PaymentMethod>
 - getAll(username: String): List<Optional<PaymentMethod>>
 - update(username: String, paymentMethod:PaymentMethod): void
 - create(username: String, paymentMethod:PaymentMethod): void
