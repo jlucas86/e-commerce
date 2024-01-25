@@ -68,12 +68,13 @@ orders are complete and can not be updated by anyone other than the admin
 
 ### Product
 - get(username: String, storeId: Integer, productId: Integer): Optional&lt;Product>
+- get some amount that can all also be filted by type
 - update(username: String, storeId: Integer, id: Integer): void
 - create(username: String, storeId: Integer, id: Integer): void
 - delete(username: String, storeId: Integer, id: Integer): void
 
 ### PaymentMethod
-- get(username: String, id: Integer): Optional &lt;PaymentMethod>
+- get(username: String, id: Integer): Optional&lt;PaymentMethod>
 - getAll(username: String): List&lt;Optional&lt;PaymentMethod>>
 - update(username: String, paymentMethod:PaymentMethod): void
 - create(username: String, paymentMethod:PaymentMethod): void
