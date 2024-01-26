@@ -1,5 +1,16 @@
 -backend
     - determin and add the api calls that will be needed for each entity
+        - UserInfo
+        - PaymentMethod
+        - Payment
+        - Role
+        - Permission
+        - Cart
+        - Store
+        - Order
+        - Product
+    - find a way to quiry a joined table along with varifying a user owns an entity
+        -
     - add way to add role to new user, along with roles and permissions in general
     - add an admin api layer to each entity
     - add anotations to modles
@@ -8,3 +19,12 @@
         - @PreAuthorize("#username == authentication.principal.username") this should do above functions.
             - This means all api calls that are user specigic must be done using username and not user id
     - determin the roles needed for each api call
+        - UserInfo
+        - PaymentMethod
+        - Payment
+        - Role
+        - Permission
+        - Cart
+        - Store
+        - Order
+        - Product
