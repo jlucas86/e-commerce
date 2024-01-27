@@ -24,7 +24,7 @@ public class UserInfoController {
     }
 
     @GetMapping("/getUsername/{username}")
-    @PreAuthorize("#username == authentication.principal.username, hasRole('ROLE_USER')")
+    @PreAuthorize("#username == authentication.principal.username")
     public Optional<UserInfo> getUser(@PathVariable("username") String username) {
         return userService.getUser(username);
     }
