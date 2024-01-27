@@ -1,5 +1,6 @@
 package com.example.role;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class RoleController {
     @GetMapping("/getRole/{id}")
     public Optional<Role> getRole(@PathVariable("id") Integer id) {
         return roleService.getRole(id);
+    }
+
+    @GetMapping("/getAllRole")
+    public List<Role> getAllRole() {
+        return roleService.getAllRoles();
     }
 
     @PostMapping("/addRole/{role}")

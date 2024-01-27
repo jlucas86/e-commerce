@@ -1,5 +1,6 @@
 package com.example.role;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class RoleService {
 
     public Optional<Role> getRole(Integer id) {
         return roleRepository.findById(id);
+    }
+
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
     }
 
     public void addRole(String role) {

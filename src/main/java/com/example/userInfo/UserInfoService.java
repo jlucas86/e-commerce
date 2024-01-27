@@ -1,5 +1,8 @@
 package com.example.userInfo;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,6 +17,7 @@ import com.example.exceptions.InvalidPassword;
 import com.example.exceptions.UsernameAlreadyExists;
 import com.example.permission.Permission;
 import com.example.role.Role;
+import com.example.role.RoleRepository;
 import com.example.security.ApplicationUserPermission;
 import com.example.security.ApplicationUserRole;
 
@@ -22,11 +26,14 @@ public class UserInfoService {
 
     private final UserInfoRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserInfoService(UserInfoRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserInfoService(UserInfoRepository userRepository, PasswordEncoder passwordEncoder,
+            RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     // public UserInfoService(UserInfoRepository userRepository) {
@@ -62,8 +69,16 @@ public class UserInfoService {
         hold.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + hold);
 
+        Role r = roleRepository.findById(1).get();
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + r);
+        Set<Role> role = new HashSet<Role>();
+        role.add(r);
+        hold.setRoles(role);
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + r.getName().name());
+
         try {
             validateUserInfo(user);
+
             System.out.println("i made it");
             userRepository.save(hold);
 

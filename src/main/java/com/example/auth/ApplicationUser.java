@@ -41,8 +41,9 @@ public class ApplicationUser implements UserDetails {
 
     public static ApplicationUser build(UserInfo user) {
         Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
                 .collect(Collectors.toSet());
+        System.out.println("?????????????????????????????????????" + user.getRoles());
 
         return new ApplicationUser(
                 authorities,
