@@ -35,14 +35,14 @@ public class UserInfoController {
     }
 
     @PreAuthorize("#username == authentication.principal.username")
-    @PostMapping("/updateUser")
-    public void updateUser(@RequestBody UserInfo user) {
+    @PostMapping("/updateUser/{username}")
+    public void updateUser(@PathVariable("username") String username, @RequestBody UserInfo user) {
         userService.updateUser(user);
     }
 
     @PreAuthorize("#username == authentication.principal.username")
-    @PostMapping("/deleteUser")
-    public void deleteUser(@RequestBody UserInfo user) {
+    @PostMapping("/deleteUser/{username}")
+    public void deleteUser(@PathVariable("username") String username, @RequestBody UserInfo user) {
         userService.deleteUser(user);
     }
 
