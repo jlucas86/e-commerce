@@ -4,8 +4,11 @@ import com.example.cart.Cart;
 import com.example.order.Order;
 import com.example.role.Role;
 import com.example.store.Store;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,28 +39,30 @@ public class UserInfo {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne
-    @JoinTable(name = "user_cart", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "cart_id"))
-    private Cart cart;
+    // @OneToOne
+    // @JoinTable(name = "user_cart", joinColumns = @JoinColumn(name = "user_id"),
+    // inverseJoinColumns = @JoinColumn(name = "cart_id"))
+    // private Cart cart;
 
-    @OneToMany
-    @JoinTable(name = "user_store", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "store_id"))
+    // @JsonIgnore
+    @OneToMany(mappedBy = "user")
     private Set<Store> stores = new HashSet<>();
 
-    @OneToMany
-    @JoinTable(name = "user_order", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "order_id"))
-    private Set<Order> orders = new HashSet<>();
+    // @OneToMany
+    // @JoinTable(name = "user_order", joinColumns = @JoinColumn(name = "user_id"),
+    // inverseJoinColumns = @JoinColumn(name = "order_id"))
+    // private Set<Order> orders = new HashSet<>();
 
     public UserInfo() {
     }
 
-    public UserInfo(Integer id, String email, String username, String password,
-            Set<Role> roles) {
+    public UserInfo(Integer id, String email, String username, String password, Set<Role> roles, Set<Store> stores) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.stores = stores;
     }
 
     public Integer getId() {
@@ -100,6 +105,14 @@ public class UserInfo {
         this.roles = roles;
     }
 
+    public Set<Store> getStores() {
+        return this.stores;
+    }
+
+    public void setStores(Set<Store> stores) {
+        this.stores = stores;
+    }
+
     public UserInfo id(Integer id) {
         setId(id);
         return this;
@@ -125,6 +138,11 @@ public class UserInfo {
         return this;
     }
 
+    public UserInfo stores(Set<Store> stores) {
+        setStores(stores);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -133,16 +151,14 @@ public class UserInfo {
             return false;
         }
         UserInfo userInfo = (UserInfo) o;
-        return Objects.equals(id, userInfo.id) && Objects.equals(email,
-                userInfo.email)
-                && Objects.equals(username, userInfo.username) && Objects.equals(password,
-                        userInfo.password)
-                && Objects.equals(roles, userInfo.roles);
+        return Objects.equals(id, userInfo.id) && Objects.equals(email, userInfo.email)
+                && Objects.equals(username, userInfo.username) && Objects.equals(password, userInfo.password)
+                && Objects.equals(roles, userInfo.roles) && Objects.equals(stores, userInfo.stores);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, username, password, roles);
+        return Objects.hash(id, email, username, password, roles, stores);
     }
 
     @Override
@@ -153,6 +169,7 @@ public class UserInfo {
                 ", username='" + getUsername() + "'" +
                 ", password='" + getPassword() + "'" +
                 ", roles='" + getRoles() + "'" +
+                ", stores='" + getStores() + "'" +
                 "}";
     }
 

@@ -6,6 +6,7 @@ import java.util.Set;
 import com.example.product.Product;
 import com.example.userInfo.UserInfo;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import java.util.Objects;
 
@@ -26,22 +29,25 @@ public class Store {
     private String name;
     private String desciption;
 
-    @ManyToMany()
+    @ManyToMany() // needs chaged to one to many
     @JoinTable(name = "store_product", joinColumns = @JoinColumn(name = "store_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products = new HashSet<>();
 
-    @ManyToMany
-    private Set<UserInfo> userInfo = new HashSet<>();
+    @ManyToOne(cascade = CascadeType.ALL)
+    // @JoinTable(name = "store_user", joinColumns = @JoinColumn(name = "store_id"),
+    // inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinColumn(name = "user_id")
+    private UserInfo user;
 
     public Store() {
     }
 
-    public Store(Integer id, String name, String desciption, Set<Product> products, Set<UserInfo> userInfo) {
+    public Store(Integer id, String name, String desciption, Set<Product> products, UserInfo user) {
         this.id = id;
         this.name = name;
         this.desciption = desciption;
         this.products = products;
-        this.userInfo = userInfo;
+        this.user = user;
     }
 
     public Integer getId() {
@@ -76,12 +82,12 @@ public class Store {
         this.products = products;
     }
 
-    public Set<UserInfo> getUserInfo() {
-        return this.userInfo;
+    public UserInfo getUser() {
+        return this.user;
     }
 
-    public void setUserInfo(Set<UserInfo> userInfo) {
-        this.userInfo = userInfo;
+    public void setUser(UserInfo user) {
+        this.user = user;
     }
 
     public Store id(Integer id) {
@@ -104,8 +110,8 @@ public class Store {
         return this;
     }
 
-    public Store userInfo(Set<UserInfo> userInfo) {
-        setUserInfo(userInfo);
+    public Store user(UserInfo user) {
+        setUser(user);
         return this;
     }
 
@@ -119,12 +125,12 @@ public class Store {
         Store store = (Store) o;
         return Objects.equals(id, store.id) && Objects.equals(name, store.name)
                 && Objects.equals(desciption, store.desciption) && Objects.equals(products, store.products)
-                && Objects.equals(userInfo, store.userInfo);
+                && Objects.equals(user, store.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, desciption, products, userInfo);
+        return Objects.hash(id, name, desciption, products, user);
     }
 
     @Override
@@ -134,7 +140,7 @@ public class Store {
                 ", name='" + getName() + "'" +
                 ", desciption='" + getDesciption() + "'" +
                 ", products='" + getProducts() + "'" +
-                ", userInfo='" + getUserInfo() + "'" +
+                ", user='" + getUser() + "'" +
                 "}";
     }
 

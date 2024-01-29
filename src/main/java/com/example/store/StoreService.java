@@ -1,6 +1,9 @@
 package com.example.store;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +28,23 @@ public class StoreService {
     }
 
     public void addStore(String username, Store store) {
+        // UserInfo user = userInfoRepository.findByUsername(username).get();
+
         UserInfo user = userInfoRepository.findByUsername(username).get();
-        if (!user.getUsername().equals(username)) {
-            // trow error
-        }
+        store.setUser(user);
+        // Set<Store> stores = user.getStores();
+        // stores.add(store);
         storeRepository.save(store);
+
+        // store.setUserInfo(user);
+        // storeRepository.save(store);
+        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^" + user.getStores());
+        // Set<Store> stores = user.getStores();
+        // stores.add(store);
+        // userInfoRepository.save(user);
+        // UserInfo user2 = userInfoRepository.findByUsername(username).get();
+        // Set<UserInfo> stores = new HashSet<UserInfo>();
+        // user2.setStores(storeRepository.findById(store.getId()).get());
     }
 
     public void updateStore(String username, Store store) {
@@ -46,6 +61,11 @@ public class StoreService {
             // trow error
         }
         storeRepository.delete(store);
+    }
+
+    public List<Store> getAllUserID(Integer userId) {
+        // TODO Auto-generated method stub
+        return storeRepository.findAllByUser(userId);
     }
 
 }
