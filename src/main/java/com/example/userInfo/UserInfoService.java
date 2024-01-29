@@ -120,4 +120,12 @@ public class UserInfoService {
          */
         return true;
     }
+
+    public void updateUser(UserInfo user) {
+        userRepository.save(user);
+    }
+
+    public void deleteUser(UserInfo user) {
+        userRepository.delete(user);
+    }
 }

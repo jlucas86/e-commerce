@@ -34,4 +34,16 @@ public class UserInfoController {
         userService.addUser(user);
     }
 
+    @PreAuthorize("#username == authentication.principal.username")
+    @PostMapping("/updateUser")
+    public void updateUser(@RequestBody UserInfo user) {
+        userService.updateUser(user);
+    }
+
+    @PreAuthorize("#username == authentication.principal.username")
+    @PostMapping("/deleteUser")
+    public void deleteUser(@RequestBody UserInfo user) {
+        userService.deleteUser(user);
+    }
+
 }

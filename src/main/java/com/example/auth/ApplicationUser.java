@@ -43,7 +43,6 @@ public class ApplicationUser implements UserDetails {
         Set<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
                 .collect(Collectors.toSet());
-        System.out.println("?????????????????????????????????????" + user.getRoles());
 
         return new ApplicationUser(
                 authorities,
