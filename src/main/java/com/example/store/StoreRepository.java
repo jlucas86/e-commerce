@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Integer> {
 
-    List<Store> findAllByUser(Integer user_id);
+    List<Store> findAllByUserId(Integer user_id);
 }

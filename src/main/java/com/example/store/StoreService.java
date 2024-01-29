@@ -65,7 +65,7 @@ public class StoreService {
 
     public List<Store> getAllUserID(Integer userId) {
         // TODO Auto-generated method stub
-        return storeRepository.findAllByUser(userId);
+        return storeRepository.findAllByUserId(userId);
     }
 
 }
