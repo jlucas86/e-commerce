@@ -1,6 +1,10 @@
 -backend
+    - (maybe do this, it could speed up request) rework UserInfo such that it no longer has an id as the primamy key it will be replaced with either email or username
+    
+    - add a join tabel to each of the tables beeing joined to
+  
     - determin and add the api calls that will be needed for each entity
-        - UserInfo
+        - UserInfo @done
         - PaymentMethod
         - Payment
         - Role
@@ -19,7 +23,7 @@
         - @PreAuthorize("#username == authentication.principal.username") this should do above functions.
             - This means all api calls that are user specigic must be done using username and not user id
     - determin the roles needed for each api call
-        - UserInfo
+        - UserInfo @done
         - PaymentMethod
         - Payment
         - Role

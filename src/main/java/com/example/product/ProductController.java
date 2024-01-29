@@ -46,7 +46,7 @@ public class ProductController {
         }
     }
 
-    @PreAuthorize("#username == authentication.principal.username")
+    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
     @PostMapping("/createProduct/{username}")
     public void createProduct(@RequestBody Product product, @PathVariable("username") String username) {
         try {
@@ -57,6 +57,7 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
     @PostMapping("/updateProduct")
     public void updateProduct(@RequestBody Product product) {
         try {
@@ -67,6 +68,7 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
     @DeleteMapping("/deleteProduct")
     public void deleteProduct(@PathVariable("id") Integer id) {
         try {

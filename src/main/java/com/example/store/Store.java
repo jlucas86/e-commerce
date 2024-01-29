@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.example.product.Product;
+import com.example.userInfo.UserInfo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,14 +30,18 @@ public class Store {
     @JoinTable(name = "store_product", joinColumns = @JoinColumn(name = "store_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products = new HashSet<>();
 
+    @ManyToMany
+    private Set<UserInfo> userInfo = new HashSet<>();
+
     public Store() {
     }
 
-    public Store(Integer id, String name, String desciption, Set<Product> products) {
+    public Store(Integer id, String name, String desciption, Set<Product> products, Set<UserInfo> userInfo) {
         this.id = id;
         this.name = name;
         this.desciption = desciption;
         this.products = products;
+        this.userInfo = userInfo;
     }
 
     public Integer getId() {
@@ -71,6 +76,14 @@ public class Store {
         this.products = products;
     }
 
+    public Set<UserInfo> getUserInfo() {
+        return this.userInfo;
+    }
+
+    public void setUserInfo(Set<UserInfo> userInfo) {
+        this.userInfo = userInfo;
+    }
+
     public Store id(Integer id) {
         setId(id);
         return this;
@@ -91,6 +104,11 @@ public class Store {
         return this;
     }
 
+    public Store userInfo(Set<UserInfo> userInfo) {
+        setUserInfo(userInfo);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -100,13 +118,13 @@ public class Store {
         }
         Store store = (Store) o;
         return Objects.equals(id, store.id) && Objects.equals(name, store.name)
-                && Objects.equals(desciption, store.desciption) && Objects.equals(products,
-                        store.products);
+                && Objects.equals(desciption, store.desciption) && Objects.equals(products, store.products)
+                && Objects.equals(userInfo, store.userInfo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, desciption, products);
+        return Objects.hash(id, name, desciption, products, userInfo);
     }
 
     @Override
@@ -116,6 +134,7 @@ public class Store {
                 ", name='" + getName() + "'" +
                 ", desciption='" + getDesciption() + "'" +
                 ", products='" + getProducts() + "'" +
+                ", userInfo='" + getUserInfo() + "'" +
                 "}";
     }
 
