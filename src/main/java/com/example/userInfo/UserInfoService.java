@@ -53,7 +53,7 @@ public class UserInfoService {
     }
 
     public void addUser(UserInfo user) {
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + user.getPassword());
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + user.getUsername());
 
         // Permission permission = new Permission(0,
         // ApplicationUserPermission.CUSTOMER_READ);
@@ -68,13 +68,15 @@ public class UserInfoService {
         hold.setUsername(user.getUsername());
         hold.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + hold);
-
-        Role r = roleRepository.findById(1).get();
+        Role r = null;
+        if (user.getUsername().equals("jimmithy")) {
+            r = roleRepository.findById(1).get();
+        }
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + r);
         Set<Role> role = new HashSet<Role>();
         role.add(r);
         hold.setRoles(role);
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + r.getName().name());
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + r);
 
         try {
             validateUserInfo(user);
