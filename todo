@@ -4,9 +4,9 @@
     - add a join tabel to each of the tables beeing joined to
 
     - add join colum to all many to one relations
-        - user-store
-        - store-product
-        - user-order
+        - user-store @done
+        - store-product @done
+        - user-order ( this is one to  one)
         - user-payment
         - user-cart
     
@@ -31,6 +31,17 @@
             - This means all api calls that are user specigic must be done using username and not user id
     - determin the roles needed for each api call
         - UserInfo @done
+        - PaymentMethod
+        - Payment
+        - Role
+        - Permission
+        - Cart
+        - Store
+        - Order
+        - Product
+
+    - test
+        - UserInfo 
         - PaymentMethod
         - Payment
         - Role

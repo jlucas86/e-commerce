@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.example.product.Product;
+import com.example.userInfo.UserInfo;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import java.util.Objects;
 
@@ -30,13 +33,18 @@ public class Cart {
     @JoinTable(name = "cart_product", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> items = new HashSet<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private UserInfo user;
+
     public Cart() {
     }
 
-    public Cart(Integer id, Date createdDate, Set<Product> items) {
+    public Cart(Integer id, Date createdDate, Set<Product> items, UserInfo user) {
         this.id = id;
         this.createdDate = createdDate;
         this.items = items;
+        this.user = user;
     }
 
     public Integer getId() {
@@ -63,6 +71,14 @@ public class Cart {
         this.items = items;
     }
 
+    public UserInfo getUser() {
+        return this.user;
+    }
+
+    public void setUser(UserInfo user) {
+        this.user = user;
+    }
+
     public Cart id(Integer id) {
         setId(id);
         return this;
@@ -78,6 +94,11 @@ public class Cart {
         return this;
     }
 
+    public Cart user(UserInfo user) {
+        setUser(user);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -86,14 +107,13 @@ public class Cart {
             return false;
         }
         Cart cart = (Cart) o;
-        return Objects.equals(id, cart.id) && Objects.equals(createdDate,
-                cart.createdDate)
-                && Objects.equals(items, cart.items);
+        return Objects.equals(id, cart.id) && Objects.equals(createdDate, cart.createdDate)
+                && Objects.equals(items, cart.items) && Objects.equals(user, cart.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, items);
+        return Objects.hash(id, createdDate, items, user);
     }
 
     @Override
@@ -102,6 +122,7 @@ public class Cart {
                 " id='" + getId() + "'" +
                 ", createdDate='" + getCreatedDate() + "'" +
                 ", items='" + getItems() + "'" +
+                ", user='" + getUser() + "'" +
                 "}";
     }
 
