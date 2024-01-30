@@ -1,16 +1,13 @@
 package com.example.store;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.exceptions.InvalidStoreOwner;
 import com.example.exceptions.StoreDoesNotExist;
-import com.example.exceptions.UsernameAlreadyExists;
 import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
 
@@ -79,12 +76,12 @@ public class StoreService {
     }
 
     public void validateStoreOwner(UserInfo user, Store store) throws InvalidStoreOwner, StoreDoesNotExist {
+        if (storeRepository.existsById(store.getId()) == false)
+            throw new StoreDoesNotExist(String.format("Store %s does not exist in database", store.getName()));
         if (user.getId() != store.getUser().getId()) {
             throw new InvalidStoreOwner(
                     String.format("Username %s does not own store %s", user.getUsername(), store.getName()));
         }
-        if (storeRepository.existsById(store.getId()) == false)
-            throw new StoreDoesNotExist(String.format("Store %s does not exist in database", store.getName()));
     }
 
 }

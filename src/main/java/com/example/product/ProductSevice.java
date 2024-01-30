@@ -5,20 +5,38 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
+import com.example.exceptions.InvalidStoreOwner;
 import com.example.exceptions.ProductAlreadyExists;
 import com.example.exceptions.ProductNotFound;
+import com.example.exceptions.StoreDoesNotExist;
+import com.example.exceptions.StoreDoesNotOwnProduct;
 import com.example.record.Products;
+import com.example.store.Store;
+import com.example.store.StoreRepository;
+import com.example.store.StoreService;
+import com.example.userInfo.UserInfo;
+import com.example.userInfo.UserInfoRepository;
+
+import ch.qos.logback.core.joran.sanity.Pair;
 
 @Service
 public class ProductSevice {
 
     private final ProductRepository productRepository;
+    private final StoreRepository storeRepository;
+    private final UserInfoRepository userInfoRepository;
+    private final StoreService storeService;
 
     @Autowired
-    public ProductSevice(ProductRepository productRepository) {
+    public ProductSevice(ProductRepository productRepository, StoreRepository storeRepository,
+            UserInfoRepository userInfoRepository, StoreService storeService) {
         this.productRepository = productRepository;
+        this.storeRepository = storeRepository;
+        this.userInfoRepository = userInfoRepository;
+        this.storeService = storeService;
     }
 
     public Optional<Product> getProduct(Integer id) {
@@ -62,28 +80,71 @@ public class ProductSevice {
         return products;
     }
 
-    public void createProduct(Product product) throws ProductAlreadyExists {
+    public void createProduct(String username, Integer storeId, Product product) {
         // this is wrong add a way to detect if a product already exits best
         // best bet is to do this by associating a product name with a store
         // if (productRepository.existsById(product.getId())) {
         // throw new ProductAlreadyExists(String.format("product %s already exists",
         // product.getName()));
         // }
+
+        // validate store exists
+        try {
+            if (!storeRepository.existsById(storeId))
+                throw new StoreDoesNotExist(String.format("store %i not found", storeId));
+            UserInfo user = userInfoRepository.findByUsername(username).get();
+            Store store = storeRepository.findById(storeId).get();
+            storeService.validateStoreOwner(user, store);
+
+            product.setStoreOwner(store);
+            productRepository.save(product);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
+        }
+
         productRepository.save(product);
     }
 
-    public void updateProduct(Product product) throws ProductNotFound {
+    public void updateProduct(String username, Integer storeId, Product product) {
+
+        try {
+            verifiedProduct(product, storeId, username);
+            productRepository.save(product);
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
+        }
+    }
+
+    public void deleteProduct(String username, Integer storeId, Product product) {
+        try {
+            verifiedProduct(product, storeId, username);
+            productRepository.delete(product);
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
+        }
+
+    }
+
+    public Pair<UserInfo, Store> verifiedProduct(Product product, Integer storeId, String username)
+            throws ProductNotFound, StoreDoesNotExist, StoreDoesNotOwnProduct, InvalidStoreOwner {
         if (!productRepository.existsById(product.getId())) {
             throw new ProductNotFound(String.format("product %i not found", product.getId()));
         }
-        productRepository.save(product);
-    }
-
-    public void deleteProduct(Integer id) throws ProductNotFound {
-        if (!productRepository.existsById(id)) {
-            throw new ProductNotFound(String.format("product %i not found", id));
+        UserInfo user = userInfoRepository.findByUsername(username).get();
+        if (!storeRepository.existsById(storeId))
+            throw new StoreDoesNotExist(String.format("store %i not found", storeId));
+        Store store = storeRepository.findById(storeId).get();
+        if (product.getStoreOwner().getId() != store.getId()) {
+            throw new StoreDoesNotOwnProduct(
+                    String.format("store %i does not own product %i", storeId, product.getId()));
         }
-        productRepository.deleteById(id);
+        if (user.getId() != store.getUser().getId()) {
+            throw new InvalidStoreOwner(
+                    String.format("Username %s does not own store %s", user.getUsername(), store.getName()));
+        }
+
+        return new Pair<UserInfo, Store>(user, store);
     }
 
 }

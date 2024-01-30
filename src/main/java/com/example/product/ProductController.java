@@ -47,35 +47,29 @@ public class ProductController {
     }
 
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
-    @PostMapping("/createProduct/{username}")
-    public void createProduct(@RequestBody Product product, @PathVariable("username") String username) {
-        try {
-            productSevice.createProduct(product);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+    @PostMapping("/createProduct/{username}/{storeId}")
+    public void createProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
+            @RequestBody Product product) {
+
+        productSevice.createProduct(product);
 
     }
 
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
-    @PostMapping("/updateProduct")
-    public void updateProduct(@RequestBody Product product) {
-        try {
-            productSevice.updateProduct(product);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+    @PostMapping("/updateProduct/{username}/{storeId}")
+    public void updateProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
+            @RequestBody Product product) {
+
+        productSevice.updateProduct(product);
 
     }
 
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
-    @DeleteMapping("/deleteProduct")
-    public void deleteProduct(@PathVariable("id") Integer id) {
-        try {
-            productSevice.deleteProduct(id);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+    @DeleteMapping("/deleteProduct/{username}/{storeId}")
+    public void deleteProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
+            @RequestBody Product product) {
+
+        productSevice.deleteProduct(username, storeId, product);
 
     }
 }
