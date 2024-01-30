@@ -29,9 +29,10 @@ public class Store {
     private String name;
     private String desciption;
 
-    @ManyToMany() // needs chaged to one to many
-    @JoinTable(name = "store_product", joinColumns = @JoinColumn(name = "store_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> products = new HashSet<>();
+    // @ManyToMany() // needs chaged to one to many
+    // @JoinTable(name = "store_product", joinColumns = @JoinColumn(name =
+    // "store_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    // private Set<Product> products = new HashSet<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
     // @JoinTable(name = "store_user", joinColumns = @JoinColumn(name = "store_id"),
@@ -39,15 +40,18 @@ public class Store {
     @JoinColumn(name = "user_id")
     private UserInfo user;
 
+    @OneToMany(mappedBy = "store")
+    private Set<Product> products = new HashSet<>();
+
     public Store() {
     }
 
-    public Store(Integer id, String name, String desciption, Set<Product> products, UserInfo user) {
+    public Store(Integer id, String name, String desciption, UserInfo user, Set<Product> products) {
         this.id = id;
         this.name = name;
         this.desciption = desciption;
-        this.products = products;
         this.user = user;
+        this.products = products;
     }
 
     public Integer getId() {
@@ -74,20 +78,20 @@ public class Store {
         this.desciption = desciption;
     }
 
-    public Set<Product> getProducts() {
-        return this.products;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
-
     public UserInfo getUser() {
         return this.user;
     }
 
     public void setUser(UserInfo user) {
         this.user = user;
+    }
+
+    public Set<Product> getProducts() {
+        return this.products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 
     public Store id(Integer id) {
@@ -105,13 +109,13 @@ public class Store {
         return this;
     }
 
-    public Store products(Set<Product> products) {
-        setProducts(products);
+    public Store user(UserInfo user) {
+        setUser(user);
         return this;
     }
 
-    public Store user(UserInfo user) {
-        setUser(user);
+    public Store products(Set<Product> products) {
+        setProducts(products);
         return this;
     }
 
@@ -124,13 +128,13 @@ public class Store {
         }
         Store store = (Store) o;
         return Objects.equals(id, store.id) && Objects.equals(name, store.name)
-                && Objects.equals(desciption, store.desciption) && Objects.equals(products, store.products)
-                && Objects.equals(user, store.user);
+                && Objects.equals(desciption, store.desciption) && Objects.equals(user, store.user)
+                && Objects.equals(products, store.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, desciption, products, user);
+        return Objects.hash(id, name, desciption, user, products);
     }
 
     @Override
@@ -139,8 +143,8 @@ public class Store {
                 " id='" + getId() + "'" +
                 ", name='" + getName() + "'" +
                 ", desciption='" + getDesciption() + "'" +
-                ", products='" + getProducts() + "'" +
                 ", user='" + getUser() + "'" +
+                ", products='" + getProducts() + "'" +
                 "}";
     }
 

@@ -13,14 +13,13 @@ import com.example.exceptions.ProductAlreadyExists;
 import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.StoreDoesNotExist;
 import com.example.exceptions.StoreDoesNotOwnProduct;
+import com.example.record.Pair;
 import com.example.record.Products;
 import com.example.store.Store;
 import com.example.store.StoreRepository;
 import com.example.store.StoreService;
 import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
-
-import ch.qos.logback.core.joran.sanity.Pair;
 
 @Service
 public class ProductSevice {
@@ -96,7 +95,7 @@ public class ProductSevice {
             Store store = storeRepository.findById(storeId).get();
             storeService.validateStoreOwner(user, store);
 
-            product.setStoreOwner(store);
+            product.setStore(store);
             productRepository.save(product);
 
         } catch (Exception e) {
@@ -126,7 +125,7 @@ public class ProductSevice {
 
     }
 
-    public Pair<UserInfo, Store> verifiedProduct(Product product, Integer storeId, String username)
+    public void verifiedProduct(Product product, Integer storeId, String username)
             throws ProductNotFound, StoreDoesNotExist, StoreDoesNotOwnProduct, InvalidStoreOwner {
         if (!productRepository.existsById(product.getId())) {
             throw new ProductNotFound(String.format("product %i not found", product.getId()));
@@ -135,7 +134,7 @@ public class ProductSevice {
         if (!storeRepository.existsById(storeId))
             throw new StoreDoesNotExist(String.format("store %i not found", storeId));
         Store store = storeRepository.findById(storeId).get();
-        if (product.getStoreOwner().getId() != store.getId()) {
+        if (product.getStore().getId() != store.getId()) {
             throw new StoreDoesNotOwnProduct(
                     String.format("store %i does not own product %i", storeId, product.getId()));
         }
@@ -144,7 +143,6 @@ public class ProductSevice {
                     String.format("Username %s does not own store %s", user.getUsername(), store.getName()));
         }
 
-        return new Pair<UserInfo, Store>(user, store);
     }
 
 }

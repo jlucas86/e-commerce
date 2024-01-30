@@ -27,18 +27,18 @@ public class Product {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "store_id")
-    private Store storeOwner;
+    private Store store;
 
     public Product() {
     }
 
-    public Product(Integer id, String name, String type, String description, Double price, Store storeOwner) {
+    public Product(Integer id, String name, String type, String description, Double price, Store store) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.description = description;
         this.price = price;
-        this.storeOwner = storeOwner;
+        this.store = store;
     }
 
     public Integer getId() {
@@ -81,12 +81,12 @@ public class Product {
         this.price = price;
     }
 
-    public Store getStoreOwner() {
-        return this.storeOwner;
+    public Store getStore() {
+        return this.store;
     }
 
-    public void setStoreOwner(Store storeOwner) {
-        this.storeOwner = storeOwner;
+    public void setStore(Store store) {
+        this.store = store;
     }
 
     public Product id(Integer id) {
@@ -114,8 +114,8 @@ public class Product {
         return this;
     }
 
-    public Product storeOwner(Store storeOwner) {
-        setStoreOwner(storeOwner);
+    public Product store(Store store) {
+        setStore(store);
         return this;
     }
 
@@ -129,12 +129,12 @@ public class Product {
         Product product = (Product) o;
         return Objects.equals(id, product.id) && Objects.equals(name, product.name)
                 && Objects.equals(type, product.type) && Objects.equals(description, product.description)
-                && Objects.equals(price, product.price) && Objects.equals(storeOwner, product.storeOwner);
+                && Objects.equals(price, product.price) && Objects.equals(store, product.store);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, type, description, price, storeOwner);
+        return Objects.hash(id, name, type, description, price, store);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class Product {
                 ", type='" + getType() + "'" +
                 ", description='" + getDescription() + "'" +
                 ", price='" + getPrice() + "'" +
-                ", storeOwner='" + getStoreOwner() + "'" +
+                ", store='" + getStore() + "'" +
                 "}";
     }
 

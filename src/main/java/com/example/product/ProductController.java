@@ -51,7 +51,7 @@ public class ProductController {
     public void createProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
 
-        productSevice.createProduct(product);
+        productSevice.createProduct(username, storeId, product);
 
     }
 
@@ -60,7 +60,7 @@ public class ProductController {
     public void updateProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
 
-        productSevice.updateProduct(product);
+        productSevice.updateProduct(username, storeId, product);
 
     }
 
