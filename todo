@@ -22,8 +22,6 @@
         - Store
         - Order
         - Product
-    - find a way to quiry a joined table along with varifying a user owns an entity
-        -
     - add way to add role to new user, along with roles and permissions in general
     - add an admin api layer to each entity
     - add anotations to modles

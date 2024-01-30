@@ -8,6 +8,9 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.exceptions.InvalidStoreOwner;
+import com.example.exceptions.StoreDoesNotExist;
+import com.example.exceptions.UsernameAlreadyExists;
 import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
 
@@ -49,23 +52,39 @@ public class StoreService {
 
     public void updateStore(String username, Store store) {
         UserInfo user = userInfoRepository.findByUsername(username).get();
-        if (!user.getUsername().equals(username)) {
-            // trow error
+        try {
+            validateStoreOwner(user, store);
+            // (mayber???? make sure store names match)
+            storeRepository.save(store);
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
-        storeRepository.save(store);
+
     }
 
     public void deleteStore(String username, Store store) {
         UserInfo user = userInfoRepository.findByUsername(username).get();
-        if (!user.getUsername().equals(username)) {
-            // trow error
+        try {
+            validateStoreOwner(user, store);
+            storeRepository.delete(store);
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
-        storeRepository.delete(store);
+
     }
 
     public List<Store> getAllUserID(Integer userId) {
         // TODO Auto-generated method stub
         return storeRepository.findAllByUserId(userId);
+    }
+
+    public void validateStoreOwner(UserInfo user, Store store) throws InvalidStoreOwner, StoreDoesNotExist {
+        if (user.getId() != store.getUser().getId()) {
+            throw new InvalidStoreOwner(
+                    String.format("Username %s does not own store %s", user.getUsername(), store.getName()));
+        }
+        if (storeRepository.existsById(store.getId()) == false)
+            throw new StoreDoesNotExist(String.format("Store %s does not exist in database", store.getName()));
     }
 
 }
