@@ -6,8 +6,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import java.util.Objects;
+
+import com.example.paymentMethod.PaymentMethod;
 
 @Entity
 public class Payment {
@@ -18,6 +22,10 @@ public class Payment {
     private Integer id;
     private Date date;
     private Double paymentNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "paymentMethod_id")
+    private PaymentMethod paymentMethod;
 
     public Payment() {
     }

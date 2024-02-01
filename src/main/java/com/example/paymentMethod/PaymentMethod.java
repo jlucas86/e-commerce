@@ -5,13 +5,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.example.payment.Payment;
+import com.example.userInfo.UserInfo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import java.util.Objects;
@@ -28,20 +29,24 @@ public class PaymentMethod {
     private Date date;
     private Integer cvc;
 
-    @OneToMany
-    @JoinTable(name = "paymentMethod_payment", joinColumns = @JoinColumn(name = "paymentMethod_id"), inverseJoinColumns = @JoinColumn(name = "payment_id"))
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserInfo user;
+
+    @OneToMany(mappedBy = "paymentMethod")
     private Set<Payment> payments = new HashSet<>();
 
     public PaymentMethod() {
     }
 
-    public PaymentMethod(Integer id, String nameOnCard, Double cardNumber, Date date, Integer cvc,
+    public PaymentMethod(Integer id, String nameOnCard, Double cardNumber, Date date, Integer cvc, UserInfo user,
             Set<Payment> payments) {
         this.id = id;
         this.nameOnCard = nameOnCard;
         this.cardNumber = cardNumber;
         this.date = date;
         this.cvc = cvc;
+        this.user = user;
         this.payments = payments;
     }
 
@@ -85,6 +90,14 @@ public class PaymentMethod {
         this.cvc = cvc;
     }
 
+    public UserInfo getUser() {
+        return this.user;
+    }
+
+    public void setUser(UserInfo user) {
+        this.user = user;
+    }
+
     public Set<Payment> getPayments() {
         return this.payments;
     }
@@ -118,6 +131,11 @@ public class PaymentMethod {
         return this;
     }
 
+    public PaymentMethod user(UserInfo user) {
+        setUser(user);
+        return this;
+    }
+
     public PaymentMethod payments(Set<Payment> payments) {
         setPayments(payments);
         return this;
@@ -133,12 +151,13 @@ public class PaymentMethod {
         PaymentMethod paymentMethod = (PaymentMethod) o;
         return Objects.equals(id, paymentMethod.id) && Objects.equals(nameOnCard, paymentMethod.nameOnCard)
                 && Objects.equals(cardNumber, paymentMethod.cardNumber) && Objects.equals(date, paymentMethod.date)
-                && Objects.equals(cvc, paymentMethod.cvc) && Objects.equals(payments, paymentMethod.payments);
+                && Objects.equals(cvc, paymentMethod.cvc) && Objects.equals(user, paymentMethod.user)
+                && Objects.equals(payments, paymentMethod.payments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nameOnCard, cardNumber, date, cvc, payments);
+        return Objects.hash(id, nameOnCard, cardNumber, date, cvc, user, payments);
     }
 
     @Override
@@ -149,6 +168,7 @@ public class PaymentMethod {
                 ", cardNumber='" + getCardNumber() + "'" +
                 ", date='" + getDate() + "'" +
                 ", cvc='" + getCvc() + "'" +
+                ", user='" + getUser() + "'" +
                 ", payments='" + getPayments() + "'" +
                 "}";
     }

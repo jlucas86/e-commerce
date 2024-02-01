@@ -2,6 +2,8 @@ package com.example.userInfo;
 
 import com.example.cart.Cart;
 import com.example.order.Order;
+import com.example.payment.Payment;
+import com.example.paymentMethod.PaymentMethod;
 import com.example.role.Role;
 import com.example.store.Store;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,6 +52,9 @@ public class UserInfo {
 
     @OneToMany(mappedBy = "user")
     private Set<Order> orders = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<PaymentMethod> paymentMethods = new HashSet<>();
 
     public UserInfo() {
     }
