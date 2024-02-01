@@ -63,5 +63,4 @@ public class CartController {
     public void deleteCart(@PathVariable("username") String username, @RequestBody Cart cart) {
         cartService.deleteCart(username, cart);
     }
-
 }

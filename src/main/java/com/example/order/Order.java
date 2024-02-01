@@ -37,16 +37,19 @@ public class Order {
     private Set<Product> payment = new HashSet<>();
 
     @ManyToOne()
+    @JoinColumn(name = "user_id")
     private UserInfo user;
 
     public Order() {
     }
 
-    public Order(Integer id, Integer date, String status, Set<Product> products) {
+    public Order(Integer id, Integer date, String status, Set<Product> products, Set<Product> payment, UserInfo user) {
         this.id = id;
         this.date = date;
         this.status = status;
         this.products = products;
+        this.payment = payment;
+        this.user = user;
     }
 
     public Integer getId() {
@@ -81,6 +84,22 @@ public class Order {
         this.products = products;
     }
 
+    public Set<Product> getPayment() {
+        return this.payment;
+    }
+
+    public void setPayment(Set<Product> payment) {
+        this.payment = payment;
+    }
+
+    public UserInfo getUser() {
+        return this.user;
+    }
+
+    public void setUser(UserInfo user) {
+        this.user = user;
+    }
+
     public Order id(Integer id) {
         setId(id);
         return this;
@@ -101,6 +120,16 @@ public class Order {
         return this;
     }
 
+    public Order payment(Set<Product> payment) {
+        setPayment(payment);
+        return this;
+    }
+
+    public Order user(UserInfo user) {
+        setUser(user);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -109,14 +138,14 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(date, order.date) &&
-                Objects.equals(status, order.status)
-                && Objects.equals(products, order.products);
+        return Objects.equals(id, order.id) && Objects.equals(date, order.date) && Objects.equals(status, order.status)
+                && Objects.equals(products, order.products) && Objects.equals(payment, order.payment)
+                && Objects.equals(user, order.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, status, products);
+        return Objects.hash(id, date, status, products, payment, user);
     }
 
     @Override
@@ -126,6 +155,8 @@ public class Order {
                 ", date='" + getDate() + "'" +
                 ", status='" + getStatus() + "'" +
                 ", products='" + getProducts() + "'" +
+                ", payment='" + getPayment() + "'" +
+                ", user='" + getUser() + "'" +
                 "}";
     }
 

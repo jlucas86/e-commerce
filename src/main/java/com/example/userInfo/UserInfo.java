@@ -48,10 +48,8 @@ public class UserInfo {
     @OneToMany(mappedBy = "user")
     private Set<Store> stores = new HashSet<>();
 
-    // @OneToMany
-    // @JoinTable(name = "user_order", joinColumns = @JoinColumn(name = "user_id"),
-    // inverseJoinColumns = @JoinColumn(name = "order_id"))
-    // private Set<Order> orders = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<Order> orders = new HashSet<>();
 
     public UserInfo() {
     }
