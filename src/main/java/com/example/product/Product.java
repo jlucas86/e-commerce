@@ -40,7 +40,7 @@ public class Product {
     Set<Cart> carts = new HashSet<>();
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "items")
+    @ManyToMany(mappedBy = "products")
     Set<Order> orders = new HashSet<>();
 
     public Product() {
