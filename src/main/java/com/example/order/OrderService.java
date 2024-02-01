@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.exceptions.OrderDoesNotExist;
+import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.UserDoesNotOwnOrder;
+import com.example.product.Product;
+import com.example.product.ProductRepository;
 import com.example.record.Pair;
 import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
@@ -17,11 +20,14 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserInfoRepository userInfoRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, UserInfoRepository userInfoRepository) {
+    public OrderService(OrderRepository orderRepository, UserInfoRepository userInfoRepository,
+            ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.userInfoRepository = userInfoRepository;
+        this.productRepository = productRepository;
     }
 
     // get
@@ -47,6 +53,11 @@ public class OrderService {
     public void addOrder(String username, Order order) {
         UserInfo user = userInfoRepository.findByUsername(username).get();
         order.setUser(user);
+
+        for (Product p : order.getProducts()) {
+            verifyProducts(p);
+        }
+
         orderRepository.save(order);
     }
 
@@ -73,6 +84,8 @@ public class OrderService {
         }
     }
 
+    // helper
+
     public Pair<UserInfo, Order> verify(String username, Integer orderId)
             throws OrderDoesNotExist, UserDoesNotOwnOrder {
         if (!orderRepository.existsById(orderId)) {
@@ -87,6 +100,16 @@ public class OrderService {
         }
 
         return new Pair<UserInfo, Order>(user, order);
+    }
+
+    public void verifyProducts(Product product) {
+        try {
+            if (!productRepository.existsById(product.getId())) {
+                throw new ProductNotFound(String.format("Product %i not found", product.getId()));
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
 }

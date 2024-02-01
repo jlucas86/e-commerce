@@ -1,6 +1,8 @@
 package com.example.order;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.product.Product;
@@ -30,7 +32,7 @@ public class Order {
 
     @ManyToMany()
     @JoinTable(name = "order_product", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> products = new HashSet<>();
+    private List<Product> products = new ArrayList<>();
 
     @OneToMany()
     @JoinTable(name = "order_payment", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "payment_id"))
@@ -43,7 +45,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Integer id, Integer date, String status, Set<Product> products, Set<Product> payment, UserInfo user) {
+    public Order(Integer id, Integer date, String status, List<Product> products, Set<Product> payment, UserInfo user) {
         this.id = id;
         this.date = date;
         this.status = status;
@@ -76,11 +78,11 @@ public class Order {
         this.status = status;
     }
 
-    public Set<Product> getProducts() {
+    public List<Product> getProducts() {
         return this.products;
     }
 
-    public void setProducts(Set<Product> products) {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 
@@ -115,7 +117,7 @@ public class Order {
         return this;
     }
 
-    public Order products(Set<Product> products) {
+    public Order products(List<Product> products) {
         setProducts(products);
         return this;
     }
