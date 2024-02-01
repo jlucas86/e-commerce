@@ -6,9 +6,10 @@
     - add join colum to all many to one relations
         - user-store @done
         - store-product @done
-        - user-order ( this is one to  one)
+        - user-order 
         - user-payment
-        - user-cart
+        - user-paymentMethod
+        - user-cart ( this is one to  one) @done
     
     - learn to do api calls on join column
   

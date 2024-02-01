@@ -6,12 +6,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import com.example.cart.Cart;
 import com.example.store.Store;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Product {
@@ -29,16 +34,22 @@ public class Product {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "items")
+    Set<Cart> carts = new HashSet<>();
+
     public Product() {
     }
 
-    public Product(Integer id, String name, String type, String description, Double price, Store store) {
+    public Product(Integer id, String name, String type, String description, Double price, Store store,
+            Set<Cart> carts) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.description = description;
         this.price = price;
         this.store = store;
+        this.carts = carts;
     }
 
     public Integer getId() {
@@ -89,6 +100,14 @@ public class Product {
         this.store = store;
     }
 
+    public Set<Cart> getCarts() {
+        return this.carts;
+    }
+
+    public void setCarts(Set<Cart> carts) {
+        this.carts = carts;
+    }
+
     public Product id(Integer id) {
         setId(id);
         return this;
@@ -119,6 +138,11 @@ public class Product {
         return this;
     }
 
+    public Product carts(Set<Cart> carts) {
+        setCarts(carts);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -129,12 +153,13 @@ public class Product {
         Product product = (Product) o;
         return Objects.equals(id, product.id) && Objects.equals(name, product.name)
                 && Objects.equals(type, product.type) && Objects.equals(description, product.description)
-                && Objects.equals(price, product.price) && Objects.equals(store, product.store);
+                && Objects.equals(price, product.price) && Objects.equals(store, product.store)
+                && Objects.equals(carts, product.carts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, type, description, price, store);
+        return Objects.hash(id, name, type, description, price, store, carts);
     }
 
     @Override
@@ -146,6 +171,7 @@ public class Product {
                 ", description='" + getDescription() + "'" +
                 ", price='" + getPrice() + "'" +
                 ", store='" + getStore() + "'" +
+                ", carts='" + getCarts() + "'" +
                 "}";
     }
 
