@@ -12,6 +12,7 @@ import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.UserDoesNotOwnOrder;
 import com.example.paymentMethod.PaymentMethod;
 import com.example.paymentMethod.PaymentMethodRepository;
+import com.example.paymentMethod.PaymentMethodService;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
 import com.example.record.Pair;
@@ -25,14 +26,17 @@ public class OrderService {
     private final UserInfoRepository userInfoRepository;
     private final ProductRepository productRepository;
     private final PaymentMethodRepository paymentMethodRepository;
+    private final PaymentMethodService paymentMethodService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserInfoRepository userInfoRepository,
-            ProductRepository productRepository, PaymentMethodRepository paymentMethodRepository) {
+            ProductRepository productRepository, PaymentMethodRepository paymentMethodRepository,
+            PaymentMethodService paymentMethodService) {
         this.orderRepository = orderRepository;
         this.userInfoRepository = userInfoRepository;
         this.productRepository = productRepository;
         this.paymentMethodRepository = paymentMethodRepository;
+        this.paymentMethodService = paymentMethodService;
     }
 
     // get
@@ -51,6 +55,17 @@ public class OrderService {
         UserInfo user = userInfoRepository.findByUsername(username).get();
         return orderRepository.findAllByUserId(user.getId());
 
+    }
+
+    public List<Order> getAllByPaymentMethod(String username, Integer paymentMethodId) {
+
+        try {
+            paymentMethodService.verify(username, paymentMethodId);
+            return orderRepository.findAllByPaymentMethodId(paymentMethodId);
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
+        }
+        return null;
     }
 
     // add
