@@ -26,7 +26,7 @@ public class PaymentMethod {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_sequence")
     private Integer id;
     private String nameOnCard;
-    private Double cardNumber;
+    private String cardNumber;
     private Date date;
     private Integer cvc;
 
@@ -43,7 +43,7 @@ public class PaymentMethod {
     public PaymentMethod() {
     }
 
-    public PaymentMethod(Integer id, String nameOnCard, Double cardNumber, Date date, Integer cvc, UserInfo user,
+    public PaymentMethod(Integer id, String nameOnCard, String cardNumber, Date date, Integer cvc, UserInfo user,
             Set<Order> order, Set<Payment> payments) {
         this.id = id;
         this.nameOnCard = nameOnCard;
@@ -71,11 +71,11 @@ public class PaymentMethod {
         this.nameOnCard = nameOnCard;
     }
 
-    public Double getCardNumber() {
+    public String getCardNumber() {
         return this.cardNumber;
     }
 
-    public void setCardNumber(Double cardNumber) {
+    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 
@@ -129,7 +129,7 @@ public class PaymentMethod {
         return this;
     }
 
-    public PaymentMethod cardNumber(Double cardNumber) {
+    public PaymentMethod cardNumber(String cardNumber) {
         setCardNumber(cardNumber);
         return this;
     }

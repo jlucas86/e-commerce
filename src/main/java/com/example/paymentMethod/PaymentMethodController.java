@@ -27,7 +27,7 @@ public class PaymentMethodController {
     // get
 
     @GetMapping("/{username}/getPaymentMethod/{id}")
-    public Optional<PaymentMethod> getPaymentMethod(@PathVariable("username") String username,
+    public PaymentMethod getPaymentMethod(@PathVariable("username") String username,
             @PathVariable("id") Integer id) {
         return paymentMethodService.getPaymentMethod(username, id);
     }

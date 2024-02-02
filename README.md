@@ -1,4 +1,35 @@
 functional formbase auth with out csrf protecition enabled
+## Fontend funtionality
+
+
+- get user information excluding password
+- add a new user with role included
+- update user informaton
+- delete user
+
+- get a store
+- add a store if user is a seller
+- update store information
+- delete store (maybe? this should just disable it from being found)
+
+- get product
+- add product
+- update price, image, and descripition of product
+- delete product
+
+- get cart
+- update cart
+
+- get order
+- add order
+
+- get payment method ( retrun with the first 12 card numbers replaced with '*') @ready
+- add payment method @ready
+- update payment method (only update experation date) @ready
+- delete payment method (maybe? this should just disable it from being found) 
+
+
+
 
 ### permissions
 

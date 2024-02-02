@@ -26,11 +26,13 @@ public class PaymentMethodService {
 
     // get
 
-    public Optional<PaymentMethod> getPaymentMethod(String username, Integer id) {
+    public PaymentMethod getPaymentMethod(String username, Integer id) {
 
         try {
             verify(username, id);
-            return paymentMethodRepository.findById(id);
+            PaymentMethod p = paymentMethodRepository.findById(id).get();
+            p.setCardNumber("************" + p.getCardNumber().substring(12));
+            return p;
         } catch (Exception e) {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
@@ -40,7 +42,11 @@ public class PaymentMethodService {
     public List<PaymentMethod> getPaymentMethods(String username) {
 
         UserInfo user = userInfoRepository.findByUsername(username).get();
-        return paymentMethodRepository.findAllByUserId(user.getId());
+        List<PaymentMethod> paymentMethods = paymentMethodRepository.findAllByUserId(user.getId());
+        for (PaymentMethod p : paymentMethods) {
+            p.setCardNumber("************" + p.getCardNumber().substring(12));
+        }
+        return paymentMethods;
     }
 
     // set
@@ -60,7 +66,10 @@ public class PaymentMethodService {
 
         try {
             verify(username, paymentMethod.getId());
-            paymentMethodRepository.save(paymentMethod);
+
+            PaymentMethod p = paymentMethodRepository.findById(paymentMethod.getId()).get();
+            p.setCvc(paymentMethod.getCvc());
+            paymentMethodRepository.save(p);
         } catch (Exception e) {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
@@ -69,6 +78,9 @@ public class PaymentMethodService {
     // delete
 
     public void deletePaymentMethod(String username, PaymentMethod paymentMethod) {
+
+        // this should be updated to not delete the payment method but insed just
+        // disable it from being quired by a user
 
         try {
             verify(username, paymentMethod.getId());

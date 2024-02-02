@@ -3,8 +3,8 @@
     
 
     - relations to be set up
-        - paymentMethod - payment
-        - order - payment
+        - paymentMethod - payment (not using payment)
+        - order - payment (not using payment)
         - user - role
         - role - permission
 
