@@ -28,7 +28,7 @@ public class PaymentMethod {
     private String nameOnCard;
     private String cardNumber;
     private Date date;
-    private Integer cvc;
+    private String cvc;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -43,7 +43,7 @@ public class PaymentMethod {
     public PaymentMethod() {
     }
 
-    public PaymentMethod(Integer id, String nameOnCard, String cardNumber, Date date, Integer cvc, UserInfo user,
+    public PaymentMethod(Integer id, String nameOnCard, String cardNumber, Date date, String cvc, UserInfo user,
             Set<Order> order, Set<Payment> payments) {
         this.id = id;
         this.nameOnCard = nameOnCard;
@@ -87,11 +87,11 @@ public class PaymentMethod {
         this.date = date;
     }
 
-    public Integer getCvc() {
+    public String getCvc() {
         return this.cvc;
     }
 
-    public void setCvc(Integer cvc) {
+    public void setCvc(String cvc) {
         this.cvc = cvc;
     }
 
@@ -139,7 +139,7 @@ public class PaymentMethod {
         return this;
     }
 
-    public PaymentMethod cvc(Integer cvc) {
+    public PaymentMethod cvc(String cvc) {
         setCvc(cvc);
         return this;
     }

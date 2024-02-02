@@ -32,6 +32,7 @@ public class PaymentMethodService {
             verify(username, id);
             PaymentMethod p = paymentMethodRepository.findById(id).get();
             p.setCardNumber("************" + p.getCardNumber().substring(12));
+            p.setCvc("***");
             return p;
         } catch (Exception e) {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
@@ -45,6 +46,7 @@ public class PaymentMethodService {
         List<PaymentMethod> paymentMethods = paymentMethodRepository.findAllByUserId(user.getId());
         for (PaymentMethod p : paymentMethods) {
             p.setCardNumber("************" + p.getCardNumber().substring(12));
+            p.setCvc("***");
         }
         return paymentMethods;
     }
