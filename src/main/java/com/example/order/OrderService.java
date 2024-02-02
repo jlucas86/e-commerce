@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.exceptions.OrderDoesNotExist;
+import com.example.exceptions.PaymentMethodDoesNotExist;
 import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.UserDoesNotOwnOrder;
+import com.example.paymentMethod.PaymentMethod;
+import com.example.paymentMethod.PaymentMethodRepository;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
 import com.example.record.Pair;
@@ -21,13 +24,15 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserInfoRepository userInfoRepository;
     private final ProductRepository productRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserInfoRepository userInfoRepository,
-            ProductRepository productRepository) {
+            ProductRepository productRepository, PaymentMethodRepository paymentMethodRepository) {
         this.orderRepository = orderRepository;
         this.userInfoRepository = userInfoRepository;
         this.productRepository = productRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
     }
 
     // get
@@ -56,6 +61,13 @@ public class OrderService {
 
         for (Product p : order.getProducts()) {
             verifyProducts(p);
+        }
+        try {
+            if (!paymentMethodRepository.existsById(order.getPaymentMethod().getId()))
+                throw new PaymentMethodDoesNotExist(
+                        String.format("PaymentMethod %i not found", order.getPaymentMethod().getId()));
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
 
         orderRepository.save(order);
@@ -86,6 +98,15 @@ public class OrderService {
 
     // helper
 
+    /**
+     * verifys order exists and user ownes said order
+     * 
+     * @param username
+     * @param orderId
+     * @return
+     * @throws OrderDoesNotExist
+     * @throws UserDoesNotOwnOrder
+     */
     public Pair<UserInfo, Order> verify(String username, Integer orderId)
             throws OrderDoesNotExist, UserDoesNotOwnOrder {
         if (!orderRepository.existsById(orderId)) {
@@ -108,7 +129,7 @@ public class OrderService {
                 throw new ProductNotFound(String.format("Product %i not found", product.getId()));
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
     }
 

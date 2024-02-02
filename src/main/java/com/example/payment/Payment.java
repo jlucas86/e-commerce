@@ -30,10 +30,11 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Integer id, Date date, Double paymentNumber) {
+    public Payment(Integer id, Date date, Double paymentNumber, PaymentMethod paymentMethod) {
         this.id = id;
         this.date = date;
         this.paymentNumber = paymentNumber;
+        this.paymentMethod = paymentMethod;
     }
 
     public Integer getId() {
@@ -60,6 +61,14 @@ public class Payment {
         this.paymentNumber = paymentNumber;
     }
 
+    public PaymentMethod getPaymentMethod() {
+        return this.paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
     public Payment id(Integer id) {
         setId(id);
         return this;
@@ -75,6 +84,11 @@ public class Payment {
         return this;
     }
 
+    public Payment paymentMethod(PaymentMethod paymentMethod) {
+        setPaymentMethod(paymentMethod);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -84,12 +98,13 @@ public class Payment {
         }
         Payment payment = (Payment) o;
         return Objects.equals(id, payment.id) && Objects.equals(date, payment.date)
-                && Objects.equals(paymentNumber, payment.paymentNumber);
+                && Objects.equals(paymentNumber, payment.paymentNumber)
+                && Objects.equals(paymentMethod, payment.paymentMethod);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, paymentNumber);
+        return Objects.hash(id, date, paymentNumber, paymentMethod);
     }
 
     @Override
@@ -98,6 +113,7 @@ public class Payment {
                 " id='" + getId() + "'" +
                 ", date='" + getDate() + "'" +
                 ", paymentNumber='" + getPaymentNumber() + "'" +
+                ", paymentMethod='" + getPaymentMethod() + "'" +
                 "}";
     }
 

@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.order.Order;
 import com.example.payment.Payment;
 import com.example.userInfo.UserInfo;
 
@@ -34,19 +35,23 @@ public class PaymentMethod {
     private UserInfo user;
 
     @OneToMany(mappedBy = "paymentMethod")
+    private Set<Order> order = new HashSet<>();
+
+    @OneToMany(mappedBy = "paymentMethod")
     private Set<Payment> payments = new HashSet<>();
 
     public PaymentMethod() {
     }
 
     public PaymentMethod(Integer id, String nameOnCard, Double cardNumber, Date date, Integer cvc, UserInfo user,
-            Set<Payment> payments) {
+            Set<Order> order, Set<Payment> payments) {
         this.id = id;
         this.nameOnCard = nameOnCard;
         this.cardNumber = cardNumber;
         this.date = date;
         this.cvc = cvc;
         this.user = user;
+        this.order = order;
         this.payments = payments;
     }
 
@@ -98,6 +103,14 @@ public class PaymentMethod {
         this.user = user;
     }
 
+    public Set<Order> getOrder() {
+        return this.order;
+    }
+
+    public void setOrder(Set<Order> order) {
+        this.order = order;
+    }
+
     public Set<Payment> getPayments() {
         return this.payments;
     }
@@ -136,6 +149,11 @@ public class PaymentMethod {
         return this;
     }
 
+    public PaymentMethod order(Set<Order> order) {
+        setOrder(order);
+        return this;
+    }
+
     public PaymentMethod payments(Set<Payment> payments) {
         setPayments(payments);
         return this;
@@ -152,12 +170,12 @@ public class PaymentMethod {
         return Objects.equals(id, paymentMethod.id) && Objects.equals(nameOnCard, paymentMethod.nameOnCard)
                 && Objects.equals(cardNumber, paymentMethod.cardNumber) && Objects.equals(date, paymentMethod.date)
                 && Objects.equals(cvc, paymentMethod.cvc) && Objects.equals(user, paymentMethod.user)
-                && Objects.equals(payments, paymentMethod.payments);
+                && Objects.equals(order, paymentMethod.order) && Objects.equals(payments, paymentMethod.payments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nameOnCard, cardNumber, date, cvc, user, payments);
+        return Objects.hash(id, nameOnCard, cardNumber, date, cvc, user, order, payments);
     }
 
     @Override
@@ -169,6 +187,7 @@ public class PaymentMethod {
                 ", date='" + getDate() + "'" +
                 ", cvc='" + getCvc() + "'" +
                 ", user='" + getUser() + "'" +
+                ", order='" + getOrder() + "'" +
                 ", payments='" + getPayments() + "'" +
                 "}";
     }

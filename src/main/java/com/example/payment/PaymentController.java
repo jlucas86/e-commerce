@@ -1,11 +1,12 @@
 package com.example.payment;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/Payment")
+@RequestMapping("/api/v1/Payment")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -15,4 +16,12 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    // get
+    // @GetMapping("{username}/getPayment")
+
+    // add
+
+    // update
+
+    // delete
 }

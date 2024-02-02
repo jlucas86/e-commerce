@@ -1,16 +1,13 @@
 -backend
     - (maybe do this, it could speed up request) rework UserInfo such that it no longer has an id as the primamy key it will be replaced with either email or username
     
-    - add a join tabel to each of the tables beeing joined to
 
-    - add join colum to all many to one relations
-        - user-store @done
-        - store-product @done
-        - user-order @done
-        - user-payment
-        - user-paymentMethod
-        - user-cart ( this is one to  one) @done
-  
+    - relations to be set up
+        - paymentMethod - payment
+        - order - payment
+        - user - role
+        - role - permission
+
     - determin and add the api calls that will be needed for each entity
         - UserInfo @done
         - PaymentMethod
