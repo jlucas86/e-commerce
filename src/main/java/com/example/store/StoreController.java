@@ -24,7 +24,7 @@ public class StoreController {
     }
 
     @GetMapping("/getStore/{id}")
-    public Optional<Store> getStore(@PathVariable("id") Integer id) {
+    public Store getStore(@PathVariable("id") Integer id) {
         return storeService.getStore(id);
     }
 

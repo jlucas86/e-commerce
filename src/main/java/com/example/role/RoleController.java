@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +34,23 @@ public class RoleController {
         return roleService.getAllRoles();
     }
 
-    @PostMapping("/addRole/{role}")
-    public void addRole(@PathVariable("role") String role) {
+    @PostMapping("/addRole")
+    public void addRole(@RequestBody Role role) {
         roleService.addRole(role);
     }
+
+    // update
+
+    @PutMapping("/updateRole")
+    public void updateRole(@RequestBody Role role) {
+        roleService.updateRole(role);
+    }
+
+    // delete
+
+    @DeleteMapping("/deleteRole")
+    public void deleteRole(@RequestBody Role role) {
+        roleService.deleteRole(role);
+    }
+
 }

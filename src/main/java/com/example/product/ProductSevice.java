@@ -109,7 +109,10 @@ public class ProductSevice {
 
         try {
             verifiedProduct(product, storeId, username);
-            productRepository.save(product);
+            Product p = productRepository.findById(product.getId()).get();
+            p.setPrice(product.getPrice());
+            p.setDescription(product.getDescription());
+            productRepository.save(p);
         } catch (Exception e) {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }

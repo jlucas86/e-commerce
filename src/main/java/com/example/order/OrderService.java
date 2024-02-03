@@ -81,11 +81,11 @@ public class OrderService {
             if (!paymentMethodRepository.existsById(order.getPaymentMethod().getId()))
                 throw new PaymentMethodDoesNotExist(
                         String.format("PaymentMethod %i not found", order.getPaymentMethod().getId()));
+            orderRepository.save(order);
         } catch (Exception e) {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
 
-        orderRepository.save(order);
     }
 
     // update

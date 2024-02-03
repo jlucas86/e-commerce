@@ -27,4 +27,18 @@ public class PermissionService {
         permissionRepository.save(pHold);
     }
 
+    public void addPermission(Permission permission) {
+        permissionRepository.save(permission);
+    }
+
+    public void updatePermission(Permission permission) {
+        // check if exists
+        permissionRepository.save(permission);
+    }
+
+    public void deletePermission(Permission permission) {
+        // check if exists
+        permissionRepository.delete(permission);
+    }
+
 }

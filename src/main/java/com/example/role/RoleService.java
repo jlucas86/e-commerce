@@ -32,4 +32,18 @@ public class RoleService {
         roleRepository.save(r);
     }
 
+    public void addRole(Role role) {
+        roleRepository.save(role);
+    }
+
+    public void updateRole(Role role) {
+        // check if exists
+        roleRepository.save(role);
+    }
+
+    public void deleteRole(Role role) {
+        // check if exists
+        roleRepository.delete(role);
+    }
+
 }

@@ -26,8 +26,18 @@ public class PermissionController {
         return permissionService.getPermission(id);
     }
 
-    @PostMapping("/addPermission/{permission}")
-    public void addPermission(@PathVariable("permission") String permission) {
+    @PostMapping("/addPermission")
+    public void addPermission(@RequestBody Permission permission) {
         permissionService.addPermission(permission);
+    }
+
+    @PostMapping("/updatePermission")
+    public void updatePermission(@RequestBody Permission permission) {
+        permissionService.updatePermission(permission);
+    }
+
+    @PostMapping("/deletePermission")
+    public void deletePermission(@RequestBody Permission permission) {
+        permissionService.deletePermission(permission);
     }
 }

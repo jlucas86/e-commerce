@@ -1,5 +1,8 @@
 -backend
     - (maybe do this, it could speed up request) rework UserInfo such that it no longer has an id as the primamy key it will be replaced with either email or username
+
+    - add image list to product
+    - 
     
 
     - relations to be set up

@@ -23,8 +23,14 @@ public class StoreService {
         this.userInfoRepository = userInfoRepository;
     }
 
-    public Optional<Store> getStore(Integer id) {
-        return storeRepository.findById(id);
+    public Store getStore(Integer id) {
+        Optional<Store> store = storeRepository.findById(id);
+        if (store.isPresent()) {
+            Store s = store.get();
+            s.setUser(null);
+            return s;
+        }
+        return null;
     }
 
     public void addStore(String username, Store store) {

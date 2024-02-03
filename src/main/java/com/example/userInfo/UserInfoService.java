@@ -42,8 +42,15 @@ public class UserInfoService {
         return userRepository.findById(id);
     }
 
-    public Optional<UserInfo> getUser(String username) {
-        return userRepository.findByUsername(username);
+    public UserInfo getUser(String username) {
+        Optional<UserInfo> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            UserInfo u = user.get();
+            u.setPassword("***********");
+            return u;
+        }
+
+        return null;
     }
 
     public List<UserInfo> getAllUser() {
@@ -66,15 +73,18 @@ public class UserInfoService {
         hold.setUsername(user.getUsername());
         hold.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + hold);
-        Role r = null;
-        if (user.getUsername().equals("jimmithy")) {
-            r = roleRepository.findById(1).get();
-        }
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + r);
+        // Role r = null;
+        // if (user.getUsername().equals("jimmithy")) {
+        // r = roleRepository.findById(1).get();
+        // }
+
+        // role
         Set<Role> role = new HashSet<Role>();
-        role.add(r);
+        for (Role r : user.getRoles()) {
+            if (roleRepository.findById(r.getId()).isPresent())
+                role.add(roleRepository.findById(r.getId()).get());
+        }
         hold.setRoles(role);
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + r);
 
         try {
             validateUserInfo(user);
