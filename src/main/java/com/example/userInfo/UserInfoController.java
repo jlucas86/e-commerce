@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.exceptions.EmailAlreadyExists;
+import com.example.exceptions.InvalidPassword;
+import com.example.exceptions.UsernameAlreadyExists;
+
 @RestController
 @RequestMapping("/user")
 public class UserInfoController {
@@ -29,13 +33,14 @@ public class UserInfoController {
     }
 
     @PostMapping("/addUser")
-    public void addUser(@RequestBody UserInfo user) {
+    public void addUser(@RequestBody UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
         userService.addUser(user);
     }
 
     @PreAuthorize("#username == authentication.principal.username")
     @PostMapping("/updateUser/{username}")
-    public void updateUser(@PathVariable("username") String username, @RequestBody UserInfo user) {
+    public void updateUser(@PathVariable("username") String username, @RequestBody UserInfo user)
+            throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
         userService.updateUser(user);
     }
 

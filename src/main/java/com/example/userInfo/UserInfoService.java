@@ -34,15 +34,13 @@ public class UserInfoService {
         this.roleRepository = roleRepository;
     }
 
-    // public UserInfoService(UserInfoRepository userRepository) {
-    // this.userRepository = userRepository;
-    // }
+    // get
 
     public Optional<UserInfo> getUser(Integer id) {
         return userRepository.findById(id);
     }
 
-    public UserInfo getUser(String username) {
+    public UserInfo getUser(String username) throws UsernameNotFoundException {
         Optional<UserInfo> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
             UserInfo u = user.get();
@@ -50,14 +48,16 @@ public class UserInfoService {
             return u;
         }
 
-        return null;
+        throw new UsernameNotFoundException(String.format("Username %s already exists", username));
     }
 
     public List<UserInfo> getAllUser() {
         return userRepository.findAll();
     }
 
-    public void addUser(UserInfo user) {
+    // add
+
+    public void addUser(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + user.getUsername());
 
         // Permission permission = new Permission(0,
@@ -86,16 +86,10 @@ public class UserInfoService {
         }
         hold.setRoles(role);
 
-        try {
-            validateUserInfo(user);
+        validateUserInfo(user);
 
-            System.out.println("i made it");
-            userRepository.save(hold);
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+        System.out.println("i made it");
+        userRepository.save(hold);
 
     }
 
@@ -129,11 +123,15 @@ public class UserInfoService {
         return true;
     }
 
-    public void updateUser(UserInfo user) {
+    public void updateUser(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
+        validateUserInfo(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
-    public void deleteUser(UserInfo user) {
+    public void deleteUser(UserInfo user) throws UsernameNotFoundException {
+        if (!userRepository.existsByUsername(user.getUsername()))
+            throw new UsernameNotFoundException(String.format("Username %s not found", user.getUsername()));
         userRepository.delete(user);
     }
 }
