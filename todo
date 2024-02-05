@@ -5,6 +5,8 @@
     
     - change service layer such that it will throw errors to the control 
     - erros return http errors
+
+
     
 
     - relations to be set up
@@ -13,17 +15,7 @@
         - user - role
         - role - permission
 
-    - determin and add the api calls that will be needed for each entity
-        - UserInfo @done
-        - PaymentMethod
-        - Payment
-        - Role
-        - Permission
-        - Cart @done
-        - Store
-        - Order
-        - Product
-    - add way to add role to new user, along with roles and permissions in general
+    
     - add an admin api layer to each entity
     - add anotations to modles
         - username must be unique
@@ -39,8 +31,8 @@
         - Product
 
     - test
-        - UserInfo 
-        - PaymentMethod
+        - UserInfo @done
+        - PaymentMethod 
         - Payment
         - Role
         - Permission

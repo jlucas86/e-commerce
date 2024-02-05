@@ -1,5 +1,6 @@
 package com.example.cart;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,13 +30,18 @@ public class CartController {
 
     @GetMapping("/{username}/getCart/{id}")
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_CUSTOMR')")
-    public Optional<Cart> getCart(@PathVariable("username") String username, @PathVariable("id") Integer id) {
-        return cartService.getCart(username, id);
+    public Cart getCart(@PathVariable("username") String username, @PathVariable("id") Integer id) {
+        try {
+            return cartService.getCart(username, id);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return null;
     }
 
     @GetMapping("/{username}/getCartContents/{id}")
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_CUSTOMR')")
-    public Set<Product> getCartContents(@PathVariable("username") String username, @PathVariable("id") Integer id) {
+    public List<Product> getCartContents(@PathVariable("username") String username, @PathVariable("id") Integer id) {
         return cartService.getCartContents(username, id);
     }
 

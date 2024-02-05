@@ -151,7 +151,11 @@ public class UserServiceTest {
         UserInfo u = userInfoService.getUser(user.getUsername());
         user.setPassword("***********");
         // then
+        ArgumentCaptor<String> userArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
+        verify(userInfoRepository).findByUsername(userArgumentCaptor.capture());
+        String hold = userArgumentCaptor.getValue();
+        assertEquals(hold, user.getUsername());
         assertEquals(u, user);
 
     }

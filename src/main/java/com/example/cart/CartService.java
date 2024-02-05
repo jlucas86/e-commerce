@@ -1,5 +1,6 @@
 package com.example.cart;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,18 +33,13 @@ public class CartService {
 
     // get
 
-    public Optional<Cart> getCart(String username, Integer cartId) {
+    public Cart getCart(String username, Integer cartId) throws CartDoesNotMatchUser, CartDoesNotExist {
 
-        try {
-            verify(username, cartId);
-            return cartRepository.findById(cartId);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
-        return null;
+        Pair<UserInfo, Cart> pair = verify(username, cartId);
+        return pair.other();
     }
 
-    public Set<Product> getCartContents(String username, Integer cartId) {
+    public List<Product> getCartContents(String username, Integer cartId) {
 
         Pair<UserInfo, Cart> pair = null;
         try {
@@ -70,7 +66,7 @@ public class CartService {
         Pair<UserInfo, Cart> pair = null;
         try {
             pair = verify(username, cartId);
-            Set<Product> products = null;
+            List<Product> products = null;
             products = pair.other().getItems();
             if (!productRepository.existsById(productId)) {
                 // throw product not found
@@ -111,7 +107,7 @@ public class CartService {
     public Pair<UserInfo, Cart> verify(String Username, Integer cartId) throws CartDoesNotMatchUser, CartDoesNotExist {
         if (!cartRepository.existsById(cartId)) {
             throw new CartDoesNotExist(
-                    String.format("Cart %i does not exist", cartId));
+                    String.format("Cart %d does not exist", cartId));
         }
         Cart cart = cartRepository.findById(cartId).get();
         UserInfo user = userInfoRepository.findByUsername(Username).get();

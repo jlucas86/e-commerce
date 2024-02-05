@@ -1,7 +1,9 @@
 package com.example.cart;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.product.Product;
@@ -27,11 +29,11 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_id_sequence")
     private Integer id;
 
-    private Date createdDate;
+    private Date updatedDate;
 
     @ManyToMany
     @JoinTable(name = "cart_product", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> items = new HashSet<>();
+    private List<Product> items = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -40,9 +42,9 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Integer id, Date createdDate, Set<Product> items, UserInfo user) {
+    public Cart(Integer id, Date updatedDate, List<Product> items, UserInfo user) {
         this.id = id;
-        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
         this.items = items;
         this.user = user;
     }
@@ -55,19 +57,19 @@ public class Cart {
         this.id = id;
     }
 
-    public Date getCreatedDate() {
-        return this.createdDate;
+    public Date getUpdatedDate() {
+        return this.updatedDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
-    public Set<Product> getItems() {
+    public List<Product> getItems() {
         return this.items;
     }
 
-    public void setItems(Set<Product> items) {
+    public void setItems(List<Product> items) {
         this.items = items;
     }
 
@@ -84,12 +86,12 @@ public class Cart {
         return this;
     }
 
-    public Cart createdDate(Date createdDate) {
-        setCreatedDate(createdDate);
+    public Cart updatedDate(Date updatedDate) {
+        setUpdatedDate(updatedDate);
         return this;
     }
 
-    public Cart items(Set<Product> items) {
+    public Cart items(List<Product> items) {
         setItems(items);
         return this;
     }
@@ -107,20 +109,20 @@ public class Cart {
             return false;
         }
         Cart cart = (Cart) o;
-        return Objects.equals(id, cart.id) && Objects.equals(createdDate, cart.createdDate)
+        return Objects.equals(id, cart.id) && Objects.equals(updatedDate, cart.updatedDate)
                 && Objects.equals(items, cart.items) && Objects.equals(user, cart.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, items, user);
+        return Objects.hash(id, updatedDate, items, user);
     }
 
     @Override
     public String toString() {
         return "{" +
                 " id='" + getId() + "'" +
-                ", createdDate='" + getCreatedDate() + "'" +
+                ", updatedDate='" + getUpdatedDate() + "'" +
                 ", items='" + getItems() + "'" +
                 ", user='" + getUser() + "'" +
                 "}";
