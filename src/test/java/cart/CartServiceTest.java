@@ -24,6 +24,7 @@ import com.example.cart.Cart;
 import com.example.cart.CartRepository;
 import com.example.cart.CartService;
 import com.example.exceptions.CartDoesNotExist;
+import com.example.exceptions.CartDoesNotMatchUser;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
 import com.example.role.Role;
@@ -56,7 +57,7 @@ public class CartServiceTest {
     void canAddCart() {
 
         // given
-        UserInfo user = setUpUser("email", "username", "password", null, null);
+        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
 
         Cart cart = setCart(user, null);
 
@@ -80,7 +81,7 @@ public class CartServiceTest {
     void canGetCart() {
 
         // given
-        UserInfo user = setUpUser("email", "username", "password", null, null);
+        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
         Cart cart = setCart(user, null);
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
@@ -111,7 +112,7 @@ public class CartServiceTest {
     void canNotGetCartCartDoesNotExist() {
 
         // given
-        UserInfo user = setUpUser("email", "username", "password", null, null);
+        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
         Cart cart = setCart(user, null);
         // BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(false);
@@ -128,14 +129,69 @@ public class CartServiceTest {
         assertEquals(e.getMessage(), "Cart " + cart.getId() + " does not exist");
     }
 
+    @Test
+    void canNotGetCartCartDoesNotMatchUser() {
+
+        // given
+        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
+        UserInfo user1 = setUpUser(2, "email", "username", "password", null, null);
+        user1.setId(2);
+        Cart cart = setCart(user, null);
+        BDDMockito.given(userInfoRepository.findByUsername(user1.getUsername())).willReturn(Optional.of(user1));
+        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
+        BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+
+        // when
+        // cartService.getCart(user.getUsername(), cart.getId());
+
+        // then
+
+        Exception e = assertThrows(CartDoesNotMatchUser.class, () -> {
+            cartService.getCart(user1.getUsername(), cart.getId());
+        }, "User " + user.getUsername() + " does not own cart " + cart.getId());
+        assertEquals(e.getMessage(), "User " + user.getUsername() + " does not own cart " + cart.getId());
+    }
+
     // update
+
+    @Test
+    void canUpdateCart() {
+
+        // given
+        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
+        Cart cart = setCart(user, null);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
+        BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+
+        // when
+        try {
+            cartService.getCart(user.getUsername(), cart.getId());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+
+        ArgumentCaptor<Integer> cartArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        // ArgumentCaptor<Integer> cartArgumentCaptor =
+        // ArgumentCaptor.forClass(Integer.class);
+        // ArgumentCaptor<Integer> cartArgumentCaptor =
+        // ArgumentCaptor.forClass(Integer.class);
+
+        verify(cartRepository).findById(cartArgumentCaptor.capture());
+
+        // Cart capturedCart = cartArgumentCaptor.getValue();
+        assertEquals(cartArgumentCaptor.getValue(), cart.getId());
+    }
 
     // delete
 
     // helper
 
-    UserInfo setUpUser(String email, String username, String password, Set<Role> roles, Set<Store> stores) {
+    UserInfo setUpUser(Integer id, String email, String username, String password, Set<Role> roles, Set<Store> stores) {
         UserInfo user = new UserInfo();
+        user.setId(id);
         user.setEmail(email);
         user.setUsername(username);
         user.setPassword(password);

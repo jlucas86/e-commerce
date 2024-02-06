@@ -61,12 +61,23 @@ public class CartController {
     @PutMapping("/{username}/updateCart")
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_CUSTOMR')")
     public void updateCart(@PathVariable("username") String username, @RequestBody Cart cart) {
-        cartService.updateCart(username, cart);
+        try {
+            cartService.updateCart(username, cart);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     @DeleteMapping("/{username}/deleteCart")
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_CUSTOMR')")
     public void deleteCart(@PathVariable("username") String username, @RequestBody Cart cart) {
-        cartService.deleteCart(username, cart);
+        try {
+            cartService.deleteCart(username, cart);
+        } catch (
+
+        Exception e) {
+            // TODO: handle exception
+        }
+
     }
 }

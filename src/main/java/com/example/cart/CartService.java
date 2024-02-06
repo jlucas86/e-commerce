@@ -83,25 +83,20 @@ public class CartService {
 
     // update
 
-    public void updateCart(String username, Cart cart) {
-        try {
-            verify(username, cart.getId());
-            cartRepository.save(cart);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+    public void updateCart(String username, Cart cart) throws CartDoesNotMatchUser, CartDoesNotExist {
+
+        verify(username, cart.getId());
+        cartRepository.save(cart);
+
     }
 
     // delete
 
-    public void deleteCart(String username, Cart cart) {
+    public void deleteCart(String username, Cart cart) throws CartDoesNotMatchUser, CartDoesNotExist {
 
-        try {
-            verify(username, cart.getId());
-            cartRepository.delete(cart);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+        verify(username, cart.getId());
+        cartRepository.delete(cart);
+
     }
 
     public Pair<UserInfo, Cart> verify(String Username, Integer cartId) throws CartDoesNotMatchUser, CartDoesNotExist {
@@ -113,7 +108,7 @@ public class CartService {
         UserInfo user = userInfoRepository.findByUsername(Username).get();
         if (cart.getUser().getId() != user.getId()) {
             throw new CartDoesNotMatchUser(
-                    String.format("User %s does not own cart %i", user.getUsername(), cart.getId()));
+                    String.format("User %s does not own cart %d", user.getUsername(), cart.getId()));
         }
 
         return new Pair<UserInfo, Cart>(user, cart);

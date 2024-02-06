@@ -19,10 +19,10 @@ import com.example.record.Products;
 @RequestMapping("/api/v1/product")
 public class ProductController {
 
-    private final ProductSevice productSevice;
+    private final ProductService productSevice;
 
     @Autowired
-    public ProductController(ProductSevice productSevice) {
+    public ProductController(ProductService productSevice) {
         this.productSevice = productSevice;
     }
 

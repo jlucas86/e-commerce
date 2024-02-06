@@ -22,7 +22,7 @@ import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
 
 @Service
-public class ProductSevice {
+public class ProductService {
 
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
@@ -30,7 +30,7 @@ public class ProductSevice {
     private final StoreService storeService;
 
     @Autowired
-    public ProductSevice(ProductRepository productRepository, StoreRepository storeRepository,
+    public ProductService(ProductRepository productRepository, StoreRepository storeRepository,
             UserInfoRepository userInfoRepository, StoreService storeService) {
         this.productRepository = productRepository;
         this.storeRepository = storeRepository;
