@@ -102,7 +102,7 @@ public class ProductService {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
 
-        productRepository.save(product);
+        // productRepository.save(product);
     }
 
     public void updateProduct(String username, Integer storeId, Product product) {
