@@ -64,7 +64,11 @@ public class ProductController {
     public void updateProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
 
-        productSevice.updateProduct(username, storeId, product);
+        try {
+            productSevice.updateProduct(username, storeId, product);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
     }
 
@@ -73,7 +77,11 @@ public class ProductController {
     public void deleteProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
 
-        productSevice.deleteProduct(username, storeId, product);
+        try {
+            productSevice.deleteProduct(username, storeId, product);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
     }
 }

@@ -61,18 +61,29 @@ public class ProductService {
                     }
                 }
             }
-            if (j > 1) {
+            // their are no more items to get
+            if (j == p.type().size()) {
                 i = p.amount();
             } else {
-                if (j == 1)
+                // when the lists of products have one ellemnt or only one type was found past
+                // start value
+                if (products.size() == 1 || p.type().size() - j == 1)
                     startHold = products.get(products.size() - 1).getId();
-                else {
-                    int i0 = products.get(products.size() - 1).getId();
-                    int i1 = products.get(products.size() - 2).getId();
-                    if (i0 > i1)
-                        startHold = i1;
-                    else
-                        startHold = i0;
+                else { // detemin all
+                       // int i0 = products.get(products.size() - 1).getId();
+                       // int i1 = products.get(products.size() - 2).getId();
+                       // deteming the smallest index of newly added elements in list
+                    startHold = products.get(products.size() - 1).getId();
+                    for (Integer x = products.size() - 2; x > products.size() - j - 1; x--) {
+                        if (products.get(x).getId() < startHold) {
+                            startHold = products.get(x).getId();
+                        }
+                    }
+                    // if (i0 > i1)
+                    // startHold = i1;
+                    // else
+                    // startHold = i0;
+                    // }
                 }
             }
         }
@@ -105,41 +116,37 @@ public class ProductService {
         // productRepository.save(product);
     }
 
-    public void updateProduct(String username, Integer storeId, Product product) {
+    public void updateProduct(String username, Integer storeId, Product product)
+            throws ProductNotFound, StoreDoesNotExist, StoreDoesNotOwnProduct, InvalidStoreOwner {
 
-        try {
-            verifiedProduct(product, storeId, username);
-            Product p = productRepository.findById(product.getId()).get();
-            p.setPrice(product.getPrice());
-            p.setDescription(product.getDescription());
-            productRepository.save(p);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+        verifiedProduct(product, storeId, username);
+        Product p = productRepository.findById(product.getId()).get();
+        p.setPrice(product.getPrice());
+        p.setDescription(product.getDescription());
+        productRepository.save(p);
+
     }
 
-    public void deleteProduct(String username, Integer storeId, Product product) {
-        try {
-            verifiedProduct(product, storeId, username);
-            productRepository.delete(product);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+    public void deleteProduct(String username, Integer storeId, Product product)
+            throws ProductNotFound, StoreDoesNotExist, StoreDoesNotOwnProduct, InvalidStoreOwner {
+
+        verifiedProduct(product, storeId, username);
+        productRepository.delete(product);
 
     }
 
     public void verifiedProduct(Product product, Integer storeId, String username)
             throws ProductNotFound, StoreDoesNotExist, StoreDoesNotOwnProduct, InvalidStoreOwner {
         if (!productRepository.existsById(product.getId())) {
-            throw new ProductNotFound(String.format("product %i not found", product.getId()));
+            throw new ProductNotFound(String.format("Product %d not found", product.getId()));
         }
         UserInfo user = userInfoRepository.findByUsername(username).get();
         if (!storeRepository.existsById(storeId))
-            throw new StoreDoesNotExist(String.format("store %i not found", storeId));
+            throw new StoreDoesNotExist(String.format("Store %d not found", storeId));
         Store store = storeRepository.findById(storeId).get();
         if (product.getStore().getId() != store.getId()) {
             throw new StoreDoesNotOwnProduct(
-                    String.format("store %i does not own product %i", storeId, product.getId()));
+                    String.format("Store %d does not own product %d", storeId, product.getId()));
         }
         if (user.getId() != store.getUser().getId()) {
             throw new InvalidStoreOwner(

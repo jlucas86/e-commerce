@@ -2,6 +2,7 @@ package product;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -18,7 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.exceptions.CartDoesNotExist;
 import com.example.exceptions.InvalidStoreOwner;
+import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.StoreDoesNotExist;
+import com.example.exceptions.StoreDoesNotOwnProduct;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
 import com.example.product.ProductService;
@@ -164,8 +167,11 @@ public class ProductServiceTest {
         Product product4 = new Product(5, "product4", "thing", "does stuff", 2.50, store, null, null);
 
         List<String> l = new ArrayList<>();
+        List<Product> list = new ArrayList<>();
+        List<Product> list1 = new ArrayList<>();
+        list1.add(product);
         l.add(product.getType());
-        Products p = new Products(l, 2, 0);
+        Products p = new Products(l, 1, 0);
 
         // List<Product> products = new ArrayList<Product>();
         // BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
@@ -179,9 +185,10 @@ public class ProductServiceTest {
 
         // when
         try {
-            productService.getProducts(p);
+            list = productService.getProducts(p);
         } catch (Exception e) {
             // TODO: handle exception
+            System.err.println("wtf");
         }
 
         // then
@@ -193,11 +200,127 @@ public class ProductServiceTest {
 
         String capturedProductType = productTypeArgumentCaptor.getValue();
         Integer capturedStart = startArgumentCaptor.getValue();
-        assertEquals(capturedProductType, p.type().get(0));
-        assertEquals(capturedStart, p.start());
+        assertEquals(p.type().get(0), capturedProductType);
+        assertEquals(0, capturedStart);
+        assertEquals(list1, list);
     }
 
     // update
+
+    @Test
+    void canUpdateProduct() {
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
+        BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+
+        // when
+        try {
+            productService.updateProduct("username", 1, product);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+        verify(productRepository).save(productArgumentCaptor.capture());
+
+        Product capturedProduct = productArgumentCaptor.getValue();
+        assertEquals(capturedProduct, product);
+    }
+
+    @Test
+    void canNotUpdateProductProductDoesNotExist() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(false);
+
+        // when
+        // then
+
+        Exception e = assertThrows(ProductNotFound.class, () -> {
+            productService.updateProduct(user.getUsername(), store.getId(), product);
+        }, "Product " + product.getId() + " not found");
+        assertEquals(e.getMessage(), "Product " + product.getId() + " not found");
+    }
+
+    @Test
+    void canNotUpdateProductStoreDoesNotExist() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(false);
+
+        // when
+        // then
+
+        Exception e = assertThrows(StoreDoesNotExist.class, () -> {
+            productService.updateProduct(user.getUsername(), store.getId(), product);
+        }, "Store " + product.getId() + " not found");
+        assertEquals(e.getMessage(), "Store " + product.getId() + " not found");
+    }
+
+    @Test
+    void canNotUpdateProductStoreDoesNotOwnProduct() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Store store1 = new Store(2, "store1", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store1));
+
+        // when
+        // then
+
+        Exception e = assertThrows(StoreDoesNotOwnProduct.class, () -> {
+            productService.updateProduct(user.getUsername(), store.getId(), product);
+        }, "Store " + store1.getId() + " does not own product " + product.getId());
+        assertEquals(e.getMessage(), "Store " + store.getId() + " does not own product " + product.getId());
+    }
+
+    @Test
+    void canNotUpdateProductUserDoesNotOwnStore() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        UserInfo user1 = new UserInfo(2, "email", "username1", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user1));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
+
+        // when
+        // then
+
+        Exception e = assertThrows(InvalidStoreOwner.class, () -> {
+            productService.updateProduct(user.getUsername(), store.getId(), product);
+        }, "Username username does not own store store");
+        assertEquals(e.getMessage(), "Username username1 does not own store store");
+    }
 
     // delete
 }
