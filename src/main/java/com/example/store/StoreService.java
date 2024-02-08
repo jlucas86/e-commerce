@@ -86,7 +86,7 @@ public class StoreService {
             throw new StoreDoesNotExist(String.format("Store %s does not exist in database", store.getName()));
         if (user.getId() != store.getUser().getId()) {
             throw new InvalidStoreOwner(
-                    String.format("Username %s does not own store %s", user.getUsername(), store.getName()));
+                    String.format("Username %s does not own store %d", user.getUsername(), store.getId()));
         }
     }
 

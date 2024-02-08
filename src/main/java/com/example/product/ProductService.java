@@ -79,7 +79,8 @@ public class ProductService {
         return products;
     }
 
-    public void createProduct(String username, Integer storeId, Product product) {
+    public void createProduct(String username, Integer storeId, Product product)
+            throws StoreDoesNotExist, InvalidStoreOwner, StoreDoesNotExist {
         // this is wrong add a way to detect if a product already exits best
         // best bet is to do this by associating a product name with a store
         // if (productRepository.existsById(product.getId())) {
@@ -88,19 +89,18 @@ public class ProductService {
         // }
 
         // validate store exists
-        try {
-            if (!storeRepository.existsById(storeId))
-                throw new StoreDoesNotExist(String.format("store %i not found", storeId));
-            UserInfo user = userInfoRepository.findByUsername(username).get();
-            Store store = storeRepository.findById(storeId).get();
-            storeService.validateStoreOwner(user, store);
 
-            product.setStore(store);
-            productRepository.save(product);
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
+        if (!storeRepository.existsById(storeId))
+            throw new StoreDoesNotExist(String.format("Store %d not found", storeId));
+        UserInfo user = userInfoRepository.findByUsername(username).get();
+        Store store = storeRepository.findById(storeId).get();
+        if (user.getId() != store.getUser().getId()) {
+            throw new InvalidStoreOwner(
+                    String.format("Username %s does not own store %d", user.getUsername(), store.getId()));
         }
+
+        product.setStore(store);
+        productRepository.save(product);
 
         // productRepository.save(product);
     }

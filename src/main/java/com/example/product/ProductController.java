@@ -51,7 +51,11 @@ public class ProductController {
     public void createProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
 
-        productSevice.createProduct(username, storeId, product);
+        try {
+            productSevice.createProduct(username, storeId, product);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
     }
 
