@@ -1,5 +1,6 @@
 package product;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
@@ -236,92 +237,6 @@ public class ProductServiceTest {
         assertEquals(capturedProduct, product);
     }
 
-    @Test
-    void canNotUpdateProductProductDoesNotExist() {
-
-        // given
-        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
-        Store store = new Store(1, "store", "i sell things", user, null);
-        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
-
-        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(false);
-
-        // when
-        // then
-
-        Exception e = assertThrows(ProductNotFound.class, () -> {
-            productService.updateProduct(user.getUsername(), store.getId(), product);
-        }, "Product " + product.getId() + " not found");
-        assertEquals(e.getMessage(), "Product " + product.getId() + " not found");
-    }
-
-    @Test
-    void canNotUpdateProductStoreDoesNotExist() {
-
-        // given
-        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
-        Store store = new Store(1, "store", "i sell things", user, null);
-        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
-
-        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
-        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
-        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(false);
-
-        // when
-        // then
-
-        Exception e = assertThrows(StoreDoesNotExist.class, () -> {
-            productService.updateProduct(user.getUsername(), store.getId(), product);
-        }, "Store " + product.getId() + " not found");
-        assertEquals(e.getMessage(), "Store " + product.getId() + " not found");
-    }
-
-    @Test
-    void canNotUpdateProductStoreDoesNotOwnProduct() {
-
-        // given
-        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
-        Store store = new Store(1, "store", "i sell things", user, null);
-        Store store1 = new Store(2, "store1", "i sell things", user, null);
-        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
-
-        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
-        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
-        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
-        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store1));
-
-        // when
-        // then
-
-        Exception e = assertThrows(StoreDoesNotOwnProduct.class, () -> {
-            productService.updateProduct(user.getUsername(), store.getId(), product);
-        }, "Store " + store1.getId() + " does not own product " + product.getId());
-        assertEquals(e.getMessage(), "Store " + store.getId() + " does not own product " + product.getId());
-    }
-
-    @Test
-    void canNotUpdateProductUserDoesNotOwnStore() {
-
-        // given
-        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
-        UserInfo user1 = new UserInfo(2, "email", "username1", "password", null, null);
-        Store store = new Store(1, "store", "i sell things", user, null);
-        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
-
-        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
-        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user1));
-        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
-        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
-
-        // when
-        // then
-
-        Exception e = assertThrows(InvalidStoreOwner.class, () -> {
-            productService.updateProduct(user.getUsername(), store.getId(), product);
-        }, "Username username does not own store store");
-        assertEquals(e.getMessage(), "Username username1 does not own store store");
-    }
-
     // delete
 
     @Test
@@ -335,11 +250,11 @@ public class ProductServiceTest {
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
         BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
-        BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+        // BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
 
         // when
         try {
-            productService.updateProduct("username", 1, product);
+            productService.deleteProduct(user.getUsername(), store.getId(), product);
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -347,7 +262,7 @@ public class ProductServiceTest {
         // then
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
-        verify(productRepository).save(productArgumentCaptor.capture());
+        verify(productRepository).delete(productArgumentCaptor.capture());
 
         Product capturedProduct = productArgumentCaptor.getValue();
         assertEquals(capturedProduct, product);
@@ -367,7 +282,7 @@ public class ProductServiceTest {
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
         BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
-        BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+        // BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
 
         // when
         try {
@@ -376,12 +291,93 @@ public class ProductServiceTest {
             // TODO: handle exception
         }
         // then
-        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+        assertDoesNotThrow(() -> productService.verifiedProduct(product, store.getId(), user.getUsername()));
 
-        verify(productRepository).save(productArgumentCaptor.capture());
+    }
 
-        Product capturedProduct = productArgumentCaptor.getValue();
-        assertEquals(capturedProduct, product);
+    @Test
+    void canNotVerifyProductProductDoesNotExist() {
 
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(false);
+
+        // when
+        // then
+
+        Exception e = assertThrows(ProductNotFound.class, () -> {
+            productService.verifiedProduct(product, store.getId(), user.getUsername());
+        }, "Product " + product.getId() + " not found");
+        assertEquals(e.getMessage(), "Product " + product.getId() + " not found");
+    }
+
+    @Test
+    void canNotVerifyProductStoreDoesNotExist() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(false);
+
+        // when
+        // then
+
+        Exception e = assertThrows(StoreDoesNotExist.class, () -> {
+            productService.verifiedProduct(product, store.getId(), user.getUsername());
+        }, "Store " + product.getId() + " not found");
+        assertEquals(e.getMessage(), "Store " + product.getId() + " not found");
+    }
+
+    @Test
+    void canNotVerifyProductStoreDoesNotOwnProduct() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Store store1 = new Store(2, "store1", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store1));
+
+        // when
+        // then
+
+        Exception e = assertThrows(StoreDoesNotOwnProduct.class, () -> {
+            productService.verifiedProduct(product, store.getId(), user.getUsername());
+        }, "Store " + store1.getId() + " does not own product " + product.getId());
+        assertEquals(e.getMessage(), "Store " + store.getId() + " does not own product " + product.getId());
+    }
+
+    @Test
+    void canNotVerifyProductUserDoesNotOwnStore() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        UserInfo user1 = new UserInfo(2, "email", "username1", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user1));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
+
+        // when
+        // then
+
+        Exception e = assertThrows(InvalidStoreOwner.class, () -> {
+            productService.verifiedProduct(product, store.getId(), user.getUsername());
+        }, "Username username does not own store store");
+        assertEquals(e.getMessage(), "Username username1 does not own store store");
     }
 }
