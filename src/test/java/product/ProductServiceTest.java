@@ -323,4 +323,65 @@ public class ProductServiceTest {
     }
 
     // delete
+
+    @Test
+    void canDeleteProduct() {
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
+        BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+
+        // when
+        try {
+            productService.updateProduct("username", 1, product);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+        verify(productRepository).save(productArgumentCaptor.capture());
+
+        Product capturedProduct = productArgumentCaptor.getValue();
+        assertEquals(capturedProduct, product);
+    }
+
+    // helper function
+
+    @Test
+    void canVerifyProduct() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "i sell things", user, null);
+        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+        BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
+        BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+
+        // when
+        try {
+            productService.verifiedProduct(product, store.getId(), user.getUsername());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        // then
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+        verify(productRepository).save(productArgumentCaptor.capture());
+
+        Product capturedProduct = productArgumentCaptor.getValue();
+        assertEquals(capturedProduct, product);
+
+    }
 }
