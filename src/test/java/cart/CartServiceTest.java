@@ -27,6 +27,7 @@ import com.example.exceptions.CartDoesNotExist;
 import com.example.exceptions.CartDoesNotMatchUser;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
+import com.example.record.Pair;
 import com.example.role.Role;
 import com.example.store.Store;
 import com.example.userInfo.UserInfo;
@@ -189,30 +190,85 @@ public class CartServiceTest {
 
     // helper
 
-    UserInfo setUpUser(Integer id, String email, String username, String password, Set<Role> roles, Set<Store> stores) {
-        UserInfo user = new UserInfo();
-        user.setId(id);
-        user.setEmail(email);
-        user.setUsername(username);
-        user.setPassword(password);
-        if (roles == null) {
-            roles = new HashSet<>();
-        }
-        user.setRoles(roles);
-        if (stores == null) {
-            stores = new HashSet<>();
-        }
-        user.setStores(stores);
-        return user;
-    }
+    @Test
+    void canVerify() {
 
-    public Cart setCart(UserInfo user, List<Product> items) {
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
         Date date = new Date();
         date.setTime(0);
+        Cart cart = new Cart(1, date, null, user);
 
-        if (items == null)
-            items = new ArrayList<>();
-        Cart cart = new Cart(null, date, items, user);
-        return cart;
+        Pair<UserInfo, Cart> pair = new Pair<>(user, cart);
+
+        Pair<UserInfo, Cart> p = null;
+
+        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
+        BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+
+        // when
+        try {
+            p = cartService.verify(user.getUsername(), cart.getId());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+
+        // ArgumentCaptor<Integer> cartArgumentCaptor =
+        // ArgumentCaptor.forClass(Integer.class);
+        // ArgumentCaptor<Integer> cartArgumentCaptor =
+        // ArgumentCaptor.forClass(Integer.class);
+        // ArgumentCaptor<Integer> cartArgumentCaptor =
+        // ArgumentCaptor.forClass(Integer.class);
+
+        // Cart capturedCart = cartArgumentCaptor.getValue();
+        assertEquals(pair, p);
+    }
+
+    @Test
+    void canNotVerifyCartDoesNotExist() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date();
+        date.setTime(0);
+        Cart cart = new Cart(1, date, null, user);
+
+        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(false);
+        // BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+        // BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+
+        // when
+        // then
+
+        Exception e = assertThrows(CartDoesNotExist.class, () -> {
+            cartService.verify(user.getUsername(), cart.getId());
+        }, "Cart " + cart.getId() + " does not exist");
+        assertEquals(e.getMessage(), "Cart " + cart.getId() + " does not exist");
+    }
+
+    @Test
+    void canNotVerifyCartDoesNotMatchUser() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        UserInfo user1 = new UserInfo(2, "email1", "username1", "password", null, null);
+        Date date = new Date();
+        date.setTime(0);
+        Cart cart = new Cart(1, date, null, user);
+
+        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
+        BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user1));
+
+        // when
+        // then
+
+        Exception e = assertThrows(CartDoesNotMatchUser.class, () -> {
+            cartService.verify(user.getUsername(), cart.getId());
+        }, "User " + user1.getUsername() + " does not own cart " + cart.getId());
+        assertEquals(e.getMessage(), "User " + user1.getUsername() + " does not own cart " + cart.getId());
     }
 }
