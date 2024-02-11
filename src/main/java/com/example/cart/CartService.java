@@ -39,16 +39,14 @@ public class CartService {
         return pair.other();
     }
 
-    public List<Product> getCartContents(String username, Integer cartId) {
+    public List<Product> getCartContents(String username, Integer cartId)
+            throws CartDoesNotMatchUser, CartDoesNotExist {
 
         Pair<UserInfo, Cart> pair = null;
-        try {
-            pair = verify(username, cartId);
-            return pair.other().getItems();
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
-        return null;
+
+        pair = verify(username, cartId);
+        return pair.other().getItems();
+
     }
 
     // set

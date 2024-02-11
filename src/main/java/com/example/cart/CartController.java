@@ -42,7 +42,13 @@ public class CartController {
     @GetMapping("/{username}/getCartContents/{id}")
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_CUSTOMR')")
     public List<Product> getCartContents(@PathVariable("username") String username, @PathVariable("id") Integer id) {
-        return cartService.getCartContents(username, id);
+        try {
+            return cartService.getCartContents(username, id);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return null;
+
     }
 
     @PostMapping("/{username}/addCart")

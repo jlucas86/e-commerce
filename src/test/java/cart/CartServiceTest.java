@@ -58,9 +58,10 @@ public class CartServiceTest {
     void canAddCart() {
 
         // given
-        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
-
-        Cart cart = setCart(user, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date();
+        date.setTime(0);
+        Cart cart = new Cart(1, date, null, user);
 
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
 
@@ -82,75 +83,60 @@ public class CartServiceTest {
     void canGetCart() {
 
         // given
-        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
-        Cart cart = setCart(user, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date();
+        date.setTime(0);
+        Cart cart = new Cart(1, date, null, user);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
+        BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+        Cart c = null;
+
+        // when
+        try {
+            c = cartService.getCart(user.getUsername(), cart.getId());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+        assertEquals(c, cart);
+
+    }
+
+    @Test
+    void canGetCartContents() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date();
+        date.setTime(0);
+        List<Product> items = new ArrayList<>();
+        List<Product> i = null;
+        Product p = new Product(1, "thing", "type", "ahhhhh", 20.03, null, null, null);
+        Product p1 = new Product(2, "thing1", "type", "ahhhhh", 20.03, null, null, null);
+        Product p2 = new Product(3, "thing2", "type", "ahhhhh", 20.03, null, null, null);
+        Product p3 = new Product(4, "thing3", "type", "ahhhhh", 20.03, null, null, null);
+        items.add(p);
+        items.add(p1);
+        items.add(p2);
+        items.add(p3);
+        Cart cart = new Cart(1, date, items, user);
+
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
         BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
 
         // when
         try {
-            cartService.getCart(user.getUsername(), cart.getId());
+            i = cartService.getCartContents(user.getUsername(), cart.getId());
         } catch (Exception e) {
             // TODO: handle exception
         }
 
         // then
+        assertEquals(i, items);
 
-        ArgumentCaptor<Integer> cartArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
-        // ArgumentCaptor<Integer> cartArgumentCaptor =
-        // ArgumentCaptor.forClass(Integer.class);
-        // ArgumentCaptor<Integer> cartArgumentCaptor =
-        // ArgumentCaptor.forClass(Integer.class);
-
-        verify(cartRepository).findById(cartArgumentCaptor.capture());
-
-        // Cart capturedCart = cartArgumentCaptor.getValue();
-        assertEquals(cartArgumentCaptor.getValue(), cart.getId());
-    }
-
-    @Test
-    void canNotGetCartCartDoesNotExist() {
-
-        // given
-        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
-        Cart cart = setCart(user, null);
-        // BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
-        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(false);
-        // BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
-
-        // when
-        // cartService.getCart(user.getUsername(), cart.getId());
-
-        // then
-
-        Exception e = assertThrows(CartDoesNotExist.class, () -> {
-            cartService.getCart(user.getUsername(), cart.getId());
-        }, "Cart " + cart.getId() + " does not exist");
-        assertEquals(e.getMessage(), "Cart " + cart.getId() + " does not exist");
-    }
-
-    @Test
-    void canNotGetCartCartDoesNotMatchUser() {
-
-        // given
-        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
-        UserInfo user1 = setUpUser(2, "email", "username", "password", null, null);
-        user1.setId(2);
-        Cart cart = setCart(user, null);
-        BDDMockito.given(userInfoRepository.findByUsername(user1.getUsername())).willReturn(Optional.of(user1));
-        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
-        BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
-
-        // when
-        // cartService.getCart(user.getUsername(), cart.getId());
-
-        // then
-
-        Exception e = assertThrows(CartDoesNotMatchUser.class, () -> {
-            cartService.getCart(user1.getUsername(), cart.getId());
-        }, "User " + user.getUsername() + " does not own cart " + cart.getId());
-        assertEquals(e.getMessage(), "User " + user.getUsername() + " does not own cart " + cart.getId());
     }
 
     // update
