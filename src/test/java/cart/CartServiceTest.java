@@ -159,34 +159,55 @@ public class CartServiceTest {
     void canUpdateCart() {
 
         // given
-        UserInfo user = setUpUser(1, "email", "username", "password", null, null);
-        Cart cart = setCart(user, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date();
+        date.setTime(0);
+        Cart cart = new Cart(1, date, null, user);
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
         BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
 
         // when
         try {
-            cartService.getCart(user.getUsername(), cart.getId());
+            cartService.updateCart(user.getUsername(), cart);
         } catch (Exception e) {
             // TODO: handle exception
         }
 
         // then
-
-        ArgumentCaptor<Integer> cartArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
-        // ArgumentCaptor<Integer> cartArgumentCaptor =
-        // ArgumentCaptor.forClass(Integer.class);
-        // ArgumentCaptor<Integer> cartArgumentCaptor =
-        // ArgumentCaptor.forClass(Integer.class);
-
-        verify(cartRepository).findById(cartArgumentCaptor.capture());
-
-        // Cart capturedCart = cartArgumentCaptor.getValue();
-        assertEquals(cartArgumentCaptor.getValue(), cart.getId());
+        ArgumentCaptor<Cart> cartArgumentCaptor = ArgumentCaptor.forClass(Cart.class);
+        verify(cartRepository).save(cartArgumentCaptor.capture());
+        Cart capturedCart = cartArgumentCaptor.getValue();
+        assertEquals(capturedCart, cart);
     }
 
     // delete
+
+    @Test
+    void canDeleteCart() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date();
+        date.setTime(0);
+        Cart cart = new Cart(1, date, null, user);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(true);
+        BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+
+        // when
+        try {
+            cartService.deleteCart(user.getUsername(), cart);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+        ArgumentCaptor<Cart> cartArgumentCaptor = ArgumentCaptor.forClass(Cart.class);
+        verify(cartRepository).delete(cartArgumentCaptor.capture());
+        Cart capturedCart = cartArgumentCaptor.getValue();
+        assertEquals(capturedCart, cart);
+    }
 
     // helper
 
@@ -215,15 +236,6 @@ public class CartServiceTest {
         }
 
         // then
-
-        // ArgumentCaptor<Integer> cartArgumentCaptor =
-        // ArgumentCaptor.forClass(Integer.class);
-        // ArgumentCaptor<Integer> cartArgumentCaptor =
-        // ArgumentCaptor.forClass(Integer.class);
-        // ArgumentCaptor<Integer> cartArgumentCaptor =
-        // ArgumentCaptor.forClass(Integer.class);
-
-        // Cart capturedCart = cartArgumentCaptor.getValue();
         assertEquals(pair, p);
     }
 
@@ -237,12 +249,9 @@ public class CartServiceTest {
         Cart cart = new Cart(1, date, null, user);
 
         BDDMockito.given(cartRepository.existsById(cart.getId())).willReturn(false);
-        // BDDMockito.given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
-        // BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
 
         // when
         // then
-
         Exception e = assertThrows(CartDoesNotExist.class, () -> {
             cartService.verify(user.getUsername(), cart.getId());
         }, "Cart " + cart.getId() + " does not exist");
@@ -265,7 +274,6 @@ public class CartServiceTest {
 
         // when
         // then
-
         Exception e = assertThrows(CartDoesNotMatchUser.class, () -> {
             cartService.verify(user.getUsername(), cart.getId());
         }, "User " + user1.getUsername() + " does not own cart " + cart.getId());
