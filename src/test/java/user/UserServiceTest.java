@@ -55,7 +55,9 @@ public class UserServiceTest {
     void canAddUser() throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
 
         // given
-        UserInfo user = setUpUser("email", "username", "password", null, null);
+        Set<Role> roles = new HashSet<>();
+        Set<Store> stores = new HashSet<>();
+        UserInfo user = new UserInfo(null, "email", "username", "password", roles, stores);
 
         // when
         userInfoService.addUser(user);
@@ -79,71 +81,13 @@ public class UserServiceTest {
 
     }
 
-    @Test
-    void canNotAddUserInvalidPassword() {
-
-        // given
-        UserInfo user = setUpUser("email", "username", "pas", null, null);
-
-        // when
-        // userInfoService.addUser(user);
-
-        // then
-
-        Exception e = assertThrows(InvalidPassword.class, () -> {
-            userInfoService.addUser(user);
-        }, "Password is too short");
-        assertEquals(e.getMessage(), "Password is too short");
-
-    }
-
-    @Test
-    void canNotAddUserUsernameAlreadyExists() {
-
-        // given
-        UserInfo user = setUpUser("email", "username", "pas", null, null);
-
-        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
-
-        // when
-        // userInfoService.addUser(user);
-
-        // then
-
-        Exception e = assertThrows(UsernameAlreadyExists.class, () -> {
-            userInfoService.addUser(user);
-        }, "Username username already exists");
-        assertEquals(e.getMessage(), "Username username already exists");
-
-    }
-
-    @Test
-    void canNotAddUserEmailAlreadyExists() {
-
-        // given
-        UserInfo user = setUpUser("email", "username", "pas", null, null);
-
-        BDDMockito.given(userInfoRepository.existsByEmail(user.getEmail())).willReturn(true);
-
-        // when
-        // userInfoService.addUser(user);
-
-        // then
-
-        Exception e = assertThrows(EmailAlreadyExists.class, () -> {
-            userInfoService.addUser(user);
-        }, "Email email already exists");
-        assertEquals(e.getMessage(), "Email email already exists");
-
-    }
-
     // get
 
     @Test
     void canGetUser() {
 
         // given
-        UserInfo user = setUpUser("email", "username", "***********", null, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
 
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         user.setPassword("password");
@@ -164,7 +108,7 @@ public class UserServiceTest {
     void canNotGetUserInvalidUser() {
 
         // given
-        UserInfo user = setUpUser("email", "username", "password", null, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
 
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.empty());
 
@@ -183,7 +127,7 @@ public class UserServiceTest {
     void canUpdateUser() throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
 
         // given
-        UserInfo user = setUpUser("email", "username", "password", null, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
 
         // when
         userInfoService.updateUser(user);
@@ -198,68 +142,11 @@ public class UserServiceTest {
         assertEquals(capturedUser, user);
     }
 
-    @Test
-    void canNotUpdateUserInvalidPassword() {
-
-        // given
-        UserInfo user = setUpUser("email", "username", "pas", null, null);
-
-        // when
-        // userInfoService.addUser(user);
-
-        // then
-
-        Exception e = assertThrows(InvalidPassword.class, () -> {
-            userInfoService.updateUser(user);
-        }, "Password is too short");
-        assertEquals(e.getMessage(), "Password is too short");
-
-    }
-
-    @Test
-    void canNotUpdateUserUsernameAlreadyExists() {
-
-        // given
-        UserInfo user = setUpUser("email", "username", "pas", null, null);
-
-        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
-
-        // when
-        // userInfoService.addUser(user);
-
-        // then
-
-        Exception e = assertThrows(UsernameAlreadyExists.class, () -> {
-            userInfoService.updateUser(user);
-        }, "Username username already exists");
-        assertEquals(e.getMessage(), "Username username already exists");
-
-    }
-
-    @Test
-    void canNotUpdateUserEmailAlreadyExists() {
-
-        // given
-        UserInfo user = setUpUser("email", "username", "pas", null, null);
-
-        BDDMockito.given(userInfoRepository.existsByEmail(user.getEmail())).willReturn(true);
-
-        // when
-        // userInfoService.addUser(user);
-
-        // then
-
-        Exception e = assertThrows(EmailAlreadyExists.class, () -> {
-            userInfoService.updateUser(user);
-        }, "Email email already exists");
-        assertEquals(e.getMessage(), "Email email already exists");
-    }
-
     // delete
 
     @Test
     void canDeleteUser() {
-        UserInfo user = setUpUser("email", "username", "password", null, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
 
         BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
         // when
@@ -278,14 +165,12 @@ public class UserServiceTest {
     void canNotDeleteUserUsernameNotFound() {
 
         // given
-        UserInfo user = setUpUser("email", "username", "pas", null, null);
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
 
         BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(false);
 
         // when
-
         // then
-
         Exception e = assertThrows(UsernameNotFoundException.class, () -> {
             userInfoService.deleteUser(user);
         }, "Username username not found");
@@ -293,20 +178,91 @@ public class UserServiceTest {
     }
 
     // helper
-    UserInfo setUpUser(String email, String username, String password, Set<Role> roles, Set<Store> stores) {
-        UserInfo user = new UserInfo();
-        user.setEmail(email);
-        user.setUsername(username);
-        user.setPassword(password);
-        if (roles == null) {
-            roles = new HashSet<>();
+
+    @Test
+    void canValidateUerInfo() {
+        UserInfo user = new UserInfo(1, "email", "username", "passsword", null, null);
+        Boolean v = null;
+
+        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(false);
+        BDDMockito.given(userInfoRepository.existsByEmail(user.getEmail())).willReturn(false);
+
+        // when
+        try {
+            v = userInfoService.validateUserInfo(user);
+        } catch (Exception e) {
+            // TODO: handle exception
         }
-        user.setRoles(roles);
-        if (stores == null) {
-            stores = new HashSet<>();
-        }
-        user.setStores(stores);
-        return user;
+
+        // then
+        assertEquals(true, v);
     }
 
+    @Test
+    void canNotValidateUserInfoUsernameAlreadyExists() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+
+        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
+
+        // when
+        // then
+        Exception e = assertThrows(UsernameAlreadyExists.class, () -> {
+            userInfoService.validateUserInfo(user);
+        }, "Username username already exists");
+        assertEquals(e.getMessage(), "Username username already exists");
+    }
+
+    @Test
+    void canNotValidateUserInfoEmailAlreadyExists() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+
+        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(false);
+        BDDMockito.given(userInfoRepository.existsByEmail(user.getEmail())).willReturn(true);
+
+        // when
+        // then
+        Exception e = assertThrows(EmailAlreadyExists.class, () -> {
+            userInfoService.validateUserInfo(user);
+        }, "Email email already exists");
+        assertEquals(e.getMessage(), "Email email already exists");
+    }
+
+    @Test
+    void canNotValidateUserInfoPasswordTooShort() {
+
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "pas", null, null);
+
+        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(false);
+        BDDMockito.given(userInfoRepository.existsByEmail(user.getEmail())).willReturn(false);
+
+        // when
+        // then
+        Exception e = assertThrows(InvalidPassword.class, () -> {
+            userInfoService.validateUserInfo(user);
+        }, "Password is too short");
+        assertEquals(e.getMessage(), "Password is too short");
+    }
+
+    @Test
+    void canNotValidateUserInfoPasswordTooLong() {
+
+        // given
+        String password = "sdjdyrdirjtidirycnkrielsdjflksjdflk";
+        UserInfo user = new UserInfo(1, "email", "username", password, null, null);
+
+        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(false);
+        BDDMockito.given(userInfoRepository.existsByEmail(user.getEmail())).willReturn(false);
+
+        // when
+        // then
+        Exception e = assertThrows(InvalidPassword.class, () -> {
+            userInfoService.validateUserInfo(user);
+        }, "Password is too long");
+        assertEquals(e.getMessage(), "Password is too long");
+    }
 }

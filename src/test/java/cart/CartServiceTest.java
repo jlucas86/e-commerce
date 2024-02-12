@@ -6,10 +6,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.cart.Cart;
 import com.example.cart.CartRepository;
@@ -28,8 +25,6 @@ import com.example.exceptions.CartDoesNotMatchUser;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
 import com.example.record.Pair;
-import com.example.role.Role;
-import com.example.store.Store;
 import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
 
@@ -70,9 +65,7 @@ public class CartServiceTest {
 
         // then
         ArgumentCaptor<Cart> cartArgumentCaptor = ArgumentCaptor.forClass(Cart.class);
-
         verify(cartRepository).save(cartArgumentCaptor.capture());
-
         Cart capturedCart = cartArgumentCaptor.getValue();
         assertEquals(capturedCart, cart);
     }

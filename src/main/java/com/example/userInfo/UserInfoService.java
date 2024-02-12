@@ -93,6 +93,22 @@ public class UserInfoService {
 
     }
 
+    // update
+
+    public void updateUser(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
+        validateUserInfo(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    // delete
+
+    public void deleteUser(UserInfo user) throws UsernameNotFoundException {
+        if (!userRepository.existsByUsername(user.getUsername()))
+            throw new UsernameNotFoundException(String.format("Username %s not found", user.getUsername()));
+        userRepository.delete(user);
+    }
+
     public Boolean validateUserInfo(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
 
         if (userRepository.existsByUsername(user.getUsername())) {
@@ -121,17 +137,5 @@ public class UserInfoService {
          * 7. screen for common passwords such as "password"
          */
         return true;
-    }
-
-    public void updateUser(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
-        validateUserInfo(user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-    }
-
-    public void deleteUser(UserInfo user) throws UsernameNotFoundException {
-        if (!userRepository.existsByUsername(user.getUsername()))
-            throw new UsernameNotFoundException(String.format("Username %s not found", user.getUsername()));
-        userRepository.delete(user);
     }
 }
