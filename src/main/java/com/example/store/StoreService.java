@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.exceptions.InvalidStoreOwner;
 import com.example.exceptions.StoreDoesNotExist;
+import com.example.exceptions.UserDoesNotExist;
 import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
 
@@ -23,34 +24,28 @@ public class StoreService {
         this.userInfoRepository = userInfoRepository;
     }
 
-    public Store getStore(Integer id) {
+    public Store getStore(Integer id) throws StoreDoesNotExist {
         Optional<Store> store = storeRepository.findById(id);
         if (store.isPresent()) {
             Store s = store.get();
             s.setUser(null);
             return s;
         }
-        return null;
+        throw new StoreDoesNotExist(String.format("Store %d does not exist in database", id));
+    }
+
+    public List<Store> getAllStoresUser(String username) throws UserDoesNotExist {
+        if (!userInfoRepository.existsByUsername(username))
+            throw new UserDoesNotExist(String.format("User %s does not exist", username));
+        UserInfo u = userInfoRepository.findByUsername(username).get();
+
+        return storeRepository.findAllByUserId(u.getId());
     }
 
     public void addStore(String username, Store store) {
-        // UserInfo user = userInfoRepository.findByUsername(username).get();
-
         UserInfo user = userInfoRepository.findByUsername(username).get();
         store.setUser(user);
-        // Set<Store> stores = user.getStores();
-        // stores.add(store);
         storeRepository.save(store);
-
-        // store.setUserInfo(user);
-        // storeRepository.save(store);
-        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^" + user.getStores());
-        // Set<Store> stores = user.getStores();
-        // stores.add(store);
-        // userInfoRepository.save(user);
-        // UserInfo user2 = userInfoRepository.findByUsername(username).get();
-        // Set<UserInfo> stores = new HashSet<UserInfo>();
-        // user2.setStores(storeRepository.findById(store.getId()).get());
     }
 
     public void updateStore(String username, Store store) {
@@ -74,11 +69,6 @@ public class StoreService {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
         }
 
-    }
-
-    public List<Store> getAllUserID(Integer userId) {
-        // TODO Auto-generated method stub
-        return storeRepository.findAllByUserId(userId);
     }
 
     public void validateStoreOwner(UserInfo user, Store store) throws InvalidStoreOwner, StoreDoesNotExist {

@@ -25,12 +25,22 @@ public class StoreController {
 
     @GetMapping("/getStore/{id}")
     public Store getStore(@PathVariable("id") Integer id) {
-        return storeService.getStore(id);
+        try {
+            return storeService.getStore(id);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return null;
     }
 
-    @GetMapping("/getAllStore/{id}")
-    public List<Store> getAllStore(@PathVariable("id") Integer userId) {
-        return storeService.getAllUserID(userId);
+    @GetMapping("/getAllStore/{username}")
+    public List<Store> getAllStoresUser(@PathVariable("username") String username) {
+        try {
+            return storeService.getAllStoresUser(username);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return null;
     }
 
     /*
