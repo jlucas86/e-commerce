@@ -58,12 +58,22 @@ public class StoreController {
 
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
     public void updateStore(@PathVariable("username") String username, @RequestBody Store store) {
-        storeService.updateStore(username, store);
+        try {
+            storeService.updateStore(username, store);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
     public void deleteStore(@PathVariable("username") String username, @RequestBody Store store) {
-        storeService.deleteStore(username, store);
+        try {
+            storeService.deleteStore(username, store);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
 }

@@ -2,6 +2,7 @@ package store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.example.exceptions.InvalidStoreOwner;
 import com.example.exceptions.StoreDoesNotExist;
 import com.example.exceptions.UserDoesNotExist;
 import com.example.product.Product;
@@ -80,7 +82,7 @@ public class StoreServiceTest {
         try {
             s = storeService.getStore(store.getId());
         } catch (Exception e) {
-            // TODO: handle exception
+            fail();
         }
 
         // then
@@ -135,7 +137,7 @@ public class StoreServiceTest {
         try {
             s = storeService.getAllStoresUser(user.getUsername());
         } catch (Exception e) {
-            // TODO: handle exception
+            fail();
         }
 
         // then
@@ -176,7 +178,7 @@ public class StoreServiceTest {
         try {
             storeService.updateStore(user.getUsername(), store);
         } catch (Exception e) {
-            // TODO: handle exception
+            fail();
         }
 
         // then
@@ -202,7 +204,7 @@ public class StoreServiceTest {
         try {
             storeService.deleteStore(user.getUsername(), store);
         } catch (Exception e) {
-            // TODO: handle exception
+            fail();
         }
 
         // then
@@ -210,8 +212,63 @@ public class StoreServiceTest {
         verify(storeRepository).delete(storeArgumentCaptor.capture());
         Store capturedStore = storeArgumentCaptor.getValue();
         assertEquals(store, capturedStore);
-
     }
 
     // helper
+
+    @Test
+    void canValidateStoreOwner() {
+        Set<Product> products = new HashSet<>();
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "sells things", user, products);
+
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+
+        // when
+        try {
+            storeService.validateStoreOwner(user, store);
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+        ArgumentCaptor<Integer> storeIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(storeRepository).existsById(storeIdArgumentCaptor.capture());
+        Integer capturedStoreId = storeIdArgumentCaptor.getValue();
+        assertEquals(store.getId(), capturedStoreId);
+    }
+
+    @Test
+    void canNotValidateStoreOwnerStoreDoesNotExist() {
+        Set<Product> products = new HashSet<>();
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "sells things", user, products);
+
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(false);
+
+        // when
+        // then
+        Exception e = assertThrows(StoreDoesNotExist.class, () -> {
+            storeService.validateStoreOwner(user, store);
+        }, "Store store does not exist in database");
+        assertEquals(e.getMessage(), "Store store does not exist in database");
+    }
+
+    @Test
+    void canNotValidateStoreOwnerUserDoesNotOwnStore() {
+        Set<Product> products = new HashSet<>();
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        UserInfo user1 = new UserInfo(2, "email", "username1", "password", null, null);
+        Store store = new Store(1, "store", "sells things", user, products);
+
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+
+        // when
+        // then
+        Exception e = assertThrows(InvalidStoreOwner.class, () -> {
+            storeService.validateStoreOwner(user1, store);
+        }, "Username username1 does not own store " + store.getId());
+        assertEquals("Username username1 does not own store " + store.getId(), e.getMessage());
+    }
+
 }
