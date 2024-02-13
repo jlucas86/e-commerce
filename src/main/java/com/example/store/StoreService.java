@@ -48,26 +48,19 @@ public class StoreService {
         storeRepository.save(store);
     }
 
-    public void updateStore(String username, Store store) {
+    public void updateStore(String username, Store store) throws InvalidStoreOwner, StoreDoesNotExist {
         UserInfo user = userInfoRepository.findByUsername(username).get();
-        try {
-            validateStoreOwner(user, store);
-            // (mayber???? make sure store names match)
-            storeRepository.save(store);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+
+        validateStoreOwner(user, store);
+        storeRepository.save(store);
 
     }
 
-    public void deleteStore(String username, Store store) {
+    public void deleteStore(String username, Store store) throws InvalidStoreOwner, StoreDoesNotExist {
         UserInfo user = userInfoRepository.findByUsername(username).get();
-        try {
-            validateStoreOwner(user, store);
-            storeRepository.delete(store);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+
+        validateStoreOwner(user, store);
+        storeRepository.delete(store);
 
     }
 

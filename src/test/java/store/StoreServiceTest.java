@@ -163,7 +163,55 @@ public class StoreServiceTest {
 
     // update
 
+    @Test
+    void canUpdateStore() {
+        Set<Product> products = new HashSet<>();
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "sells things", user, products);
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+
+        // when
+        try {
+            storeService.updateStore(user.getUsername(), store);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+        ArgumentCaptor<Store> storeArgumentCaptor = ArgumentCaptor.forClass(Store.class);
+        verify(storeRepository).save(storeArgumentCaptor.capture());
+        Store capturedStore = storeArgumentCaptor.getValue();
+        assertEquals(store, capturedStore);
+
+    }
+
     // delete
+
+    @Test
+    void canDeleteStore() {
+        Set<Product> products = new HashSet<>();
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "sells things", user, products);
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+
+        // when
+        try {
+            storeService.deleteStore(user.getUsername(), store);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+        ArgumentCaptor<Store> storeArgumentCaptor = ArgumentCaptor.forClass(Store.class);
+        verify(storeRepository).delete(storeArgumentCaptor.capture());
+        Store capturedStore = storeArgumentCaptor.getValue();
+        assertEquals(store, capturedStore);
+
+    }
 
     // helper
 }
