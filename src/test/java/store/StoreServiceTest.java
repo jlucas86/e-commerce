@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.exceptions.StoreDoesNotExist;
+import com.example.exceptions.UserDoesNotExist;
 import com.example.product.Product;
 import com.example.store.Store;
 import com.example.store.StoreRepository;
@@ -104,6 +107,58 @@ public class StoreServiceTest {
             storeService.getStore(store.getId());
         }, "Store " + store.getId() + " does not exist in database");
         assertEquals(e.getMessage(), "Store " + store.getId() + " does not exist in database");
+    }
+
+    @Test
+    void canGetAllStoresFromUsername() {
+        Set<Product> products = new HashSet<>();
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Store store = new Store(1, "store", "sells things", user, products);
+        Store store1 = new Store(2, "store", "sells things", user, products);
+        Store store2 = new Store(3, "store", "sells things", user, products);
+        Store store3 = new Store(4, "store", "sells things", null, products);
+        Store store4 = new Store(5, "store", "sells things", user, products);
+
+        List<Store> stores = new ArrayList<>();
+        List<Store> s = null;
+
+        stores.add(store);
+        stores.add(store1);
+        stores.add(store2);
+        stores.add(store4);
+
+        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(storeRepository.findAllByUserId(user.getId())).willReturn(stores);
+
+        // when
+        try {
+            s = storeService.getAllStoresUser(user.getUsername());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        // then
+        ArgumentCaptor<Integer> userIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(storeRepository).findAllByUserId(userIdArgumentCaptor.capture());
+        Integer capturedUserId = userIdArgumentCaptor.getValue();
+        assertEquals(user.getId(), capturedUserId);
+        assertEquals(stores, s);
+    }
+
+    @Test
+    void canNotGetAllStoresFromUsernameUserDoesNotExist() {
+        Set<Product> products = new HashSet<>();
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+
+        BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(false);
+
+        // when
+        // then
+        Exception e = assertThrows(UserDoesNotExist.class, () -> {
+            storeService.getAllStoresUser(user.getUsername());
+        }, "User " + user.getUsername() + " does not exist");
+        assertEquals(e.getMessage(), "User " + user.getUsername() + " does not exist");
     }
 
     // update
