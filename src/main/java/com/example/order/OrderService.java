@@ -45,6 +45,7 @@ public class OrderService {
     public Order getOrder(String username, Integer orderId) throws OrderDoesNotExist, UserDoesNotOwnOrder {
 
         Pair<UserInfo, Order> pair = verify(username, orderId);
+        pair.other().setPaymentMethod(null);
         return pair.other();
 
     }
@@ -109,7 +110,7 @@ public class OrderService {
      * @throws OrderDoesNotExist
      * @throws UserDoesNotOwnOrder
      */
-    public Pair<UserInfo, Order> verify(String username, Integer orderId)
+    public Pair<UserInfo, Order> verify(String username, Integer orderId) // add some way to validate payment method
             throws OrderDoesNotExist, UserDoesNotOwnOrder {
         if (!orderRepository.existsById(orderId)) {
             throw new OrderDoesNotExist(String.format("Order %d does not exist in database", orderId));

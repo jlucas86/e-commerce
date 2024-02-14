@@ -1,6 +1,7 @@
 package order;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
@@ -24,6 +25,7 @@ import com.example.exceptions.UserDoesNotOwnOrder;
 import com.example.order.Order;
 import com.example.order.OrderRepository;
 import com.example.order.OrderService;
+import com.example.paymentMethod.PaymentMethod;
 import com.example.paymentMethod.PaymentMethodRepository;
 import com.example.paymentMethod.PaymentMethodService;
 import com.example.product.Product;
@@ -60,9 +62,163 @@ public class OrderServiceTest {
                 paymentMethodService);
     }
 
-    // add
+    // add function to test ehn payment method can not be found
+    @Test
+    void canAddOrder() {
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+        Order order = new Order(1, date, "complete", products, null, user, paymentMethod);
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+        BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(true);
+        // BDDMockito.given(orderRepository.existsById(order.getId())).willReturn(true);
+        // BDDMockito.given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
+
+        // when
+        try {
+            orderService.addOrder(user.getUsername(), order);
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+
+        // ArgumentCaptor<Integer> orderIdExistsArgumentCaptor =
+        // ArgumentCaptor.forClass(Integer.class);
+        // verify(orderRepository).existsById(orderIdExistsArgumentCaptor.capture());
+        // Integer capturedOrderIdExists = orderIdExistsArgumentCaptor.getValue();
+        // assertEquals(capturedOrderIdExists, order.getId());
+
+        // ArgumentCaptor<Integer> orderIdArgumentCaptor =
+        // ArgumentCaptor.forClass(Integer.class);
+        // verify(orderRepository).findById(orderIdArgumentCaptor.capture());
+        // Integer capturedOrderId = orderIdArgumentCaptor.getValue();
+        // assertEquals(capturedOrderId, order.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        ArgumentCaptor<Integer> productIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(productRepository).existsById(productIdArgumentCaptor.capture());
+        Integer capturedProductId = productIdArgumentCaptor.getValue();
+        assertEquals(capturedProductId, product.getId());
+
+        ArgumentCaptor<Integer> paymentMethodIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).existsById(paymentMethodIdArgumentCaptor.capture());
+        Integer capturedPaymentMethodId = paymentMethodIdArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodId, paymentMethod.getId());
+
+    }
 
     // get
+    @Test
+    void canGetOrder() {
+
+        // note: the returned order that goes in "o" is a shallow copy of "order"
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+        Order order = new Order(1, date, "complete", products, null, user, paymentMethod);
+        Order order1 = new Order(1, date, "complete", products, null, user, paymentMethod);
+        Order o = null;
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(orderRepository.existsById(order.getId())).willReturn(true);
+        BDDMockito.given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
+
+        // when
+        try {
+            o = orderService.getOrder(user.getUsername(), order.getId());
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+
+        ArgumentCaptor<Integer> orderIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).existsById(orderIdExistsArgumentCaptor.capture());
+        Integer capturedOrderIdExists = orderIdExistsArgumentCaptor.getValue();
+        assertEquals(capturedOrderIdExists, order.getId());
+
+        ArgumentCaptor<Integer> orderIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).findById(orderIdArgumentCaptor.capture());
+        Integer capturedOrderId = orderIdArgumentCaptor.getValue();
+        assertEquals(capturedOrderId, order.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        order1.setPaymentMethod(null);
+        assertEquals(o, order1);
+
+    }
+
+    @Test
+    void canGetOrderEnsureTheValueOfPaymentMethodIsChangedToNull() {
+
+        // note: the returned order that goes in "o" is a shallow copy of "order"
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+        Order order = new Order(1, date, "complete", products, null, user, paymentMethod);
+        Order order1 = new Order(1, date, "complete", products, null, user, paymentMethod);
+        Order o = null;
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(orderRepository.existsById(order.getId())).willReturn(true);
+        BDDMockito.given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
+
+        // when
+        try {
+            o = orderService.getOrder(user.getUsername(), order.getId());
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+
+        ArgumentCaptor<Integer> orderIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).existsById(orderIdExistsArgumentCaptor.capture());
+        Integer capturedOrderIdExists = orderIdExistsArgumentCaptor.getValue();
+        assertEquals(capturedOrderIdExists, order.getId());
+
+        ArgumentCaptor<Integer> orderIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).findById(orderIdArgumentCaptor.capture());
+        Integer capturedOrderId = orderIdArgumentCaptor.getValue();
+        assertEquals(capturedOrderId, order.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        assertNotEquals(o.getPaymentMethod(), order1.getPaymentMethod());
+
+    }
 
     // update
 
@@ -186,7 +342,7 @@ public class OrderServiceTest {
         ArgumentCaptor<Integer> productIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(productRepository).existsById(productIdArgumentCaptor.capture());
         Integer capturedProductId = productIdArgumentCaptor.getValue();
-        assertEquals(capturedProductId, order.getId());
+        assertEquals(capturedProductId, product.getId());
     }
 
     @Test
