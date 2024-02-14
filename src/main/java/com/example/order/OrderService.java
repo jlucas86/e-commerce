@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.exceptions.OrderDoesNotExist;
 import com.example.exceptions.PaymentMethodDoesNotExist;
+import com.example.exceptions.PaymentMethodsDoNotMatch;
 import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.UserDoesNotOwnOrder;
 import com.example.exceptions.UserDoesNotOwnPaymentMethod;
@@ -93,9 +94,13 @@ public class OrderService {
 
     // update
 
-    public void updateOrder(String username, Order order) throws OrderDoesNotExist, UserDoesNotOwnOrder {
+    public void updateOrder(String username, Order order)
+            throws OrderDoesNotExist, UserDoesNotOwnOrder, PaymentMethodsDoNotMatch {
 
-        verify(username, order.getId());
+        Pair<UserInfo, Order> pair = verify(username, order.getId());
+
+        if (order.getPaymentMethod() != pair.other().getPaymentMethod())
+            throw new PaymentMethodsDoNotMatch(String.format("PaymentMethod does not match new paymentMethod"));
         orderRepository.save(order);
 
     }
