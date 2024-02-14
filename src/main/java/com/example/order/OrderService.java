@@ -59,7 +59,17 @@ public class OrderService {
     public List<Order> getAllByPaymentMethod(String username, Integer paymentMethodId)
             throws PaymentMethodDoesNotExist, UserDoesNotOwnPaymentMethod {
 
-        paymentMethodService.verify(username, paymentMethodId);
+        if (!paymentMethodRepository.existsById(paymentMethodId))
+            throw new PaymentMethodDoesNotExist(String.format("PaymentMethod %d not found", paymentMethodId));
+
+        PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId).get();
+        UserInfo user = userInfoRepository.findByUsername(username).get();
+
+        if (paymentMethod.getUser().getId() != user.getId()) {
+            throw new UserDoesNotOwnPaymentMethod(
+                    String.format("User %s does not own paymentMethod %d", username, paymentMethodId));
+        }
+        // paymentMethodService.verify(username, paymentMethodId);
         return orderRepository.findAllByPaymentMethodId(paymentMethodId);
     }
 

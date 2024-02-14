@@ -20,8 +20,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.exceptions.OrderDoesNotExist;
+import com.example.exceptions.PaymentMethodDoesNotExist;
 import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.UserDoesNotOwnOrder;
+import com.example.exceptions.UserDoesNotOwnPaymentMethod;
 import com.example.order.Order;
 import com.example.order.OrderRepository;
 import com.example.order.OrderService;
@@ -217,6 +219,175 @@ public class OrderServiceTest {
         assertEquals(capturedUsername, user.getUsername());
 
         assertNotEquals(o.getPaymentMethod(), order1.getPaymentMethod());
+
+    }
+
+    @Test
+    void canGetAllOrderByUserId() {
+
+        // note: the returned order that goes in "o" is a shallow copy of "order"
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+        Order order = new Order(1, date, "complete", products, null, user, paymentMethod);
+        Order order1 = new Order(2, date, "complete", products, null, user, paymentMethod);
+        Order order2 = new Order(3, date, "complete", products, null, user, paymentMethod);
+        Order order3 = new Order(4, date, "complete", products, null, user, paymentMethod);
+
+        List<Order> orders = new ArrayList<>();
+        orders.add(order);
+        orders.add(order1);
+        orders.add(order2);
+        orders.add(order3);
+
+        List<Order> o = null;
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(orderRepository.findAllByUserId(user.getId())).willReturn(orders);
+
+        // when
+        try {
+            o = orderService.getAllOrders(user.getUsername());
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        ArgumentCaptor<Integer> userIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).findAllByUserId(userIdArgumentCaptor.capture());
+        Integer capturedUserId = userIdArgumentCaptor.getValue();
+        assertEquals(capturedUserId, user.getId());
+
+        assertEquals(o, orders);
+
+    }
+
+    @Test
+    void canGetAllByPaymentMethod() {
+        // note: the returned order that goes in "o" is a shallow copy of "order"
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+        Order order = new Order(1, date, "complete", products, null, user, paymentMethod);
+        Order order1 = new Order(2, date, "complete", products, null, user, paymentMethod);
+        Order order2 = new Order(3, date, "complete", products, null, user, paymentMethod);
+        Order order3 = new Order(4, date, "complete", products, null, user, paymentMethod);
+
+        List<Order> orders = new ArrayList<>();
+        orders.add(order);
+        orders.add(order1);
+        orders.add(order2);
+        orders.add(order3);
+
+        List<Order> o = null;
+
+        BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(true);
+        BDDMockito.given(paymentMethodRepository.findById(paymentMethod.getId()))
+                .willReturn(Optional.of(paymentMethod));
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(orderRepository.findAllByPaymentMethodId(paymentMethod.getId())).willReturn(orders);
+
+        // when
+        try {
+            o = orderService.getAllByPaymentMethod(user.getUsername(), paymentMethod.getId());
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+        ArgumentCaptor<Integer> paymentMethodIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).existsById(paymentMethodIdExistsArgumentCaptor.capture());
+        Integer capturedPaymentMethodIdExists = paymentMethodIdExistsArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodIdExists, paymentMethod.getId());
+
+        ArgumentCaptor<Integer> paymentMethodIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).existsById(paymentMethodIdArgumentCaptor.capture());
+        Integer capturedPaymentMethodId = paymentMethodIdArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodId, paymentMethod.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        ArgumentCaptor<Integer> paymentMethodIdGetAllArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).findAllByPaymentMethodId(paymentMethodIdGetAllArgumentCaptor.capture());
+        Integer capturedPaymentMethodIdgetAll = paymentMethodIdGetAllArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodIdgetAll, paymentMethod.getId());
+
+        assertEquals(orders, o);
+    }
+
+    @Test
+    void canNotGetAllByPaymentMethodPaymentMethodDoesNotExist() {
+        // note: the returned order that goes in "o" is a shallow copy of "order"
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+
+        BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(false);
+
+        // when
+        // then
+
+        Exception e = assertThrows(PaymentMethodDoesNotExist.class, () -> {
+            orderService.getAllByPaymentMethod(user.getUsername(), paymentMethod.getId());
+        }, "PaymentMethod " + paymentMethod.getId() + " not found");
+
+        assertEquals(e.getMessage(), "PaymentMethod " + paymentMethod.getId() + " not found");
+    }
+
+    @Test
+    void canNotGetAllByPaymentMethodUserDoesNotOwnPaymentMethod() {
+        // note: the returned order that goes in "o" is a shallow copy of "order"
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        UserInfo user1 = new UserInfo(2, "email1", "username1", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+
+        BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(true);
+        BDDMockito.given(paymentMethodRepository.findById(paymentMethod.getId()))
+                .willReturn(Optional.of(paymentMethod));
+        BDDMockito.given(userInfoRepository.findByUsername(user1.getUsername())).willReturn(Optional.of(user1));
+
+        // when
+        // then
+
+        Exception e = assertThrows(UserDoesNotOwnPaymentMethod.class, () -> {
+            orderService.getAllByPaymentMethod(user1.getUsername(), paymentMethod.getId());
+        }, "User " + user1.getUsername() + " does not own paymentMethod " + paymentMethod.getId());
+
+        assertEquals(e.getMessage(),
+                "User " + user1.getUsername() + " does not own paymentMethod " + paymentMethod.getId());
 
     }
 
