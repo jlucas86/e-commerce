@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.exceptions.OrderDoesNotExist;
+import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.UserDoesNotOwnOrder;
 import com.example.order.Order;
 import com.example.order.OrderRepository;
@@ -164,12 +165,47 @@ public class OrderServiceTest {
 
     @Test
     void canVerifyProduct() {
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        Order order = new Order(1, date, "complete", products, null, user, null);
 
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
+
+        // when
+        try {
+            orderService.verifyProducts(product);
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+        ArgumentCaptor<Integer> productIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(productRepository).existsById(productIdArgumentCaptor.capture());
+        Integer capturedProductId = productIdArgumentCaptor.getValue();
+        assertEquals(capturedProductId, order.getId());
     }
 
     @Test
     void canNotVerifyProductProductNotFound() {
+        // give
 
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+
+        BDDMockito.given(productRepository.existsById(product.getId())).willReturn(false);
+
+        // when
+        // then
+        Exception e = assertThrows(ProductNotFound.class, () -> {
+            orderService.verifyProducts(product);
+        }, "Product " + product.getId() + " not found");
+
+        assertEquals(e.getMessage(), "Product " + product.getId() + " not found");
     }
 
 }

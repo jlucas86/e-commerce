@@ -138,14 +138,12 @@ public class OrderService {
         return new Pair<UserInfo, Order>(user, order);
     }
 
-    public void verifyProducts(Product product) {
-        try {
-            if (!productRepository.existsById(product.getId())) {
-                throw new ProductNotFound(String.format("Product %d not found", product.getId()));
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
+    public void verifyProducts(Product product) throws ProductNotFound {
+
+        if (!productRepository.existsById(product.getId())) {
+            throw new ProductNotFound(String.format("Product %d not found", product.getId()));
         }
+
     }
 
 }
