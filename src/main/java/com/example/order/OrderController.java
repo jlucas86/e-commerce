@@ -26,7 +26,13 @@ public class OrderController {
 
     @GetMapping("/{username}/getOrder/{id}")
     public Order getOrder(@PathVariable("username") String username, @PathVariable("id") Integer id) {
-        return orderService.getOrder(username, id);
+        try {
+            return orderService.getOrder(username, id);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return null;
+
     }
 
     @GetMapping("/{username}/getOrders/")
@@ -36,17 +42,32 @@ public class OrderController {
 
     @PostMapping("/{username}/addOrder")
     public void addOrder(@PathVariable("username") String username, @RequestBody Order order) {
-        orderService.addOrder(username, order);
+        try {
+            orderService.addOrder(username, order);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
     @PutMapping("/{username}/updateOrder")
     public void updateOrder(@PathVariable("username") String username, @RequestBody Order order) {
-        orderService.updateOrder(username, order);
+        try {
+            orderService.updateOrder(username, order);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
     @DeleteMapping("/{username}/deleteOrder")
     public void deleteOrder(@PathVariable("username") String username, @RequestBody Order order) {
-        orderService.deleteOrder(username, order);
+        try {
+            orderService.deleteOrder(username, order);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
 }

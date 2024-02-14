@@ -10,6 +10,7 @@ import com.example.exceptions.OrderDoesNotExist;
 import com.example.exceptions.PaymentMethodDoesNotExist;
 import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.UserDoesNotOwnOrder;
+import com.example.exceptions.UserDoesNotOwnPaymentMethod;
 import com.example.paymentMethod.PaymentMethod;
 import com.example.paymentMethod.PaymentMethodRepository;
 import com.example.paymentMethod.PaymentMethodService;
@@ -41,14 +42,11 @@ public class OrderService {
 
     // get
 
-    public Order getOrder(String username, Integer orderId) {
-        try {
-            Pair<UserInfo, Order> pair = verify(username, orderId);
-            return pair.other();
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
-        return null;
+    public Order getOrder(String username, Integer orderId) throws OrderDoesNotExist, UserDoesNotOwnOrder {
+
+        Pair<UserInfo, Order> pair = verify(username, orderId);
+        return pair.other();
+
     }
 
     public List<Order> getAllOrders(String username) {
@@ -57,58 +55,47 @@ public class OrderService {
 
     }
 
-    public List<Order> getAllByPaymentMethod(String username, Integer paymentMethodId) {
+    public List<Order> getAllByPaymentMethod(String username, Integer paymentMethodId)
+            throws PaymentMethodDoesNotExist, UserDoesNotOwnPaymentMethod {
 
-        try {
-            paymentMethodService.verify(username, paymentMethodId);
-            return orderRepository.findAllByPaymentMethodId(paymentMethodId);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
-        return null;
+        paymentMethodService.verify(username, paymentMethodId);
+        return orderRepository.findAllByPaymentMethodId(paymentMethodId);
     }
 
     // add
 
-    public void addOrder(String username, Order order) {
+    public void addOrder(String username, Order order)
+            throws OrderDoesNotExist, UserDoesNotOwnOrder, ProductNotFound, PaymentMethodDoesNotExist {
         UserInfo user = userInfoRepository.findByUsername(username).get();
         order.setUser(user);
 
         for (Product p : order.getProducts()) {
             verifyProducts(p);
         }
-        try {
-            if (!paymentMethodRepository.existsById(order.getPaymentMethod().getId()))
-                throw new PaymentMethodDoesNotExist(
-                        String.format("PaymentMethod %i not found", order.getPaymentMethod().getId()));
-            orderRepository.save(order);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+
+        if (!paymentMethodRepository.existsById(order.getPaymentMethod().getId()))
+            throw new PaymentMethodDoesNotExist(
+                    String.format("PaymentMethod %i not found", order.getPaymentMethod().getId()));
+        orderRepository.save(order);
 
     }
 
     // update
 
-    public void updateOrder(String username, Order order) {
-        try {
-            verify(username, order.getId());
-            orderRepository.save(order);
+    public void updateOrder(String username, Order order) throws OrderDoesNotExist, UserDoesNotOwnOrder {
 
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+        verify(username, order.getId());
+        orderRepository.save(order);
+
     }
 
     // delete
 
-    public void deleteOrder(String username, Order order) {
-        try {
-            verify(username, order.getId());
-            orderRepository.delete(order);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+    public void deleteOrder(String username, Order order) throws OrderDoesNotExist, UserDoesNotOwnOrder {
+
+        verify(username, order.getId());
+        orderRepository.delete(order);
+
     }
 
     // helper
