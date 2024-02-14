@@ -1,5 +1,6 @@
 package com.example.order;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,7 @@ public class Order {
     @SequenceGenerator(name = "order_id_sequence", sequenceName = "order_id_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_sequence")
     private Integer id;
-    private Integer date;
+    private Date date;
     private String status;
 
     @ManyToMany()
@@ -50,7 +51,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Integer id, Integer date, String status, List<Product> products, Set<Product> payment, UserInfo user,
+    public Order(Integer id, Date date, String status, List<Product> products, Set<Product> payment, UserInfo user,
             PaymentMethod paymentMethod) {
         this.id = id;
         this.date = date;
@@ -69,11 +70,11 @@ public class Order {
         this.id = id;
     }
 
-    public Integer getDate() {
+    public Date getDate() {
         return this.date;
     }
 
-    public void setDate(Integer date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -122,7 +123,7 @@ public class Order {
         return this;
     }
 
-    public Order date(Integer date) {
+    public Order date(Date date) {
         setDate(date);
         return this;
     }

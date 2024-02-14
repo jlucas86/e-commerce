@@ -125,14 +125,14 @@ public class OrderService {
     public Pair<UserInfo, Order> verify(String username, Integer orderId)
             throws OrderDoesNotExist, UserDoesNotOwnOrder {
         if (!orderRepository.existsById(orderId)) {
-            throw new OrderDoesNotExist(String.format("order %i does not exist in database", orderId));
+            throw new OrderDoesNotExist(String.format("Order %d does not exist in database", orderId));
         }
 
         Order order = orderRepository.findById(orderId).get();
         UserInfo user = userInfoRepository.findByUsername(username).get();
 
         if (order.getId() != user.getId()) {
-            throw new UserDoesNotOwnOrder(String.format("User %s does not own order %i", user.getUsername(), orderId));
+            throw new UserDoesNotOwnOrder(String.format("User %s does not own order %d", user.getUsername(), orderId));
         }
 
         return new Pair<UserInfo, Order>(user, order);
@@ -141,7 +141,7 @@ public class OrderService {
     public void verifyProducts(Product product) {
         try {
             if (!productRepository.existsById(product.getId())) {
-                throw new ProductNotFound(String.format("Product %i not found", product.getId()));
+                throw new ProductNotFound(String.format("Product %d not found", product.getId()));
             }
         } catch (Exception e) {
             System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");

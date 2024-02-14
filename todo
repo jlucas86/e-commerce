@@ -37,6 +37,6 @@
         - Role
         - Permission
         - Cart @done
-        - Store
+        - Store @done
         - Order
         - Product @done
