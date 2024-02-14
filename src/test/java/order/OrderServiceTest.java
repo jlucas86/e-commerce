@@ -478,6 +478,55 @@ public class OrderServiceTest {
 
     // delete
 
+    @Test
+    void canDeleteOrder() {
+        // note: the returned order that goes in "o" is a shallow copy of "order"
+
+        // give
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
+                null);
+        Order order = new Order(1, date, "complete", products, null, user, paymentMethod);
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(orderRepository.existsById(order.getId())).willReturn(true);
+        BDDMockito.given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
+
+        // when
+        try {
+            orderService.deleteOrder(user.getUsername(), order);
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+
+        ArgumentCaptor<Integer> orderIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).existsById(orderIdExistsArgumentCaptor.capture());
+        Integer capturedOrderIdExists = orderIdExistsArgumentCaptor.getValue();
+        assertEquals(capturedOrderIdExists, order.getId());
+
+        ArgumentCaptor<Integer> orderIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(orderRepository).findById(orderIdArgumentCaptor.capture());
+        Integer capturedOrderId = orderIdArgumentCaptor.getValue();
+        assertEquals(capturedOrderId, order.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(orderRepository).delete(orderArgumentCaptor.capture());
+        Order capturedOrder = orderArgumentCaptor.getValue();
+        assertEquals(capturedOrder, order);
+
+    }
+
     // helper
 
     @Test
