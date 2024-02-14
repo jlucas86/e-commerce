@@ -32,11 +32,10 @@
 
     - test
         - UserInfo 
-        - PaymentMethod 
-        - Payment
+        - PaymentMethod
         - Role
         - Permission
         - Cart @done
         - Store @done
-        - Order
+        - Order @done
         - Product @done

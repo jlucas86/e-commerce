@@ -34,10 +34,8 @@ import com.example.paymentMethod.PaymentMethodService;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
 import com.example.record.Pair;
-import com.example.store.Store;
 import com.example.userInfo.UserInfo;
 import com.example.userInfo.UserInfoRepository;
-import com.example.userInfo.UserInfoService;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -407,8 +405,6 @@ public class OrderServiceTest {
         PaymentMethod paymentMethod = new PaymentMethod(1, "jessie james", "1234567891233", date, "123", user, null,
                 null);
         Order order = new Order(1, date, "complete", products, null, user, paymentMethod);
-        Order order1 = new Order(1, date, "complete", products, null, user, paymentMethod);
-        Order o = null;
 
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(orderRepository.existsById(order.getId())).willReturn(true);
@@ -582,8 +578,6 @@ public class OrderServiceTest {
         List<Product> products = new ArrayList<>();
         products.add(product);
         Order order = new Order(1, date, "complete", products, null, user, null);
-        Pair<UserInfo, Order> pair = new Pair<UserInfo, Order>(user, order);
-        Pair<UserInfo, Order> p = null;
 
         BDDMockito.given(orderRepository.existsById(order.getId())).willReturn(false);
 
@@ -606,8 +600,6 @@ public class OrderServiceTest {
         List<Product> products = new ArrayList<>();
         products.add(product);
         Order order = new Order(1, date, "complete", products, null, user, null);
-        Pair<UserInfo, Order> pair = new Pair<UserInfo, Order>(user, order);
-        Pair<UserInfo, Order> p = null;
 
         BDDMockito.given(orderRepository.existsById(order.getId())).willReturn(true);
         BDDMockito.given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
@@ -625,12 +617,9 @@ public class OrderServiceTest {
     @Test
     void canVerifyProduct() {
         // give
-        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
-        Date date = new Date(0);
         Product product = new Product(1, "thing", "thingomobbober", "does stuff", 20.56, null, null, null);
         List<Product> products = new ArrayList<>();
         products.add(product);
-        Order order = new Order(1, date, "complete", products, null, user, null);
 
         BDDMockito.given(productRepository.existsById(product.getId())).willReturn(true);
 
