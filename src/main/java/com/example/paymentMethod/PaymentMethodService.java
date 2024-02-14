@@ -26,18 +26,15 @@ public class PaymentMethodService {
 
     // get
 
-    public PaymentMethod getPaymentMethod(String username, Integer id) {
+    public PaymentMethod getPaymentMethod(String username, Integer id)
+            throws PaymentMethodDoesNotExist, UserDoesNotOwnPaymentMethod {
 
-        try {
-            verify(username, id);
-            PaymentMethod p = paymentMethodRepository.findById(id).get();
-            p.setCardNumber("************" + p.getCardNumber().substring(12));
-            p.setCvc("***");
-            return p;
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
-        return null;
+        verify(username, id);
+        PaymentMethod p = paymentMethodRepository.findById(id).get();
+        p.setCardNumber("************" + p.getCardNumber().substring(12));
+        p.setCvc("***");
+        return p;
+
     }
 
     public List<PaymentMethod> getPaymentMethods(String username) {
@@ -64,32 +61,28 @@ public class PaymentMethodService {
 
     // update
 
-    public void updatePaymentMethod(String username, PaymentMethod paymentMethod) {
+    public void updatePaymentMethod(String username, PaymentMethod paymentMethod)
+            throws PaymentMethodDoesNotExist, UserDoesNotOwnPaymentMethod {
 
-        try {
-            verify(username, paymentMethod.getId());
+        verify(username, paymentMethod.getId());
 
-            PaymentMethod p = paymentMethodRepository.findById(paymentMethod.getId()).get();
-            p.setCvc(paymentMethod.getCvc());
-            paymentMethodRepository.save(p);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+        PaymentMethod p = paymentMethodRepository.findById(paymentMethod.getId()).get();
+        p.setCvc(paymentMethod.getCvc());
+        paymentMethodRepository.save(p);
+
     }
 
     // delete
 
-    public void deletePaymentMethod(String username, PaymentMethod paymentMethod) {
+    public void deletePaymentMethod(String username, PaymentMethod paymentMethod)
+            throws PaymentMethodDoesNotExist, UserDoesNotOwnPaymentMethod {
 
         // this should be updated to not delete the payment method but insed just
         // disable it from being quired by a user
 
-        try {
-            verify(username, paymentMethod.getId());
-            paymentMethodRepository.delete(paymentMethod);
-        } catch (Exception e) {
-            System.err.println(e.getMessage() + "++++++++++++++++++++++++++++++++++++++++++ urg");
-        }
+        verify(username, paymentMethod.getId());
+        paymentMethodRepository.delete(paymentMethod);
+
     }
 
     // helper
@@ -98,7 +91,7 @@ public class PaymentMethodService {
             throws PaymentMethodDoesNotExist, UserDoesNotOwnPaymentMethod {
 
         if (!paymentMethodRepository.existsById(paymentMethodId)) {
-            throw new PaymentMethodDoesNotExist(String.format("PaymentMethod %i not found", paymentMethodId));
+            throw new PaymentMethodDoesNotExist(String.format("PaymentMethod %d not found", paymentMethodId));
         }
 
         PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId).get();
@@ -106,7 +99,7 @@ public class PaymentMethodService {
 
         if (paymentMethod.getUser().getId() != user.getId()) {
             throw new UserDoesNotOwnPaymentMethod(
-                    String.format("User %s does not own paymentMethod %i", username, paymentMethodId));
+                    String.format("User %s does not own paymentMethod %d", username, paymentMethodId));
         }
     }
 

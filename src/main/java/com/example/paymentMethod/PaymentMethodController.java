@@ -29,12 +29,23 @@ public class PaymentMethodController {
     @GetMapping("/{username}/getPaymentMethod/{id}")
     public PaymentMethod getPaymentMethod(@PathVariable("username") String username,
             @PathVariable("id") Integer id) {
-        return paymentMethodService.getPaymentMethod(username, id);
+        try {
+            return paymentMethodService.getPaymentMethod(username, id);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return null;
     }
 
     @GetMapping("/{username}/getPaymentMethods")
     public List<PaymentMethod> getPaymentMethods(@PathVariable("username") String username) {
-        return paymentMethodService.getPaymentMethods(username);
+
+        try {
+            return paymentMethodService.getPaymentMethods(username);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return null;
     }
 
     // add
@@ -50,7 +61,12 @@ public class PaymentMethodController {
     @PutMapping("/{username}/getPaymentMethod/")
     public void updatePaymentMethod(@PathVariable("username") String username,
             @RequestBody PaymentMethod PaymentMethod) {
-        paymentMethodService.updatePaymentMethod(username, PaymentMethod);
+        try {
+            paymentMethodService.updatePaymentMethod(username, PaymentMethod);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
     // delete
@@ -58,7 +74,12 @@ public class PaymentMethodController {
     @DeleteMapping("/{username}/getPaymentMethod/")
     public void deletePaymentMethod(@PathVariable("username") String username,
             @RequestBody PaymentMethod PaymentMethod) {
-        paymentMethodService.deletePaymentMethod(username, PaymentMethod);
+        try {
+            paymentMethodService.deletePaymentMethod(username, PaymentMethod);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
     }
 
 }
