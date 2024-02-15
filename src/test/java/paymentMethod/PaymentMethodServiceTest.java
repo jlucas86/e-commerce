@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.exceptions.PaymentMethodDoesNotExist;
 import com.example.exceptions.UserDoesNotOwnPaymentMethod;
-import com.example.payment.Payment;
 import com.example.paymentMethod.PaymentMethod;
 import com.example.paymentMethod.PaymentMethodRepository;
 import com.example.paymentMethod.PaymentMethodService;

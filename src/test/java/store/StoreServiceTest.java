@@ -18,7 +18,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.exceptions.InvalidStoreOwner;
 import com.example.exceptions.StoreDoesNotExist;
@@ -118,7 +117,6 @@ public class StoreServiceTest {
         Store store = new Store(1, "store", "sells things", user, products);
         Store store1 = new Store(2, "store", "sells things", user, products);
         Store store2 = new Store(3, "store", "sells things", user, products);
-        Store store3 = new Store(4, "store", "sells things", null, products);
         Store store4 = new Store(5, "store", "sells things", user, products);
 
         List<Store> stores = new ArrayList<>();
@@ -150,7 +148,6 @@ public class StoreServiceTest {
 
     @Test
     void canNotGetAllStoresFromUsernameUserDoesNotExist() {
-        Set<Product> products = new HashSet<>();
         UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
 
         BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(false);

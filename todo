@@ -32,7 +32,7 @@
 
     - test
         - UserInfo 
-        - PaymentMethod
+        - PaymentMethod @done
         - Role
         - Permission
         - Cart @done
