@@ -3,9 +3,12 @@ package paymentMethod;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +71,140 @@ public class PaymentMethodServiceTest {
 
     // get
 
+    @Test
+    void canGetPaymentMethod() {
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "bob", "1234567890123456", date, null, user, null, null);
+        PaymentMethod p = null;
+
+        BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(true);
+        BDDMockito.given(paymentMethodRepository.findById(paymentMethod.getId()))
+                .willReturn(Optional.of(paymentMethod));
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+
+        // when
+        try {
+            p = paymentMethodService.getPaymentMethod(user.getUsername(), paymentMethod.getId());
+        } catch (Exception e) {
+            fail();
+        }
+        paymentMethod.setCardNumber("************" + paymentMethod.getCardNumber().substring(12));
+        paymentMethod.setCvc("***");
+
+        // then
+        ArgumentCaptor<Integer> paymentMethodIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).existsById(paymentMethodIdExistsArgumentCaptor.capture());
+        Integer capturedPaymentMethodIdExists = paymentMethodIdExistsArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodIdExists, paymentMethod.getId());
+
+        ArgumentCaptor<Integer> paymentMethodIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository, atLeast(2)).findById(paymentMethodIdArgumentCaptor.capture());
+        Integer capturedPaymentMethodId = paymentMethodIdArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodId, paymentMethod.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        assertEquals(p, paymentMethod);
+    }
+
+    @Test
+    void canGetPaymentMethods() {
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "bob", "1234567890123456", date, null, user, null, null);
+        PaymentMethod paymentMethod1 = new PaymentMethod(2, "bob", "1234567890123456", date, null, user, null, null);
+        PaymentMethod paymentMethod2 = new PaymentMethod(3, "bob", "1234567890123456", date, null, user, null, null);
+        PaymentMethod paymentMethod3 = new PaymentMethod(4, "bob", "1234567890123456", date, null, user, null, null);
+
+        List<PaymentMethod> paymentMethods = new ArrayList<>();
+        List<PaymentMethod> p = null;
+        paymentMethods.add(paymentMethod);
+        paymentMethods.add(paymentMethod1);
+        paymentMethods.add(paymentMethod2);
+        paymentMethods.add(paymentMethod3);
+
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+        BDDMockito.given(paymentMethodRepository.findAllByUserId(user.getId())).willReturn(paymentMethods);
+
+        // when
+        try {
+            p = paymentMethodService.getPaymentMethods(user.getUsername());
+        } catch (Exception e) {
+            fail();
+        }
+        for (PaymentMethod pHold : paymentMethods) {
+            pHold.setCardNumber("************" + paymentMethod.getCardNumber().substring(12));
+            pHold.setCvc("***");
+        }
+
+        // then
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        ArgumentCaptor<Integer> userIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).findAllByUserId(userIdArgumentCaptor.capture());
+        Integer capturedUserId = userIdArgumentCaptor.getValue();
+        assertEquals(capturedUserId, user.getId());
+
+        assertEquals(p, paymentMethods);
+    }
+
     // update
+
+    @Test
+    void canUpdatePaymentMethod() {
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "bob", "1234567890123456", date, null, user, null, null);
+        PaymentMethod p = null;
+
+        BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(true);
+        BDDMockito.given(paymentMethodRepository.findById(paymentMethod.getId()))
+                .willReturn(Optional.of(paymentMethod));
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+
+        // when
+        try {
+            paymentMethodService.updatePaymentMethod(user.getUsername(), paymentMethod);
+        } catch (Exception e) {
+            fail();
+        }
+        paymentMethod.setCardNumber("************" + paymentMethod.getCardNumber().substring(12));
+        paymentMethod.setCvc("***");
+
+        // then
+        ArgumentCaptor<Integer> paymentMethodIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).existsById(paymentMethodIdExistsArgumentCaptor.capture());
+        Integer capturedPaymentMethodIdExists = paymentMethodIdExistsArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodIdExists, paymentMethod.getId());
+
+        ArgumentCaptor<Integer> paymentMethodIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository, atLeast(2)).findById(paymentMethodIdArgumentCaptor.capture());
+        Integer capturedPaymentMethodId = paymentMethodIdArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodId, paymentMethod.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        ArgumentCaptor<PaymentMethod> paymentMethoArgumentCaptor = ArgumentCaptor.forClass(PaymentMethod.class);
+        verify(paymentMethodRepository).save(paymentMethoArgumentCaptor.capture());
+        PaymentMethod capturedPaymentMethod = paymentMethoArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethod, paymentMethod);
+
+        // assertEquals(p, paymentMethod);
+    }
 
     // delete
 

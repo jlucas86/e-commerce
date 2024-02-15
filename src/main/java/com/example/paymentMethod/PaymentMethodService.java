@@ -41,6 +41,8 @@ public class PaymentMethodService {
 
         UserInfo user = userInfoRepository.findByUsername(username).get();
         List<PaymentMethod> paymentMethods = paymentMethodRepository.findAllByUserId(user.getId());
+        if (paymentMethods == null)
+            return null;
         for (PaymentMethod p : paymentMethods) {
             p.setCardNumber("************" + p.getCardNumber().substring(12));
             p.setCvc("***");
