@@ -166,7 +166,6 @@ public class PaymentMethodServiceTest {
         UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
         Date date = new Date(0);
         PaymentMethod paymentMethod = new PaymentMethod(1, "bob", "1234567890123456", date, null, user, null, null);
-        PaymentMethod p = null;
 
         BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(true);
         BDDMockito.given(paymentMethodRepository.findById(paymentMethod.getId()))
@@ -179,8 +178,6 @@ public class PaymentMethodServiceTest {
         } catch (Exception e) {
             fail();
         }
-        paymentMethod.setCardNumber("************" + paymentMethod.getCardNumber().substring(12));
-        paymentMethod.setCvc("***");
 
         // then
         ArgumentCaptor<Integer> paymentMethodIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -202,11 +199,50 @@ public class PaymentMethodServiceTest {
         verify(paymentMethodRepository).save(paymentMethoArgumentCaptor.capture());
         PaymentMethod capturedPaymentMethod = paymentMethoArgumentCaptor.getValue();
         assertEquals(capturedPaymentMethod, paymentMethod);
-
-        // assertEquals(p, paymentMethod);
     }
 
     // delete
+
+    @Test
+    void canDeletePaymentMethod() {
+        // given
+        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+        Date date = new Date(0);
+        PaymentMethod paymentMethod = new PaymentMethod(1, "bob", "1234567890123456", date, null, user, null, null);
+
+        BDDMockito.given(paymentMethodRepository.existsById(paymentMethod.getId())).willReturn(true);
+        BDDMockito.given(paymentMethodRepository.findById(paymentMethod.getId()))
+                .willReturn(Optional.of(paymentMethod));
+        BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+
+        // when
+        try {
+            paymentMethodService.deletePaymentMethod(user.getUsername(), paymentMethod);
+        } catch (Exception e) {
+            fail();
+        }
+
+        // then
+        ArgumentCaptor<Integer> paymentMethodIdExistsArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).existsById(paymentMethodIdExistsArgumentCaptor.capture());
+        Integer capturedPaymentMethodIdExists = paymentMethodIdExistsArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodIdExists, paymentMethod.getId());
+
+        ArgumentCaptor<Integer> paymentMethodIdArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(paymentMethodRepository).findById(paymentMethodIdArgumentCaptor.capture());
+        Integer capturedPaymentMethodId = paymentMethodIdArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethodId, paymentMethod.getId());
+
+        ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userInfoRepository).findByUsername(usernameArgumentCaptor.capture());
+        String capturedUsername = usernameArgumentCaptor.getValue();
+        assertEquals(capturedUsername, user.getUsername());
+
+        ArgumentCaptor<PaymentMethod> paymentMethoArgumentCaptor = ArgumentCaptor.forClass(PaymentMethod.class);
+        verify(paymentMethodRepository).delete(paymentMethoArgumentCaptor.capture());
+        PaymentMethod capturedPaymentMethod = paymentMethoArgumentCaptor.getValue();
+        assertEquals(capturedPaymentMethod, paymentMethod);
+    }
 
     // helper
 
