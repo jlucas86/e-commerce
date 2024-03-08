@@ -1,5 +1,6 @@
 package com.example.userInfo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,11 @@ public class UserInfoController {
     @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_CUSTOMER')")
     public UserInfo getUser(@PathVariable("username") String username) {
         return userService.getUser(username);
+    }
+
+    @GetMapping("/getAllUsers")
+    public List<UserInfo> getAllUsers() {
+        return userService.getAllUser();
     }
 
     @PostMapping("/addUser")

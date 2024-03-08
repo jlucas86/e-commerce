@@ -90,7 +90,7 @@ public class ApplicationSecurityConfig {
                 http
                                 .csrf(csrf -> csrf.disable())
                                 // .csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler))
-                                .cors(cors -> cors.disable())
+                                // .cors(cors -> cors.disable())
                                 // .csrf((csrf) ->
                                 // csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                                 // // BREACH

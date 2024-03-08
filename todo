@@ -3,7 +3,6 @@
 
     - add image list to product
     
-    - change service layer such that it will throw errors to the control 
     - erros return http errors
 
 
