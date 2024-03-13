@@ -133,8 +133,9 @@ public class ApplicationSecurityConfig {
                                 // .anyRequest().authenticated()
                                 )
                                 // .httpBasic(withDefaults())
-                                .formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/home",
-                                                true))
+                                .formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl(
+                                                "http://localhost:3000/",
+                                                true).failureUrl("http://localhost:3000/login"))
                                 .rememberMe((remember) -> remember.rememberMeServices(/* rememberMeServices */null)/*
                                                                                                                     * .tokenValiditySeconds
                                                                                                                     * (
