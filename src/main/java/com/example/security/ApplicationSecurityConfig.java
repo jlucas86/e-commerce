@@ -108,6 +108,7 @@ public class ApplicationSecurityConfig {
                                                 .requestMatchers("/js/*").permitAll()
                                                 .requestMatchers("/greeting").permitAll()
                                                 .requestMatchers("/home").permitAll()
+                                                .requestMatchers("/user/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/product/**").permitAll()
@@ -135,7 +136,7 @@ public class ApplicationSecurityConfig {
                                 // .httpBasic(withDefaults())
                                 .formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl(
                                                 "http://localhost:3000/",
-                                                true).failureUrl("http://localhost:3000/login"))
+                                                true).failureUrl("http://localhost:3000/loginFalse"))
                                 .rememberMe((remember) -> remember.rememberMeServices(/* rememberMeServices */null)/*
                                                                                                                     * .tokenValiditySeconds
                                                                                                                     * (
