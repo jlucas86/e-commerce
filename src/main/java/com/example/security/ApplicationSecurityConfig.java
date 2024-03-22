@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -101,6 +102,7 @@ public class ApplicationSecurityConfig {
                                 // HttpSessionCsrfTokenRepository()))
                                 // .csrf((csrf) -> csrf.csrfTokenRequestHandler(new
                                 // XorCsrfTokenRequestAttributeHandler()))
+                                .cors(Customizer.withDefaults())
                                 .authorizeHttpRequests((authorize) -> authorize
                                                 .requestMatchers("/").permitAll()
                                                 .requestMatchers("index").permitAll()
