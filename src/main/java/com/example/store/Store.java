@@ -27,7 +27,7 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "store_id_sequence")
     private Integer id;
     private String name;
-    private String desciption;
+    private String description;
 
     // @ManyToMany() // needs chaged to one to many
     // @JoinTable(name = "store_product", joinColumns = @JoinColumn(name =
@@ -46,10 +46,10 @@ public class Store {
     public Store() {
     }
 
-    public Store(Integer id, String name, String desciption, UserInfo user, Set<Product> products) {
+    public Store(Integer id, String name, String description, UserInfo user, Set<Product> products) {
         this.id = id;
         this.name = name;
-        this.desciption = desciption;
+        this.description = description;
         this.user = user;
         this.products = products;
     }
@@ -70,12 +70,12 @@ public class Store {
         this.name = name;
     }
 
-    public String getDesciption() {
-        return this.desciption;
+    public String getDescription() {
+        return this.description;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public UserInfo getUser() {
@@ -104,8 +104,8 @@ public class Store {
         return this;
     }
 
-    public Store desciption(String desciption) {
-        setDesciption(desciption);
+    public Store description(String description) {
+        setDescription(description);
         return this;
     }
 
@@ -128,13 +128,13 @@ public class Store {
         }
         Store store = (Store) o;
         return Objects.equals(id, store.id) && Objects.equals(name, store.name)
-                && Objects.equals(desciption, store.desciption) && Objects.equals(user, store.user)
+                && Objects.equals(description, store.description) && Objects.equals(user, store.user)
                 && Objects.equals(products, store.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, desciption, user, products);
+        return Objects.hash(id, name, description, user, products);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class Store {
         return "{" +
                 " id='" + getId() + "'" +
                 ", name='" + getName() + "'" +
-                ", desciption='" + getDesciption() + "'" +
+                ", description='" + getDescription() + "'" +
                 ", user='" + getUser() + "'" +
                 ", products='" + getProducts() + "'" +
                 "}";
