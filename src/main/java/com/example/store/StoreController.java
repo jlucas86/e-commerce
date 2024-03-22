@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +35,9 @@ public class StoreController {
         return null;
     }
 
+    // @PreAuthorize("#username == authentication.principal.username")
     @GetMapping("/getAllStore/{username}")
+    // @PreAuthorize("#username == authentication.principal.username")
     public List<Store> getAllStoresUser(@PathVariable("username") String username) {
         try {
             return storeService.getAllStoresUser(username);
@@ -56,7 +60,9 @@ public class StoreController {
         storeService.addStore(username, store);
     }
 
-    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
+    @PutMapping("/updateStore/{username}")
+    // @PreAuthorize("#username == authentication.principal.username and
+    // hasRole('ROLE_SELLER')")
     public void updateStore(@PathVariable("username") String username, @RequestBody Store store) {
         try {
             storeService.updateStore(username, store);
@@ -66,7 +72,9 @@ public class StoreController {
 
     }
 
-    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
+    @DeleteMapping("/deleteStore/{username}")
+    // @PreAuthorize("#username == authentication.principal.username and
+    // hasRole('ROLE_SELLER')")
     public void deleteStore(@PathVariable("username") String username, @RequestBody Store store) {
         try {
             storeService.deleteStore(username, store);
