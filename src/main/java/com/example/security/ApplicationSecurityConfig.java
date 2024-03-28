@@ -121,6 +121,8 @@ public class ApplicationSecurityConfig {
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/role/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/store/**").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/store/**").permitAll()
+                                                .requestMatchers(HttpMethod.DELETE, "/api/v1/store/**").permitAll()
+                                                .requestMatchers(HttpMethod.PUT, "/api/v1/store/**").permitAll()
                                                 .requestMatchers("/csrf").permitAll()
                                 // .requestMatchers("/csrf").permitAll()
                                 // .requestMatchers("/admin/**").hasRole(ADMIN.name())
