@@ -34,7 +34,7 @@ public class Store {
     // "store_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     // private Set<Product> products = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     // @JoinTable(name = "store_user", joinColumns = @JoinColumn(name = "store_id"),
     // inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JoinColumn(name = "user_id")
