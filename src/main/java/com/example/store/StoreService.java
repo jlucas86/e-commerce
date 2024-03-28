@@ -56,11 +56,15 @@ public class StoreService {
 
     }
 
-    public void deleteStore(String username, Store store) throws InvalidStoreOwner, StoreDoesNotExist {
+    public void deleteStore(String username, Integer storeId) throws InvalidStoreOwner, StoreDoesNotExist {
         UserInfo user = userInfoRepository.findByUsername(username).get();
 
-        validateStoreOwner(user, store);
-        storeRepository.delete(store);
+        Optional<Store> store = storeRepository.findById(storeId);
+        if (!store.isPresent()) {
+            throw new StoreDoesNotExist(String.format("Store %d does not exist in database", storeId));
+        }
+        validateStoreOwner(user, store.get());
+        storeRepository.delete(store.get());
 
     }
 
