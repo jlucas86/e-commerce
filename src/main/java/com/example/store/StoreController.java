@@ -75,7 +75,7 @@ public class StoreController {
     @DeleteMapping("/deleteStore/{username}")
     // @PreAuthorize("#username == authentication.principal.username and
     // hasRole('ROLE_SELLER')")
-    public void deleteStore(@PathVariable("username") String username/* , @RequestBody Store store */) {
+    public void deleteStore(@PathVariable("username") String username) {
         try {
             System.out.println("in delete***************************");
             // storeService.deleteStore(username, store);
