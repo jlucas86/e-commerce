@@ -5,10 +5,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,13 +32,21 @@ public class UserInfoController {
     }
 
     @GetMapping("/getUsername/{username}")
-    @PreAuthorize("#username == authentication.principal.username")
+    // @PreAuthorize("#username == authentication.principal.username")
+    @PreAuthorize("isAuthenticated()")
     public UserInfo getUser(@PathVariable("username") String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(
+                authentication.getDetails().toString() + "________" + authentication.getName() + "_______");
+
         return userService.getUser(username);
     }
 
     @GetMapping("/getAllUsers")
     public List<UserInfo> getAllUsers() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication + "________" + authentication.getName());
         return userService.getAllUser();
     }
 
