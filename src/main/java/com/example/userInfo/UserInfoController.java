@@ -1,5 +1,6 @@
 package com.example.userInfo;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.auth.ApplicationUser;
 import com.example.exceptions.EmailAlreadyExists;
 import com.example.exceptions.InvalidPassword;
 import com.example.exceptions.UsernameAlreadyExists;
@@ -31,19 +33,32 @@ public class UserInfoController {
         this.userService = userService;
     }
 
+    @PreAuthorize("@securityService.isUser(#username)")
     @GetMapping("/getUsername/{username}")
     // @PreAuthorize("#username == authentication.principal.username")
-    @PreAuthorize("isAuthenticated()")
+    
     public UserInfo getUser(@PathVariable("username") String username) {
+
+        /**
+         * for auth
+         * - verify username matches user
+         * - use username to get roles from userInfo
+         * - verify the user has atleast one correct role
+         */
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ApplicationUser u = (ApplicationUser)authentication.getPrincipal();
         System.out.println(
                 authentication.getDetails().toString() + "________" + authentication.getName() + "_______");
+
 
         return userService.getUser(username);
     }
 
     @GetMapping("/getAllUsers")
     public List<UserInfo> getAllUsers() {
+
+        
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication + "________" + authentication.getName());
