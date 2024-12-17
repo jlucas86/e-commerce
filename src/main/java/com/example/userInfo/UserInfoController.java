@@ -35,34 +35,19 @@ public class UserInfoController {
 
     @PreAuthorize("@securityService.isUser(#username)")
     @GetMapping("/getUsername/{username}")
-    // @PreAuthorize("#username == authentication.principal.username")
-    
     public UserInfo getUser(@PathVariable("username") String username) {
-
-        /**
-         * for auth
-         * - verify username matches user
-         * - use username to get roles from userInfo
-         * - verify the user has atleast one correct role
-         */
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        ApplicationUser u = (ApplicationUser)authentication.getPrincipal();
-        System.out.println(
-                authentication.getDetails().toString() + "________" + authentication.getName() + "_______");
-
-
         return userService.getUser(username);
     }
 
     @GetMapping("/getAllUsers")
     public List<UserInfo> getAllUsers() {
 
-        
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication + "________" + authentication.getName());
         return userService.getAllUser();
+    }
+
+    @GetMapping("/isloggedIn")
+    public Boolean isLoggedIn(){
+        return userService.isLoggedIn();
     }
 
     @PostMapping("/addUser")
@@ -82,5 +67,6 @@ public class UserInfoController {
     public void deleteUser(@PathVariable("username") String username, @RequestBody UserInfo user) {
         userService.deleteUser(user);
     }
+
 
 }

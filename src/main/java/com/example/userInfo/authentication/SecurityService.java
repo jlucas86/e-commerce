@@ -21,7 +21,6 @@ public class SecurityService {
 
     public boolean isUser(String username){
         this.authentication = SecurityContextHolder.getContext().getAuthentication();
-        
         return authentication.getName().equals(username); // || user has role of adin;
     }
 
