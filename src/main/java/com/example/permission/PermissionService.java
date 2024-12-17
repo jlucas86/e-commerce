@@ -1,5 +1,6 @@
 package com.example.permission;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class PermissionService {
         return permissionRepository.findById(id);
     }
 
+    public List<Permission> getAllPermissions(){
+        return permissionRepository.findAll();
+    }
+
     public void addPermission(String permission) {
         Permission pHold = new Permission();
         pHold.setPermission(ApplicationUserPermission.PRODUCT_READ);
@@ -29,6 +34,18 @@ public class PermissionService {
 
     public void addPermission(Permission permission) {
         permissionRepository.save(permission);
+    }
+
+    public void addAllPermission() {
+
+        ApplicationUserPermission permissionsHold = ApplicationUserPermission.CART_READ;
+        ApplicationUserPermission[] permissions = permissionsHold.allPermissions();
+
+        for(int i = 0; i <permissions.length; i++){
+            Permission p = new Permission();
+            p.setPermission(permissions[i]);
+            permissionRepository.save(p);
+        }
     }
 
     public void updatePermission(Permission permission) {

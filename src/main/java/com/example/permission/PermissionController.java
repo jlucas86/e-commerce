@@ -1,5 +1,6 @@
 package com.example.permission;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,19 @@ public class PermissionController {
         return permissionService.getPermission(id);
     }
 
+    @GetMapping("/getAllPermissions")
+    public List<Permission> getAllPermissons() {
+        return permissionService.getAllPermissions();
+    }
+
     @PostMapping("/addPermission")
     public void addPermission(@RequestBody Permission permission) {
         permissionService.addPermission(permission);
+    }
+
+    @PostMapping("/addAllPermissions")
+    public void addAllPermissions(){
+        permissionService.addAllPermission();
     }
 
     @PostMapping("/updatePermission")

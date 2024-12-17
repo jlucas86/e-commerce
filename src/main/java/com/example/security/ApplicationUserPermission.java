@@ -1,5 +1,7 @@
 package com.example.security;
 
+import java.lang.reflect.Array;
+
 public enum ApplicationUserPermission {
     // SELLER_READ("seller:read"),
     // SELLER_WRITE("seller:write"),
@@ -32,6 +34,12 @@ public enum ApplicationUserPermission {
 
     public String getPermission() {
         return permission;
+    }
+
+    public ApplicationUserPermission[] allPermissions() {
+        ApplicationUserPermission[] p = {PRODUCT_READ,PRODUCT_WRITE, CART_READ, CART_WRITE, STORE_READ, STORE_WRITE, ORDER_READ, ORDER_WRITE, 
+            PAYMENT_READ, PAYMENT_WRITE, PAYMENTMETHOD_READ, PAYMENTMETHOD_WRITE, USERINFO_READ, USERINFO_WRITE, ROLE_READ, ROLE_WRITE, PERMISSION_READ, PERMISSION_WRITE};
+        return p;
     }
 
 }
