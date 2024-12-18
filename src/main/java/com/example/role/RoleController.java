@@ -39,6 +39,11 @@ public class RoleController {
         roleService.addRole(role);
     }
 
+    @PostMapping("/addAllRoles")
+    public void addAllRoles() {
+        roleService.addAllRoles();
+    }
+
     // update
 
     @PutMapping("/updateRole")
