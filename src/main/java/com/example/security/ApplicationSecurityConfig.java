@@ -148,7 +148,7 @@ public class ApplicationSecurityConfig {
                                                                                                                     */)
                                 .logout((logout) -> logout.logoutUrl("/logout").clearAuthentication(true)
                                                 .invalidateHttpSession(true).deleteCookies("remember-me", "JSESSIONID")
-                                                .logoutSuccessUrl("/login"));
+                                                .logoutSuccessUrl("http://localhost:3000/"));
 
                 // .authorizeHttpRequests((authz)->{
                 // authz

@@ -71,10 +71,6 @@ public class UserInfoService {
     public void addUser(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++" + user.getUsername());
 
-        // Permission permission = new Permission(0,
-        // ApplicationUserPermission.CUSTOMER_READ);
-        // Set<Permission> permissions = null;
-        // permissions.add(permission);
         // Role role = new Role(0, ApplicationUserRole.CUSTOMER, permissions);
         // Set<Role> roles;
         // roles.add(role);
@@ -94,6 +90,9 @@ public class UserInfoService {
         for (Role r : user.getRoles()) {
             if (roleRepository.findById(r.getId()).isPresent())
                 role.add(roleRepository.findById(r.getId()).get());
+            else 
+                return;
+                //trow error
         }
         hold.setRoles(role);
 
