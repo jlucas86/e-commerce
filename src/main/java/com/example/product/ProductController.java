@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +45,7 @@ public class ProductController {
         }
     }
 
-    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
+    
     @PostMapping("/createProduct/{username}/{storeId}")
     public void createProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
@@ -59,7 +58,7 @@ public class ProductController {
 
     }
 
-    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
+    
     @PostMapping("/updateProduct/{username}/{storeId}")
     public void updateProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
@@ -72,7 +71,7 @@ public class ProductController {
 
     }
 
-    @PreAuthorize("#username == authentication.principal.username and hasRole('ROLE_SELLER')")
+    
     @DeleteMapping("/deleteProduct/{username}/{storeId}")
     public void deleteProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
