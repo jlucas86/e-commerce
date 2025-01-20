@@ -1,23 +1,16 @@
 package com.example.userInfo;
 
-import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.auth.ApplicationUser;
 import com.example.exceptions.EmailAlreadyExists;
 import com.example.exceptions.InvalidPassword;
 import com.example.exceptions.UsernameAlreadyExists;
@@ -48,6 +41,11 @@ public class UserInfoController {
     @GetMapping("/isloggedIn")
     public Boolean isLoggedIn(){
         return userService.isLoggedIn();
+    }
+
+    @GetMapping("/getUsername")
+    public String getUsername(){
+        return userService.getUsername();
     }
 
     @PostMapping("/addUser")

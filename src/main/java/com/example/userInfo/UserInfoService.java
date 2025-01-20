@@ -66,6 +66,15 @@ public class UserInfoService {
             return true;
     }
 
+    public String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getName().equals("anonymousUser"))
+            return null;
+        else
+            return authentication.getName();
+    }
+
     // add
 
     public void addUser(UserInfo user) throws UsernameAlreadyExists, EmailAlreadyExists, InvalidPassword {
