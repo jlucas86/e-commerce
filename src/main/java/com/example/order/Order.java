@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.example.paymentMethod.PaymentMethod;
@@ -20,9 +21,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
-import java.util.Objects;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="Order_table")
 public class Order {
 
     @Id
