@@ -127,9 +127,17 @@ public class ProductService {
 
     }
 
-    public void deleteProduct(String username, Integer storeId, Product product)
+    public void deleteProduct(String username, Integer storeId, Integer productId)
             throws ProductNotFound, StoreDoesNotExist, StoreDoesNotOwnProduct, InvalidStoreOwner {
 
+        Optional<Product> p = productRepository.findById(productId);
+        if(p.isEmpty()){
+            // thorw error
+            throw new  ProductNotFound(String.format("Product %d not found", productId));
+        }
+
+        Product product = p.get();
+        System.out.println(product);
         verifiedProduct(product, storeId, username);
         productRepository.delete(product);
 

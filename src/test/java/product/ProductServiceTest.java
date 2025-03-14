@@ -1,24 +1,21 @@
 package product;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.exceptions.CartDoesNotExist;
 import com.example.exceptions.InvalidStoreOwner;
 import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.StoreDoesNotExist;
@@ -250,11 +247,12 @@ public class ProductServiceTest {
         BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
         BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
+        BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
         // BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
 
         // when
         try {
-            productService.deleteProduct(user.getUsername(), store.getId(), product);
+            productService.deleteProduct(user.getUsername(), store.getId(), product.getId());
         } catch (Exception e) {
             // TODO: handle exception
         }

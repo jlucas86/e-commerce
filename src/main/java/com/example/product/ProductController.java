@@ -72,12 +72,12 @@ public class ProductController {
     }
 
     
-    @DeleteMapping("/deleteProduct/{username}/{storeId}")
+    @DeleteMapping("/deleteProduct/{username}/{storeId}/{productId}")
     public void deleteProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
-            @RequestBody Product product) {
+        @PathVariable("productId") Integer productId) {
 
         try {
-            productSevice.deleteProduct(username, storeId, product);
+            productSevice.deleteProduct(username, storeId, productId);
         } catch (Exception e) {
             // TODO: handle exception
         }
