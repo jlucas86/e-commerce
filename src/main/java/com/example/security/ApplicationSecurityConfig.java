@@ -83,6 +83,7 @@ public class ApplicationSecurityConfig {
                                                 .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/product/**").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/product/**").permitAll()
+                                                .requestMatchers(HttpMethod.DELETE, "/api/v1/product/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/permission/**").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/permission/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/role/**").permitAll()

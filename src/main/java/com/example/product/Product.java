@@ -1,15 +1,5 @@
 package com.example.product;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -18,6 +8,15 @@ import com.example.cart.Cart;
 import com.example.order.Order;
 import com.example.store.Store;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 public class Product {
@@ -31,8 +30,11 @@ public class Product {
     private String description;
     private Double price;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "store_id")
+    // @ManyToOne(cascade = CascadeType.ALL)
+    // @JoinColumn(name = "store_id")
+    
+    @ManyToOne()
+    @JoinColumn(name="product_id", insertable=false, updatable=false)
     private Store store;
 
     @JsonIgnore

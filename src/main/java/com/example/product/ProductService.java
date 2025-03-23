@@ -1,8 +1,10 @@
 package com.example.product;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +17,7 @@ import com.example.exceptions.StoreDoesNotExist;
 import com.example.exceptions.StoreDoesNotOwnProduct;
 import com.example.record.Pair;
 import com.example.record.Products;
+import com.example.role.Role;
 import com.example.store.Store;
 import com.example.store.StoreRepository;
 import com.example.store.StoreService;
@@ -109,7 +112,7 @@ public class ProductService {
             throw new InvalidStoreOwner(
                     String.format("Username %s does not own store %d", user.getUsername(), store.getId()));
         }
-
+    
         product.setStore(store);
         productRepository.save(product);
 

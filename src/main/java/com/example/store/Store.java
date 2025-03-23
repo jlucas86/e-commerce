@@ -1,6 +1,7 @@
 package com.example.store;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.example.product.Product;
@@ -12,12 +13,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
-import java.util.Objects;
 
 @Entity
 public class Store {
@@ -40,7 +38,8 @@ public class Store {
     @JoinColumn(name = "user_id")
     private UserInfo user;
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany( cascade=CascadeType.ALL)
+    @JoinColumn(name="product_id")
     private Set<Product> products = new HashSet<>();
 
     public Store() {
