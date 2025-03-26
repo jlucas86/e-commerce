@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.record.Products;
+
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -59,7 +61,7 @@ public class ProductController {
     }
 
     
-    @PostMapping("/updateProduct/{username}/{storeId}")
+    @PutMapping("/updateProduct/{username}/{storeId}")
     public void updateProduct(@PathVariable("username") String username, @PathVariable("storeId") Integer storeId,
             @RequestBody Product product) {
 
