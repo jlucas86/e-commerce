@@ -33,8 +33,14 @@ public class Product {
     // @ManyToOne(cascade = CascadeType.ALL)
     // @JoinColumn(name = "store_id")
     
+    // @ManyToOne()
+    // @JoinColumn(name="product_id", insertable=false, updatable=false)
+    // private Store store;
+
     @ManyToOne()
-    @JoinColumn(name="product_id", insertable=false, updatable=false)
+    // @JoinTable(name = "store_user", joinColumns = @JoinColumn(name = "store_id"),
+    // inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinColumn(name = "store_id",  updatable=false)
     private Store store;
 
     @JsonIgnore

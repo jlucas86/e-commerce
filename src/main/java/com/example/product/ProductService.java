@@ -1,5 +1,6 @@
 package com.example.product;
 
+import java.awt.SystemTray;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +43,11 @@ public class ProductService {
     }
 
     public Optional<Product> getProduct(Integer id) {
+        // Product p = productRepository.findById(id).get();
+        // // if (p != null) {
+        // //     System.out.println(p.getStore());
+        // //     // p.setStore(storeRepository.findById());
+        // // }
         return productRepository.findById(id);
     }
 
@@ -126,6 +132,8 @@ public class ProductService {
         Product p = productRepository.findById(product.getId()).get();
         p.setPrice(product.getPrice());
         p.setDescription(product.getDescription());
+        p.setType(product.getType());
+        p.setName(product.getName());
         productRepository.save(p);
 
     }

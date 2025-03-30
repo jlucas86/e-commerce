@@ -38,10 +38,9 @@ public class Store {
     @JoinColumn(name = "user_id")
     private UserInfo user;
 
-    @OneToMany( cascade=CascadeType.ALL)
-    @JoinColumn(name="product_id")
+    @OneToMany( mappedBy="store", cascade=CascadeType.ALL)
     private Set<Product> products = new HashSet<>();
-
+    
     public Store() {
     }
 
