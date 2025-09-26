@@ -1,24 +1,19 @@
 package com.example.product;
 
-import java.awt.SystemTray;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.exceptions.InvalidStoreOwner;
-import com.example.exceptions.ProductAlreadyExists;
 import com.example.exceptions.ProductNotFound;
 import com.example.exceptions.StoreDoesNotExist;
 import com.example.exceptions.StoreDoesNotOwnProduct;
-import com.example.record.Pair;
-import com.example.record.Products;
-import com.example.role.Role;
 import com.example.store.Store;
 import com.example.store.StoreRepository;
 import com.example.store.StoreService;
@@ -42,6 +37,8 @@ public class ProductService {
         this.storeService = storeService;
     }
 
+    // gets a single product based on its id
+
     public Optional<Product> getProduct(Integer id) {
         // Product p = productRepository.findById(id).get();
         // // if (p != null) {
@@ -51,53 +48,94 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public List<Product> getProducts(Products p) {
+    // // gets a lsit of products of the same type that come after the specified product id
 
-        List<Product> products = new ArrayList<Product>();
+    // public List<Product> getProducts(Products p) {
 
-        Integer startHold = p.start();
-        for (Integer i = 0; i < p.amount();) {
-            int j = 0;
-            for (String t : p.type()) {
-                Optional<Product> product = productRepository.findByTypeAndIdAfter(t, startHold);
-                if (!product.isPresent()) {
-                    // is empty
-                    j++;
-                } else {
-                    if (!products.contains(product.get())) { // product is not found in list
-                        products.add(product.get());
-                        i++;
-                    }
-                }
-            }
-            // their are no more items to get
-            if (j == p.type().size()) {
-                i = p.amount();
-            } else {
-                // when the lists of products have one ellemnt or only one type was found past
-                // start value
-                if (products.size() == 1 || p.type().size() - j == 1)
-                    startHold = products.get(products.size() - 1).getId();
-                else { // detemin all
-                       // int i0 = products.get(products.size() - 1).getId();
-                       // int i1 = products.get(products.size() - 2).getId();
-                       // deteming the smallest index of newly added elements in list
-                    startHold = products.get(products.size() - 1).getId();
-                    for (Integer x = products.size() - 2; x > products.size() - j - 1; x--) {
-                        if (products.get(x).getId() < startHold) {
-                            startHold = products.get(x).getId();
-                        }
-                    }
-                    // if (i0 > i1)
-                    // startHold = i1;
-                    // else
-                    // startHold = i0;
-                    // }
-                }
-            }
+    //     List<Product> products = new ArrayList<Product>();
+
+    //     Integer startHold = p.start();
+    //     for (Integer i = 0; i < p.amount();) {
+    //         int j = 0;
+    //         for (String t : p.type()) {
+    //             Optional<Product> product = productRepository.findByTypeAndIdAfter(t, startHold);
+    //             if (!product.isPresent()) {
+    //                 // is empty
+    //                 j++;
+    //             } else {
+    //                 if (!products.contains(product.get())) { // product is not found in list
+    //                     products.add(product.get());
+    //                     i++;
+    //                 }
+    //             }
+    //         }
+    //         // their are no more items to get
+    //         if (j == p.type().size()) {
+    //             i = p.amount();
+    //         } else {
+    //             // when the lists of products have one ellemnt or only one type was found past
+    //             // start value
+    //             if (products.size() == 1 || p.type().size() - j == 1)
+    //                 startHold = products.get(products.size() - 1).getId();
+    //             else { // detemin all
+    //                    // int i0 = products.get(products.size() - 1).getId();
+    //                    // int i1 = products.get(products.size() - 2).getId();
+    //                    // deteming the smallest index of newly added elements in list
+    //                 startHold = products.get(products.size() - 1).getId();
+    //                 for (Integer x = products.size() - 2; x > products.size() - j - 1; x--) {
+    //                     if (products.get(x).getId() < startHold) {
+    //                         startHold = products.get(x).getId();
+    //                     }
+    //                 }
+    //                 // if (i0 > i1)
+    //                 // startHold = i1;
+    //                 // else
+    //                 // startHold = i0;
+    //                 // }
+    //             }
+    //         }
+    //     }
+    //     return products;
+    // }
+
+
+    // get the a pageable list of the products based on the page, size of page, and type of product
+
+    public Page<Product> getProducts(int page, int size, String sortBy, Boolean ascending, List<String> type){
+        Sort sort;
+        if (ascending)
+            sort = Sort.by(sortBy).ascending();
+        else
+            sort = Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        if(type.size()<= 0){
+            return  productRepository.findAll(pageable);
         }
-        return products;
+        
+        return productRepository.findByTypeIn(type, pageable);
+
     }
+
+    // get the pageable list of products based on the store name
+
+    /*********************** update late so that it also works with type 
+    
+     this can be done by add a type list to the param and in the repository add anouther funacion
+     that is a modify version of the formate that added AndTypein to the end and a second 
+     param to be 
+
+     like above verigy isze of type then  either call function to get by store or get by type and store
+    */
+
+    public Page<Product> getStoreProducts(int page, int size, String sortBy, int storeId){
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return productRepository.findByStoreId(storeId, pageable);
+    }
+
+    // add new product to the data base after verifying the user owns the store.
 
     public void createProduct(String username, Integer storeId, Product product)
             throws StoreDoesNotExist, InvalidStoreOwner, StoreDoesNotExist {
@@ -122,8 +160,11 @@ public class ProductService {
         product.setStore(store);
         productRepository.save(product);
 
+
         // productRepository.save(product);
     }
+
+    // update the products infromateino after verifying the user owns the store and the product exists
 
     public void updateProduct(String username, Integer storeId, Product product)
             throws ProductNotFound, StoreDoesNotExist, StoreDoesNotOwnProduct, InvalidStoreOwner {

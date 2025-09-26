@@ -1,11 +1,13 @@
 package com.example.userInfo;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,11 +17,8 @@ import org.springframework.stereotype.Service;
 import com.example.exceptions.EmailAlreadyExists;
 import com.example.exceptions.InvalidPassword;
 import com.example.exceptions.UsernameAlreadyExists;
-import com.example.permission.Permission;
 import com.example.role.Role;
 import com.example.role.RoleRepository;
-import com.example.security.ApplicationUserPermission;
-import com.example.security.ApplicationUserRole;
 
 @Service
 public class UserInfoService {
@@ -53,8 +52,10 @@ public class UserInfoService {
         throw new UsernameNotFoundException(String.format("Username %s already exists", username));
     }
 
-    public List<UserInfo> getAllUser() {
-        return userRepository.findAll();
+    public Page<UserInfo> getAllUser(Integer pageNo, Integer pageSize, String name) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        return userRepository.findByUsername(name, pageable);
+        // return userRepository.findAll(pageable);
     }
 
     public Boolean isLoggedIn(){

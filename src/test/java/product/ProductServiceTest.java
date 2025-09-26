@@ -1,7 +1,5 @@
 package product;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -23,7 +21,6 @@ import com.example.exceptions.StoreDoesNotOwnProduct;
 import com.example.product.Product;
 import com.example.product.ProductRepository;
 import com.example.product.ProductService;
-import com.example.record.Products;
 import com.example.store.Store;
 import com.example.store.StoreRepository;
 import com.example.store.StoreService;
@@ -153,55 +150,55 @@ public class ProductServiceTest {
         assertEquals(capturedProductId, product.getId());
     }
 
-    @Test
-    void canGetProductsSameType() {
-        // given
-        UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
-        Store store = new Store(1, "store", "i sell things", user, null);
-        Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
-        Product product1 = new Product(2, "product1", "thing", "does stuff", 2.50, store, null, null);
-        Product product2 = new Product(3, "product2", "thing", "does stuff", 2.50, store, null, null);
-        Product product3 = new Product(4, "product3", "thing", "does stuff", 2.50, store, null, null);
-        Product product4 = new Product(5, "product4", "thing", "does stuff", 2.50, store, null, null);
+    // @Test
+    // void canGetProductsSameType() {
+    //     // given
+    //     UserInfo user = new UserInfo(1, "email", "username", "password", null, null);
+    //     Store store = new Store(1, "store", "i sell things", user, null);
+    //     Product product = new Product(1, "product", "thing", "does stuff", 2.50, store, null, null);
+    //     Product product1 = new Product(2, "product1", "thing", "does stuff", 2.50, store, null, null);
+    //     Product product2 = new Product(3, "product2", "thing", "does stuff", 2.50, store, null, null);
+    //     Product product3 = new Product(4, "product3", "thing", "does stuff", 2.50, store, null, null);
+    //     Product product4 = new Product(5, "product4", "thing", "does stuff", 2.50, store, null, null);
 
-        List<String> l = new ArrayList<>();
-        List<Product> list = new ArrayList<>();
-        List<Product> list1 = new ArrayList<>();
-        list1.add(product);
-        l.add(product.getType());
-        Products p = new Products(l, 1, 0);
+    //     List<String> l = new ArrayList<>();
+    //     List<Product> list = new ArrayList<>();
+    //     List<Product> list1 = new ArrayList<>();
+    //     list1.add(product);
+    //     l.add(product.getType());
+    //     Products p = new Products(l, 1, 0);
 
-        // List<Product> products = new ArrayList<Product>();
-        // BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
-        // BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
-        // BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
-        // BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
-        // BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+    //     // List<Product> products = new ArrayList<Product>();
+    //     // BDDMockito.given(userInfoRepository.existsByUsername(user.getUsername())).willReturn(true);
+    //     // BDDMockito.given(storeRepository.existsById(store.getId())).willReturn(true);
+    //     // BDDMockito.given(userInfoRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
+    //     // BDDMockito.given(storeRepository.findById(store.getId())).willReturn(Optional.of(store));
+    //     // BDDMockito.given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
 
-        BDDMockito.given(productRepository.findByTypeAndIdAfter(p.type().get(0), p.start()))
-                .willReturn(Optional.of(product));
+    //     BDDMockito.given(productRepository.findByTypeAndIdAfter(p.type().get(0), p.start()))
+    //             .willReturn(Optional.of(product));
 
-        // when
-        try {
-            list = productService.getProducts(p);
-        } catch (Exception e) {
-            // TODO: handle exception
-            System.err.println("wtf");
-        }
+    //     // when
+    //     try {
+    //         list = productService.getProducts(p);
+    //     } catch (Exception e) {
+    //         // TODO: handle exception
+    //         System.err.println("wtf");
+    //     }
 
-        // then
-        ArgumentCaptor<String> productTypeArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Integer> startArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+    //     // then
+    //     ArgumentCaptor<String> productTypeArgumentCaptor = ArgumentCaptor.forClass(String.class);
+    //     ArgumentCaptor<Integer> startArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
 
-        verify(productRepository).findByTypeAndIdAfter(productTypeArgumentCaptor.capture(),
-                startArgumentCaptor.capture());
+    //     verify(productRepository).findByTypeAndIdAfter(productTypeArgumentCaptor.capture(),
+    //             startArgumentCaptor.capture());
 
-        String capturedProductType = productTypeArgumentCaptor.getValue();
-        Integer capturedStart = startArgumentCaptor.getValue();
-        assertEquals(p.type().get(0), capturedProductType);
-        assertEquals(0, capturedStart);
-        assertEquals(list1, list);
-    }
+    //     String capturedProductType = productTypeArgumentCaptor.getValue();
+    //     Integer capturedStart = startArgumentCaptor.getValue();
+    //     assertEquals(p.type().get(0), capturedProductType);
+    //     assertEquals(0, capturedStart);
+    //     assertEquals(list1, list);
+    // }
 
     // update
 

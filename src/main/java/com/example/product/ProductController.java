@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.record.Products;
 
 
 @RestController
@@ -37,15 +37,33 @@ public class ProductController {
         }
     }
 
+    // @GetMapping("/getProducts")
+    // public List<Product> getProducts(@RequestBody Products p) {
+    //     try {
+    //         return productSevice.getProducts(p);
+    //     } catch (Exception e) {
+    //         System.err.println(e.getMessage());
+    //         return null;
+    //     }
+    // }
+
     @GetMapping("/getProducts")
-    public List<Product> getProducts(@RequestBody Products p) {
+    public Page<Product> getProducts(
+        @RequestParam( defaultValue = "0") int page, 
+        @RequestParam( defaultValue = "0") int size, 
+        @RequestParam( defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "true") boolean ascending,
+        @RequestParam List<String> type
+    ) {
         try {
-            return productSevice.getProducts(p);
+            return productSevice.getProducts(page, size, sortBy, ascending, type);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return null;
         }
     }
+
+    // get all products of a specified store
 
     
     @PostMapping("/createProduct/{username}/{storeId}")

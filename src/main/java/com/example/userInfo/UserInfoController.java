@@ -1,14 +1,14 @@
 package com.example.userInfo;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.exceptions.EmailAlreadyExists;
@@ -32,10 +32,20 @@ public class UserInfoController {
         return userService.getUser(username);
     }
 
-    @GetMapping("/getAllUsers")
-    public List<UserInfo> getAllUsers() {
+    // @GetMapping("/getAllUsers")
+    // public Page<UserInfo> getAllUsers() {
 
-        return userService.getAllUser();
+    //     return userService.getAllUser();
+    // }
+
+    @GetMapping("/getAllUsers")
+    public Page<UserInfo> getUsers(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam() String name) {
+        
+        Page<UserInfo> users = userService.getAllUser(pageNo, pageSize, name);
+        return users;
     }
 
     @GetMapping("/isloggedIn")

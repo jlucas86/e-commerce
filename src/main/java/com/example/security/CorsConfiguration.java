@@ -15,6 +15,7 @@ public class CorsConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").allowedMethods("GET", "PUT", "POST", "DELETE")
                         .allowedOrigins("http://localhost:3000")
+                        .allowedHeaders(org.springframework.web.cors.CorsConfiguration.ALL)
                         .allowCredentials(true);
             }
         };
