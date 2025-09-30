@@ -48,57 +48,6 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    // // gets a lsit of products of the same type that come after the specified product id
-
-    // public List<Product> getProducts(Products p) {
-
-    //     List<Product> products = new ArrayList<Product>();
-
-    //     Integer startHold = p.start();
-    //     for (Integer i = 0; i < p.amount();) {
-    //         int j = 0;
-    //         for (String t : p.type()) {
-    //             Optional<Product> product = productRepository.findByTypeAndIdAfter(t, startHold);
-    //             if (!product.isPresent()) {
-    //                 // is empty
-    //                 j++;
-    //             } else {
-    //                 if (!products.contains(product.get())) { // product is not found in list
-    //                     products.add(product.get());
-    //                     i++;
-    //                 }
-    //             }
-    //         }
-    //         // their are no more items to get
-    //         if (j == p.type().size()) {
-    //             i = p.amount();
-    //         } else {
-    //             // when the lists of products have one ellemnt or only one type was found past
-    //             // start value
-    //             if (products.size() == 1 || p.type().size() - j == 1)
-    //                 startHold = products.get(products.size() - 1).getId();
-    //             else { // detemin all
-    //                    // int i0 = products.get(products.size() - 1).getId();
-    //                    // int i1 = products.get(products.size() - 2).getId();
-    //                    // deteming the smallest index of newly added elements in list
-    //                 startHold = products.get(products.size() - 1).getId();
-    //                 for (Integer x = products.size() - 2; x > products.size() - j - 1; x--) {
-    //                     if (products.get(x).getId() < startHold) {
-    //                         startHold = products.get(x).getId();
-    //                     }
-    //                 }
-    //                 // if (i0 > i1)
-    //                 // startHold = i1;
-    //                 // else
-    //                 // startHold = i0;
-    //                 // }
-    //             }
-    //         }
-    //     }
-    //     return products;
-    // }
-
-
     // get the a pageable list of the products based on the page, size of page, and type of product
 
     public Page<Product> getProducts(int page, int size, String sortBy, Boolean ascending, List<String> type){
@@ -118,6 +67,24 @@ public class ProductService {
     }
 
     // get the pageable list of products based on the store name
+    public Page<Product> getStoreProducts(int page, int size, String sortBy, Boolean ascending, int storeId)
+    throws StoreDoesNotExist {
+        Sort sort;
+        if (ascending)
+            sort = Sort.by(sortBy).ascending();
+        else
+            sort = Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // verify the store exists 
+        if(!storeRepository.existsById(storeId)){
+            // if not trow exception store not found
+            throw new StoreDoesNotExist(String.format("Store %d not found", storeId));
+        }
+
+        return productRepository.findByStoreId(storeId, pageable);
+    }
+
 
     /*********************** update late so that it also works with type 
     

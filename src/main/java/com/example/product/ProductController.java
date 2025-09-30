@@ -64,6 +64,21 @@ public class ProductController {
     }
 
     // get all products of a specified store
+    @GetMapping("/getStoreProducts")
+    public Page<Product> getStoreProducts(
+        @RequestParam( defaultValue = "0") int page, 
+        @RequestParam( defaultValue = "0") int size, 
+        @RequestParam( defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "true") boolean ascending,
+        @RequestParam int storeId
+    ) {
+        try {
+            return productSevice.getStoreProducts(page, size, sortBy, ascending, storeId);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
+    }
 
     
     @PostMapping("/createProduct/{username}/{storeId}")
