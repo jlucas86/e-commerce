@@ -10,8 +10,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     // Page<Product> findAllByType(String type, Pageable pageable);
-    Page<Product> findByStoreId(Integer store_id, Pageable p);
+
     // List<Store> findAllByUserId(Integer user_id);
+
+    Page<Product> findByStoreId(Integer store_id, Pageable p);
+
+    Page<Product> findByStoreIdAndTypeIn(Integer store_id, List<String> type, Pageable p);  
 
     Page<Product> findByTypeIn(List<String> type, Pageable p);
 }

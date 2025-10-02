@@ -50,6 +50,10 @@ public class ProductService {
 
     // get the a pageable list of the products based on the page, size of page, and type of product
 
+    /*
+     * throw an exception for type not found if it is not an authorized type
+     */
+
     public Page<Product> getProducts(int page, int size, String sortBy, Boolean ascending, List<String> type){
         Sort sort;
         if (ascending)
@@ -83,6 +87,29 @@ public class ProductService {
         }
 
         return productRepository.findByStoreId(storeId, pageable);
+    }
+
+    // get the pageable list of products based on the store name and the type
+
+    /*
+     * throw an exception for type not found if it is not an authorized type
+     */
+    public Page<Product> getStoreProductsByType(int page, int size, String sortBy, Boolean ascending, int storeId, List<String> type)
+    throws StoreDoesNotExist {
+        Sort sort;
+        if (ascending)
+            sort = Sort.by(sortBy).ascending();
+        else
+            sort = Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // verify the store exists 
+        if(!storeRepository.existsById(storeId)){
+            // if not trow exception store not found
+            throw new StoreDoesNotExist(String.format("Store %d not found", storeId));
+        }
+
+        return productRepository.findByStoreIdAndTypeIn(storeId, type, pageable);
     }
 
 
